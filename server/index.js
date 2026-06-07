@@ -30,7 +30,7 @@ cron.schedule('* * * * *', async () => {
   }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Stock tracker server running on port ${PORT}`);
 });
 
