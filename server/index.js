@@ -17,7 +17,6 @@ app.use('/api/alerts', alertRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-// Check price alerts every minute
 cron.schedule('* * * * *', async () => {
   try {
     await checkAlerts();
@@ -26,6 +25,15 @@ cron.schedule('* * * * *', async () => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Stock tracker server running on port ${PORT}`);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err.message, err.stack);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled rejection:', reason);
 });
