@@ -1,0 +1,5 @@
+{
+  "installCommand": "cd client && npm install",
+  "buildCommand": "cd client && npx tsc -b && npx vite build",
+  "outputDirectory": "client/dist"
+}
