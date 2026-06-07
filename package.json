@@ -9,6 +9,14 @@
     "build": "cd client && npm install && npx tsc -b && npx vite build",
     "start": "node server/index.js"
   },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "node-cron": "^4.2.1",
+    "node-telegram-bot-api": "^0.67.0",
+    "yahoo-finance2": "^3.15.2"
+  },
   "devDependencies": {
     "concurrently": "^9.0.0"
   }
