@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { StockQuote, HistoryPoint, Alert, SearchResult, Period } from '../types';
+import type { StockQuote, HistoryPoint, Alert, SearchResult, Period, TechnicalAnalysis } from '../types';
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || '/api' });
 
@@ -23,3 +23,6 @@ export const createAlert = (data: Omit<Alert, 'id' | 'createdAt' | 'triggered'>)
 
 export const deleteAlert = (id: string): Promise<void> =>
   api.delete(`/alerts/${id}`).then(r => r.data);
+
+export const fetchAnalysis = (symbol: string): Promise<TechnicalAnalysis> =>
+  api.get(`/stocks/analysis/${symbol}`).then(r => r.data);

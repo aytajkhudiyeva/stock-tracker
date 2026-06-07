@@ -6,6 +6,7 @@ import StockCard from './components/StockCard';
 import StockChart from './components/StockChart';
 import MetricsPanel from './components/MetricsPanel';
 import AlertsPanel from './components/AlertsPanel';
+import AnalysisPanel from './components/AnalysisPanel';
 import MarketOverview from './components/MarketOverview';
 import type { StockQuote } from './types';
 import './index.css';
@@ -13,7 +14,7 @@ import './index.css';
 const MARKET_SYMBOLS = ['^GSPC', '^DJI', '^IXIC', '^VIX'];
 const REFRESH_INTERVAL = 30000;
 
-type RightTab = 'chart' | 'metrics' | 'alerts';
+type RightTab = 'chart' | 'metrics' | 'alerts' | 'analysis';
 
 function LoadingCard() {
   return (
@@ -191,7 +192,7 @@ export default function App() {
 
                 {/* Tabs */}
                 <div style={{ display: 'flex', borderBottom: '1px solid #1e2d47', marginBottom: '20px' }}>
-                  {(['chart', 'metrics', 'alerts'] as RightTab[]).map(tab => (
+                  {(['chart', 'metrics', 'analysis', 'alerts'] as RightTab[]).map(tab => (
                     <button
                       key={tab}
                       onClick={() => setRightTab(tab)}
@@ -208,13 +209,14 @@ export default function App() {
                         marginBottom: '-1px',
                       }}
                     >
-                      {tab === 'chart' ? '📈 Chart' : tab === 'metrics' ? '📊 Metrics' : '🔔 Alerts'}
+                      {tab === 'chart' ? '📈 Chart' : tab === 'metrics' ? '📊 Metrics' : tab === 'analysis' ? '🔬 Analysis' : '🔔 Alerts'}
                     </button>
                   ))}
                 </div>
 
                 {rightTab === 'chart' && <StockChart symbol={selectedQuote.symbol} isUp={isUp} />}
                 {rightTab === 'metrics' && <MetricsPanel quote={selectedQuote} />}
+                {rightTab === 'analysis' && <AnalysisPanel symbol={selectedQuote.symbol} price={selectedQuote.regularMarketPrice} />}
                 {rightTab === 'alerts' && <AlertsPanel defaultSymbol={selectedQuote.symbol} />}
               </div>
             ) : (

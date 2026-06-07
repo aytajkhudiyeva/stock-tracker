@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const yahooFinance = require('../services/yf');
+const {
+  computeRSI, computeMACD, computeBollingerBands,
+  computeMovingAverages, findSupportResistance, computeTrend, buildSignals,
+} = require('../services/technicalIndicators');
 
 router.get('/quote/:symbol', async (req, res) => {
   try {
@@ -59,6 +63,48 @@ router.get('/history/:symbol', async (req, res) => {
       volume: q.volume,
     }));
     res.json(formatted);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get('/analysis/:symbol', async (req, res) => {
+  try {
+    const { symbol } = req.params;
+    const result = await yahooFinance.chart(symbol, {
+      period1: new Date(Date.now() - 400 * 24 * 60 * 60 * 1000),
+      interval: '1d',
+    });
+    const quotes = (result.quotes || []).filter(q => q.close != null);
+    if (quotes.length < 20) return res.status(400).json({ error: 'Insufficient data' });
+
+    const closes = quotes.map(q => q.close);
+    const highs = quotes.map(q => q.high);
+    const lows = quotes.map(q => q.low);
+
+    const rsiValue = computeRSI(closes);
+    const macd = computeMACD(closes);
+    const bb = computeBollingerBands(closes);
+    const ma = computeMovingAverages(closes);
+    const sr = findSupportResistance(highs, lows, closes);
+    const trend = computeTrend(closes, ma.sma50, ma.sma200);
+    const { signals, summary } = buildSignals(rsiValue, macd, bb, ma);
+
+    res.json({
+      symbol,
+      price: closes[closes.length - 1],
+      rsi: rsiValue != null ? {
+        value: rsiValue,
+        signal: rsiValue < 30 ? 'oversold' : rsiValue > 70 ? 'overbought' : 'neutral',
+      } : null,
+      macd,
+      bollingerBands: bb,
+      movingAverages: ma,
+      supportResistance: sr,
+      trend,
+      signals,
+      summary,
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
