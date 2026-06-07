@@ -16,7 +16,11 @@ app.use(express.json());
 app.use('/api/stocks', stockRoutes);
 app.use('/api/alerts', alertRoutes);
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', (req, res) => {
+  console.log(`[health] ${new Date().toISOString()} from ${req.ip}`);
+  res.json({ status: 'ok' });
+});
 
 cron.schedule('* * * * *', async () => {
   try {
