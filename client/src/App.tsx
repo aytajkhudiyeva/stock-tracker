@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchQuotes, fetchQuote } from './services/api';
 import { useWatchlist } from './hooks/useWatchlist';
+import { useLanguage } from './i18n/LanguageContext';
 import Header from './components/Header';
 import StockCard from './components/StockCard';
 import StockChart from './components/StockChart';
@@ -28,6 +29,7 @@ function LoadingCard() {
 
 export default function App() {
   const { watchlist, addSymbol, removeSymbol, hasSymbol } = useWatchlist();
+  const { t } = useLanguage();
   const [quotes, setQuotes] = useState<Record<string, StockQuote>>({});
   const [marketQuotes, setMarketQuotes] = useState<Record<string, StockQuote>>({});
   const [selectedSymbol, setSelectedSymbol] = useState<string>('NVDA');
@@ -92,6 +94,13 @@ export default function App() {
     return n.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
   }
 
+  const TAB_LABELS: Record<RightTab, string> = {
+    chart: t.tabChart,
+    metrics: t.tabMetrics,
+    analysis: t.tabAnalysis,
+    alerts: t.tabAlerts,
+  };
+
   return (
     <div style={{ minHeight: '100vh', background: '#0a0e1a' }}>
       <Header onSelectStock={handleSelectStock} onAddToWatchlist={handleAddToWatchlist} />
@@ -101,7 +110,7 @@ export default function App() {
         {Object.keys(marketQuotes).length > 0 && (
           <div style={{ marginBottom: '20px' }}>
             <div className="text-muted" style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '10px' }}>
-              Market Overview
+              {t.marketOverview}
             </div>
             <MarketOverview quotes={marketQuotes} />
           </div>
@@ -114,11 +123,11 @@ export default function App() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
               <div className="text-muted" style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                Watchlist ({watchlist.length})
+                {t.watchlist} ({watchlist.length})
               </div>
               {lastUpdated && (
                 <div className="text-muted" style={{ fontSize: '0.65rem' }}>
-                  Updated {lastUpdated.toLocaleTimeString()}
+                  {t.updated} {lastUpdated.toLocaleTimeString()}
                 </div>
               )}
             </div>
@@ -168,7 +177,7 @@ export default function App() {
                           className="btn-secondary"
                           style={{ padding: '4px 12px', fontSize: '0.78rem' }}
                           onClick={() => addSymbol(selectedQuote.symbol)}
-                        >+ Add to Watchlist</button>
+                        >{t.addToWatchlist}</button>
                       )}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px', flexWrap: 'wrap' }}>
@@ -209,36 +218,35 @@ export default function App() {
                         marginBottom: '-1px',
                       }}
                     >
-                      {tab === 'chart' ? '📈 Chart' : tab === 'metrics' ? '📊 Metrics' : tab === 'analysis' ? '🔬 Analysis' : '🔔 Alerts'}
+                      {TAB_LABELS[tab]}
                     </button>
                   ))}
                 </div>
 
-                {rightTab === 'chart' && <StockChart symbol={selectedQuote.symbol} isUp={isUp} />}
-                {rightTab === 'metrics' && <MetricsPanel quote={selectedQuote} />}
+                {rightTab === 'chart'    && <StockChart symbol={selectedQuote.symbol} isUp={isUp} />}
+                {rightTab === 'metrics'  && <MetricsPanel quote={selectedQuote} />}
                 {rightTab === 'analysis' && <AnalysisPanel symbol={selectedQuote.symbol} price={selectedQuote.regularMarketPrice} />}
-                {rightTab === 'alerts' && <AlertsPanel defaultSymbol={selectedQuote.symbol} />}
+                {rightTab === 'alerts'   && <AlertsPanel defaultSymbol={selectedQuote.symbol} />}
               </div>
             ) : (
               <div className="card" style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ margin: '0 auto 16px', display: 'block', opacity: 0.4 }}>
                   <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
                 </svg>
-                Select a stock to view details
+                {t.selectStock}
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
 
 function AddStockButton({ onAdd }: { onAdd: (s: string) => void }) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
 
@@ -253,7 +261,7 @@ function AddStockButton({ onAdd }: { onAdd: (s: string) => void }) {
       className="btn-secondary"
       style={{ width: '100%', textAlign: 'center', padding: '10px' }}
     >
-      + Add Stock
+      {t.addStock}
     </button>
   );
 
@@ -264,10 +272,10 @@ function AddStockButton({ onAdd }: { onAdd: (s: string) => void }) {
         className="input-field"
         value={value}
         onChange={e => setValue(e.target.value.toUpperCase())}
-        placeholder="Enter ticker..."
+        placeholder={t.enterTicker}
         style={{ flex: 1 }}
       />
-      <button className="btn-primary" type="submit" style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>Add</button>
+      <button className="btn-primary" type="submit" style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>{t.add}</button>
       <button type="button" className="btn-secondary" onClick={() => setOpen(false)} style={{ padding: '8px 10px' }}>✕</button>
     </form>
   );

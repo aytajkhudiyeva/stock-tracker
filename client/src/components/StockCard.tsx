@@ -1,4 +1,5 @@
 import type { StockQuote } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface StockCardProps {
   quote: StockQuote;
@@ -15,12 +16,13 @@ function fmt(n: number | undefined, digits = 2) {
 function fmtLarge(n: number | undefined) {
   if (n === undefined || n === null) return '—';
   if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
+  if (n >= 1e9)  return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6)  return `$${(n / 1e6).toFixed(2)}M`;
   return `$${n.toFixed(0)}`;
 }
 
 export default function StockCard({ quote, selected, onClick, onRemove }: StockCardProps) {
+  const { t } = useLanguage();
   const up = quote.regularMarketChange >= 0;
   const changeColor = up ? '#22c55e' : '#ef4444';
 
@@ -35,7 +37,6 @@ export default function StockCard({ quote, selected, onClick, onRemove }: StockC
         boxShadow: selected ? '0 0 0 1px #3b82f6' : undefined,
       }}
     >
-      {/* Remove button */}
       <button
         onClick={e => { e.stopPropagation(); onRemove(); }}
         style={{
@@ -46,10 +47,9 @@ export default function StockCard({ quote, selected, onClick, onRemove }: StockC
         }}
         onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
         onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
-        title="Remove from watchlist"
+        title={t.removeFromWatchlist}
       >×</button>
 
-      {/* Symbol & name */}
       <div style={{ marginBottom: '10px' }}>
         <div className="font-bold text-white" style={{ fontSize: '1rem', letterSpacing: '0.3px' }}>{quote.symbol}</div>
         <div className="text-muted" style={{ fontSize: '0.72rem', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '140px' }}>
@@ -57,14 +57,12 @@ export default function StockCard({ quote, selected, onClick, onRemove }: StockC
         </div>
       </div>
 
-      {/* Price */}
       <div style={{ marginBottom: '8px' }}>
         <div className="font-bold" style={{ fontSize: '1.35rem', color: '#f1f5f9', letterSpacing: '-0.5px' }}>
           ${fmt(quote.regularMarketPrice)}
         </div>
       </div>
 
-      {/* Change */}
       <div className="flex items-center gap-2">
         <span style={{
           background: up ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
@@ -76,14 +74,13 @@ export default function StockCard({ quote, selected, onClick, onRemove }: StockC
         </span>
       </div>
 
-      {/* Mini stats */}
       <div style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
         <div>
-          <div className="text-muted" style={{ fontSize: '0.65rem' }}>Market Cap</div>
+          <div className="text-muted" style={{ fontSize: '0.65rem' }}>{t.marketCap}</div>
           <div className="text-secondary" style={{ fontSize: '0.78rem', fontWeight: 500 }}>{fmtLarge(quote.marketCap)}</div>
         </div>
         <div>
-          <div className="text-muted" style={{ fontSize: '0.65rem' }}>P/E Ratio</div>
+          <div className="text-muted" style={{ fontSize: '0.65rem' }}>{t.peRatio}</div>
           <div className="text-secondary" style={{ fontSize: '0.78rem', fontWeight: 500 }}>{quote.trailingPE ? fmt(quote.trailingPE, 1) : '—'}</div>
         </div>
       </div>

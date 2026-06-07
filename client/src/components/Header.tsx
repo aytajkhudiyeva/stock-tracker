@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { searchStocks } from '../services/api';
+import { useLanguage } from '../i18n/LanguageContext';
 import type { SearchResult } from '../types';
 
 interface HeaderProps {
@@ -8,6 +9,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps) {
+  const { t, lang, toggleLang } = useLanguage();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -30,22 +32,19 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
 
   const select = (symbol: string) => {
     onSelectStock(symbol);
-    setQuery('');
-    setResults([]);
-    setOpen(false);
+    setQuery(''); setResults([]); setOpen(false);
   };
 
   const addToWatchlist = (e: React.MouseEvent, symbol: string) => {
     e.stopPropagation();
     onAddToWatchlist(symbol);
-    setQuery('');
-    setResults([]);
-    setOpen(false);
+    setQuery(''); setResults([]); setOpen(false);
   };
 
   return (
     <header style={{ background: '#0a0e1a', borderBottom: '1px solid #1e2d47' }} className="sticky top-0 z-50">
       <div className="max-w-screen-xl mx-auto flex items-center justify-between px-6 py-4 gap-6">
+
         {/* Logo */}
         <div className="flex items-center gap-3 shrink-0">
           <div style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', borderRadius: '10px', padding: '8px' }}>
@@ -56,7 +55,7 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
           </div>
           <div>
             <div className="font-bold text-white" style={{ fontSize: '1.1rem', letterSpacing: '-0.3px' }}>StockTrack</div>
-            <div className="text-muted" style={{ fontSize: '0.7rem' }}>Real-time market data</div>
+            <div className="text-muted" style={{ fontSize: '0.7rem' }}>{t.tagline}</div>
           </div>
         </div>
 
@@ -70,7 +69,7 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
             <input
               className="input-field"
               style={{ paddingLeft: '38px' }}
-              placeholder="Search stocks (NVDA, Apple, etc.)"
+              placeholder={t.searchPlaceholder}
               value={query}
               onChange={e => handleSearch(e.target.value)}
               onBlur={() => setTimeout(() => setOpen(false), 150)}
@@ -101,23 +100,46 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
                     className="btn-secondary"
                     style={{ padding: '3px 10px', fontSize: '0.75rem' }}
                     onClick={e => addToWatchlist(e, r.symbol)}
-                  >+ Watch</button>
+                  >{t.addWatch}</button>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Live indicator */}
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="pulse-dot" />
-          <span className="text-secondary" style={{ fontSize: '0.8rem' }}>Live</span>
+        {/* Right side: Live + Language toggle */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2">
+            <div className="pulse-dot" />
+            <span className="text-secondary" style={{ fontSize: '0.8rem' }}>{t.live}</span>
+          </div>
+
+          {/* Language toggle */}
+          <button
+            onClick={toggleLang}
+            style={{
+              display: 'flex', alignItems: 'center',
+              background: '#0f1629', border: '1px solid #1e2d47',
+              borderRadius: '7px', padding: '3px', cursor: 'pointer', gap: '2px',
+            }}
+            title={lang === 'en' ? 'Switch to Azerbaijani' : 'İngilis dilinə keç'}
+          >
+            {(['en', 'az'] as const).map(l => (
+              <span key={l} style={{
+                padding: '3px 9px', borderRadius: '5px',
+                fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.3px',
+                background: lang === l ? '#3b82f6' : 'transparent',
+                color: lang === l ? '#ffffff' : '#64748b',
+                transition: 'all 0.15s',
+              }}>
+                {l.toUpperCase()}
+              </span>
+            ))}
+          </button>
         </div>
       </div>
 
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </header>
   );
 }
