@@ -1,0 +1,92 @@
+import type { StockQuote } from '../types';
+
+interface StockCardProps {
+  quote: StockQuote;
+  selected: boolean;
+  onClick: () => void;
+  onRemove: () => void;
+}
+
+function fmt(n: number | undefined, digits = 2) {
+  if (n === undefined || n === null) return '—';
+  return n.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+
+function fmtLarge(n: number | undefined) {
+  if (n === undefined || n === null) return '—';
+  if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
+  return `$${n.toFixed(0)}`;
+}
+
+export default function StockCard({ quote, selected, onClick, onRemove }: StockCardProps) {
+  const up = quote.regularMarketChange >= 0;
+  const changeColor = up ? '#22c55e' : '#ef4444';
+
+  return (
+    <div
+      onClick={onClick}
+      className="card card-hover"
+      style={{
+        padding: '16px',
+        position: 'relative',
+        borderColor: selected ? '#3b82f6' : undefined,
+        boxShadow: selected ? '0 0 0 1px #3b82f6' : undefined,
+      }}
+    >
+      {/* Remove button */}
+      <button
+        onClick={e => { e.stopPropagation(); onRemove(); }}
+        style={{
+          position: 'absolute', top: '10px', right: '10px',
+          background: 'transparent', border: 'none', color: '#64748b',
+          cursor: 'pointer', padding: '2px', borderRadius: '4px', lineHeight: 1,
+          fontSize: '1rem', transition: 'color 0.15s',
+        }}
+        onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+        onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+        title="Remove from watchlist"
+      >×</button>
+
+      {/* Symbol & name */}
+      <div style={{ marginBottom: '10px' }}>
+        <div className="font-bold text-white" style={{ fontSize: '1rem', letterSpacing: '0.3px' }}>{quote.symbol}</div>
+        <div className="text-muted" style={{ fontSize: '0.72rem', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '140px' }}>
+          {quote.shortName || quote.longName || '—'}
+        </div>
+      </div>
+
+      {/* Price */}
+      <div style={{ marginBottom: '8px' }}>
+        <div className="font-bold" style={{ fontSize: '1.35rem', color: '#f1f5f9', letterSpacing: '-0.5px' }}>
+          ${fmt(quote.regularMarketPrice)}
+        </div>
+      </div>
+
+      {/* Change */}
+      <div className="flex items-center gap-2">
+        <span style={{
+          background: up ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
+          color: changeColor,
+          border: `1px solid ${up ? 'rgba(34,197,94,0.25)' : 'rgba(239,68,68,0.25)'}`,
+          borderRadius: '6px', padding: '2px 7px', fontSize: '0.75rem', fontWeight: 600,
+        }}>
+          {up ? '+' : ''}{fmt(quote.regularMarketChange)} ({up ? '+' : ''}{fmt(quote.regularMarketChangePercent)}%)
+        </span>
+      </div>
+
+      {/* Mini stats */}
+      <div style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+        <div>
+          <div className="text-muted" style={{ fontSize: '0.65rem' }}>Market Cap</div>
+          <div className="text-secondary" style={{ fontSize: '0.78rem', fontWeight: 500 }}>{fmtLarge(quote.marketCap)}</div>
+        </div>
+        <div>
+          <div className="text-muted" style={{ fontSize: '0.65rem' }}>P/E Ratio</div>
+          <div className="text-secondary" style={{ fontSize: '0.78rem', fontWeight: 500 }}>{quote.trailingPE ? fmt(quote.trailingPE, 1) : '—'}</div>
+        </div>
+      </div>
+    </div>
+  );
+}

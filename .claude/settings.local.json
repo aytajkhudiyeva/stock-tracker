@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(mkdir -p /Users/aytacxudiyeva/stock-tracker/server)",
+      "Bash(npm init *)",
+      "Bash(npx tailwindcss *)",
+      "Bash(./node_modules/.bin/tailwindcss init *)",
+      "Bash(timeout 8 node index.js)",
+      "Bash(node *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:3001/api/health)",
+      "Bash(curl -s \"http://localhost:3001/api/stocks/quote/NVDA\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'NVDA: \\\\${d[\\\\\"regularMarketPrice\\\\\"]:.2f} \\({d[\\\\\"regularMarketChangePercent\\\\\"]:+.2f}%\\)'\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(list\\(d.keys\\(\\)\\)[:10]\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('exports',{}\\), indent=2\\)\\)\")",
+      "Bash(pkill -f \"node index.js\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'NVDA: \\\\${d[\\\\\"regularMarketPrice\\\\\"]:.2f} | P/E: {d.get\\(\\\\\"trailingPE\\\\\",\\\\\"N/A\\\\\"\\)} | MarketCap: {d.get\\(\\\\\"marketCap\\\\\",\\\\\"N/A\\\\\"\\)}'\\)\")",
+      "Bash(curl -s \"http://localhost:3001/api/stocks/quotes?symbols=NVDA,AVGO,INTC,AAPL\")",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s \"http://localhost:3001/api/stocks/history/NVDA?period=1mo\")",
+      "Skill(run)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(echo \"Vite PID: $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(npx playwright *)",
+      "Bash(curl -s -o /dev/null -w \"Vite status: %{http_code}\\\\n\" http://localhost:5173)"
+    ]
+  }
+}
