@@ -1,4 +1,5 @@
 require('dotenv').config();
+console.log(`[startup] node ${process.version}, PORT=${process.env.PORT}, cwd=${process.cwd()}`);
 const express = require('express');
 const cors = require('cors');
 const cron = require('node-cron');
