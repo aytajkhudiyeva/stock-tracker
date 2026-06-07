@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const yahooFinance = require('../services/yf');
+const yahooFinance = require('../services/yfDirect');
 const {
   computeRSI, computeMACD, computeBollingerBands,
   computeMovingAverages, findSupportResistance, computeTrend, buildSignals,
