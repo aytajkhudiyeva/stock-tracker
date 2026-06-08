@@ -124,15 +124,22 @@ router.get('/search/:query', async (req, res) => {
 
 router.get('/earnings/debug/:symbol', async (req, res) => {
   const { symbol } = req.params;
-  const results = {};
+  const results = { version: 'v3' };
 
-  // Test Nasdaq
+  // Test Nasdaq with full headers (same as getNasdaqEarnings)
   try {
     const r = await fetch(`https://api.nasdaq.com/api/company/${symbol}/earnings-surprise`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', Accept: 'application/json' },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://www.nasdaq.com/',
+        'Origin': 'https://www.nasdaq.com',
+      },
     });
     const d = await r.json();
-    results.nasdaq = { status: r.status, rows: (d?.data?.earningsSurpriseTable?.rows || []).length };
+    const rows = d?.data?.earningsSurpriseTable?.rows || [];
+    results.nasdaq = { status: r.status, rows: rows.length, firstRow: rows[0] || null };
   } catch (e) { results.nasdaq = { error: e.message }; }
 
   // Test Yahoo crumb
@@ -143,6 +150,12 @@ router.get('/earnings/debug/:symbol', async (req, res) => {
     });
     results.yahooFinance = { status: r.status };
   } catch (e) { results.yahooFinance = { error: e.message }; }
+
+  // Test getEarnings() directly
+  try {
+    const data = await getEarnings(symbol.toUpperCase());
+    results.getEarnings = data ? { source: data.source, next: data.nextEarningsDate?.split('T')[0], pastCount: data.pastEarnings?.length } : null;
+  } catch (e) { results.getEarnings = { error: e.message }; }
 
   res.json(results);
 });
