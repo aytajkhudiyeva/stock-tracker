@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { StockQuote, HistoryPoint, Alert, SearchResult, Period, TechnicalAnalysis, EarningsData, EconomicEvent } from '../types';
+import type { StockQuote, HistoryPoint, Alert, SearchResult, Period, TechnicalAnalysis, EarningsData, EconomicEvent, IntradayData } from '../types';
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || '/api' });
 
@@ -32,3 +32,6 @@ export const fetchEarnings = (symbol: string): Promise<EarningsData> =>
 
 export const fetchEconomicCalendar = (daysBack = 14, daysAhead = 60): Promise<{ events: EconomicEvent[] }> =>
   api.get(`/economic/calendar?daysBack=${daysBack}&daysAhead=${daysAhead}`).then(r => r.data);
+
+export const fetchIntraday = (symbol: string): Promise<IntradayData> =>
+  api.get(`/stocks/intraday/${symbol}`).then(r => r.data);

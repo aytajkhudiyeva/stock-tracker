@@ -229,6 +229,16 @@ export interface Translations {
   econRef: string;
   econForecastNA: string;
   econUS: string;
+
+  // Intraday / Pivot Points
+  pivotPoint: string;
+  pivotLevels: string;
+  vwap: string;
+  distancePct: string;
+  noIntradayData: string;
+  intradayLoading: string;
+  intradayFailed: string;
+  prevDay: string;
 }
 
 const en: Translations = {
@@ -438,6 +448,15 @@ const en: Translations = {
   econRef: 'Ref.',
   econForecastNA: 'Consensus N/A',
   econUS: 'United States',
+
+  pivotPoint: 'Pivot Point',
+  pivotLevels: 'Pivot Levels',
+  vwap: 'VWAP',
+  distancePct: 'Distance',
+  noIntradayData: 'No intraday data for this session',
+  intradayLoading: 'Loading intraday data…',
+  intradayFailed: 'Failed to load intraday data',
+  prevDay: 'Prev Day',
 };
 
 const az: Translations = {
@@ -647,6 +666,15 @@ const az: Translations = {
   econRef: 'İstinad',
   econForecastNA: 'Konsensus mövcud deyil',
   econUS: 'Birləşmiş Ştatlar',
+
+  pivotPoint: 'Pivot Nöqtəsi',
+  pivotLevels: 'Pivot Səviyyələri',
+  vwap: 'VWAP',
+  distancePct: 'Fasilə',
+  noIntradayData: 'Bu sessiya üçün gün içi məlumat yoxdur',
+  intradayLoading: 'Gün içi məlumat yüklənir…',
+  intradayFailed: 'Gün içi məlumat yüklənmədi',
+  prevDay: 'Əvv. Gün',
 };
 
 export const translations: Record<Lang, Translations> = { en, az };

@@ -274,7 +274,7 @@ export default function App() {
                   ))}
                 </div>
 
-                {rightTab === 'chart'    && <StockChart symbol={selectedQuote.symbol} isUp={isUp} />}
+                {rightTab === 'chart'    && <StockChart symbol={selectedQuote.symbol} isUp={isUp} currentPrice={selectedQuote.regularMarketPrice} />}
                 {rightTab === 'metrics'  && <MetricsPanel quote={selectedQuote} />}
                 {rightTab === 'analysis' && <AnalysisPanel symbol={selectedQuote.symbol} price={selectedQuote.regularMarketPrice} />}
                 {rightTab === 'earnings' && <EarningsPanel symbol={selectedQuote.symbol} />}

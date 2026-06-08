@@ -122,6 +122,94 @@ router.get('/search/:query', async (req, res) => {
   }
 });
 
+router.get('/intraday/:symbol', async (req, res) => {
+  try {
+    const { symbol } = req.params;
+
+    const [intradayResult, dailyResult] = await Promise.all([
+      yahooFinance.chart(symbol, {
+        period1: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+        interval: '5m',
+      }),
+      yahooFinance.chart(symbol, {
+        period1: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        interval: '1d',
+      }),
+    ]);
+
+    const allIntraday = (intradayResult.quotes || []).filter(q => q.close != null);
+    const allDaily    = (dailyResult.quotes   || []).filter(q => q.close != null);
+
+    // Group 5-min candles by UTC date prefix (valid for regular session: 9:30–16:00 ET)
+    const byDate = {};
+    for (const q of allIntraday) {
+      const day = q.date.split('T')[0];
+      if (!byDate[day]) byDate[day] = [];
+      byDate[day].push(q);
+    }
+
+    const tradingDays = Object.keys(byDate).sort();
+    if (!tradingDays.length) {
+      return res.json({ candles: [], pivots: null, todayOpen: null, todayHigh: null, todayLow: null, tradingDate: null });
+    }
+
+    const tradingDate = tradingDays[tradingDays.length - 1];
+    const todayCandles = byDate[tradingDate];
+
+    // Pivot base: last complete daily bar before the intraday date
+    const prevBars = allDaily.filter(q => q.date.split('T')[0] < tradingDate);
+    const prev = prevBars[prevBars.length - 1];
+
+    let pivots = null;
+    if (prev && prev.high && prev.low && prev.close) {
+      const H = prev.high, L = prev.low, C = prev.close;
+      const PP = (H + L + C) / 3;
+      pivots = {
+        pp: PP,
+        r1: 2 * PP - L,
+        r2: PP + (H - L),
+        r3: H + 2 * (PP - L),
+        s1: 2 * PP - H,
+        s2: PP - (H - L),
+        s3: L - 2 * (H - PP),
+        prevHigh: H, prevLow: L, prevClose: C,
+        prevDate: prev.date.split('T')[0],
+      };
+    }
+
+    // VWAP: cumulative (TP × Volume) / cumulative Volume
+    let cumTPV = 0, cumVol = 0;
+    const candles = todayCandles.map(q => {
+      if (q.high != null && q.low != null && q.close != null) {
+        const tp = (q.high + q.low + q.close) / 3;
+        const vol = q.volume || 0;
+        cumTPV += tp * vol;
+        cumVol += vol;
+      }
+      return {
+        date: q.date,
+        open: q.open, high: q.high, low: q.low, close: q.close,
+        volume: q.volume || 0,
+        vwap: cumVol > 0 ? cumTPV / cumVol : null,
+      };
+    });
+
+    const todayOpen = candles[0]?.open ?? null;
+    const todayHigh = candles.reduce((m, c) => Math.max(m, c.high ?? -Infinity), -Infinity);
+    const todayLow  = candles.reduce((m, c) => Math.min(m, c.low  ??  Infinity),  Infinity);
+
+    res.json({
+      candles, pivots,
+      todayOpen,
+      todayHigh: isFinite(todayHigh) ? todayHigh : null,
+      todayLow:  isFinite(todayLow)  ? todayLow  : null,
+      tradingDate,
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 router.get('/earnings/:symbol', async (req, res) => {
   try {
     const { symbol } = req.params;

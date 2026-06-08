@@ -84,6 +84,35 @@ export interface EconomicEvent {
   released: boolean;
 }
 
+export type PivotKey = 'r3' | 'r2' | 'r1' | 'pp' | 's1' | 's2' | 's3';
+
+export interface PivotLevels {
+  pp: number;
+  r1: number; r2: number; r3: number;
+  s1: number; s2: number; s3: number;
+  prevHigh: number; prevLow: number; prevClose: number;
+  prevDate: string;
+}
+
+export interface IntradayCandle {
+  date: string;
+  open: number | null;
+  high: number | null;
+  low: number | null;
+  close: number | null;
+  volume: number;
+  vwap: number | null;
+}
+
+export interface IntradayData {
+  candles: IntradayCandle[];
+  pivots: PivotLevels | null;
+  todayOpen: number | null;
+  todayHigh: number | null;
+  todayLow: number | null;
+  tradingDate: string | null;
+}
+
 export interface PortfolioEntry {
   id: string;
   symbol: string;
