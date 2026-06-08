@@ -1,8 +1,16 @@
-const BROWSER_HEADERS = {
+const YF_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
   'Accept': 'application/json, text/plain, */*',
   'Accept-Language': 'en-US,en;q=0.9',
   'Referer': 'https://finance.yahoo.com/',
+};
+
+const NASDAQ_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept': 'application/json, text/plain, */*',
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Referer': 'https://www.nasdaq.com/',
+  'Origin': 'https://www.nasdaq.com',
 };
 
 let _cookies = '';
@@ -17,7 +25,7 @@ async function ensureCrumb() {
   if (_crumb && Date.now() - _crumbTime < CRUMB_TTL) return true;
   try {
     const resp = await fetch('https://finance.yahoo.com/', {
-      headers: { ...BROWSER_HEADERS, Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' },
+      headers: { ...YF_HEADERS, Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' },
       redirect: 'follow',
     });
     const setCookies = (resp.headers.getSetCookie?.() || []);
@@ -25,7 +33,7 @@ async function ensureCrumb() {
     if (!_cookies) return false;
 
     const crumbResp = await fetch('https://query1.finance.yahoo.com/v1/test/getcrumb', {
-      headers: { ...BROWSER_HEADERS, Cookie: _cookies },
+      headers: { ...YF_HEADERS, Cookie: _cookies },
     });
     const text = await crumbResp.text();
     if (text && !text.includes('"error"') && text.length < 50) {
@@ -41,7 +49,7 @@ async function getYFEarnings(symbol) {
   const ok = await ensureCrumb();
   if (!ok) return null;
   const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol)}?modules=calendarEvents,earningsTrend,earnings&formatted=false&crumb=${encodeURIComponent(_crumb)}`;
-  const resp = await fetch(url, { headers: { ...BROWSER_HEADERS, Cookie: _cookies } });
+  const resp = await fetch(url, { headers: { ...YF_HEADERS, Cookie: _cookies } });
   if (!resp.ok) return null;
   const data = await resp.json();
   const result = data?.quoteSummary?.result?.[0];
@@ -76,7 +84,7 @@ async function getNasdaqEarnings(symbol) {
   const url = `https://api.nasdaq.com/api/company/${symbol.toUpperCase()}/earnings-surprise`;
   let resp;
   try {
-    resp = await fetch(url, { headers: BROWSER_HEADERS });
+    resp = await fetch(url, { headers: NASDAQ_HEADERS });
   } catch (e) {
     console.error(`[Earnings] Nasdaq fetch error for ${symbol}:`, e.message);
     return null;
