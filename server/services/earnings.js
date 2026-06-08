@@ -74,11 +74,23 @@ async function getYFEarnings(symbol) {
 
 async function getNasdaqEarnings(symbol) {
   const url = `https://api.nasdaq.com/api/company/${symbol.toUpperCase()}/earnings-surprise`;
-  const resp = await fetch(url, { headers: BROWSER_HEADERS });
-  if (!resp.ok) return null;
+  let resp;
+  try {
+    resp = await fetch(url, { headers: BROWSER_HEADERS });
+  } catch (e) {
+    console.error(`[Earnings] Nasdaq fetch error for ${symbol}:`, e.message);
+    return null;
+  }
+  if (!resp.ok) {
+    console.error(`[Earnings] Nasdaq HTTP ${resp.status} for ${symbol}`);
+    return null;
+  }
   const data = await resp.json();
   const rows = data?.data?.earningsSurpriseTable?.rows || [];
-  if (!rows.length) return null;
+  if (!rows.length) {
+    console.log(`[Earnings] Nasdaq: no rows for ${symbol}, keys:`, Object.keys(data?.data || {}));
+    return null;
+  }
 
   const pastEarnings = rows.slice(0, 4).map(r => {
     const actual = parseFloat((r.eps || '').replace(/[$,]/g, '')) || null;
@@ -105,10 +117,15 @@ async function getEarnings(symbol) {
   if (cached && Date.now() - cached.time < CACHE_TTL) return cached.data;
 
   let data = null;
-  try { data = await getYFEarnings(symbol); } catch { /* fallthrough */ }
+  try { data = await getYFEarnings(symbol); } catch (e) {
+    console.error(`[Earnings] YF error for ${symbol}:`, e.message);
+  }
 
   if (!data?.pastEarnings?.length) {
-    const nasdaqData = await getNasdaqEarnings(symbol).catch(() => null);
+    const nasdaqData = await getNasdaqEarnings(symbol).catch(e => {
+      console.error(`[Earnings] Nasdaq error for ${symbol}:`, e.message);
+      return null;
+    });
     if (nasdaqData) {
       data = {
         nextEarningsDate: data?.nextEarningsDate || nasdaqData.nextEarningsDate,

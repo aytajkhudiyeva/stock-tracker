@@ -122,6 +122,31 @@ router.get('/search/:query', async (req, res) => {
   }
 });
 
+router.get('/earnings/debug/:symbol', async (req, res) => {
+  const { symbol } = req.params;
+  const results = {};
+
+  // Test Nasdaq
+  try {
+    const r = await fetch(`https://api.nasdaq.com/api/company/${symbol}/earnings-surprise`, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', Accept: 'application/json' },
+    });
+    const d = await r.json();
+    results.nasdaq = { status: r.status, rows: (d?.data?.earningsSurpriseTable?.rows || []).length };
+  } catch (e) { results.nasdaq = { error: e.message }; }
+
+  // Test Yahoo crumb
+  try {
+    const r = await fetch('https://finance.yahoo.com/', {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      redirect: 'follow',
+    });
+    results.yahooFinance = { status: r.status };
+  } catch (e) { results.yahooFinance = { error: e.message }; }
+
+  res.json(results);
+});
+
 router.get('/earnings/:symbol', async (req, res) => {
   try {
     const { symbol } = req.params;
