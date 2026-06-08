@@ -48,7 +48,8 @@ async function ensureCrumb() {
 async function getYFEarnings(symbol) {
   const ok = await ensureCrumb();
   if (!ok) return null;
-  const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol)}?modules=calendarEvents,earningsTrend,earnings&formatted=false&crumb=${encodeURIComponent(_crumb)}`;
+  const modules = 'calendarEvents,earningsTrend,earningsHistory,incomeStatementHistoryQuarterly';
+  const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol)}?modules=${modules}&formatted=false&crumb=${encodeURIComponent(_crumb)}`;
   const resp = await fetch(url, { headers: { ...YF_HEADERS, Cookie: _cookies } });
   if (!resp.ok) return null;
   const data = await resp.json();
@@ -59,11 +60,39 @@ async function getYFEarnings(symbol) {
   const rawDates = cal.earningsDate || [];
   const nextTs = rawDates[0]?.raw ?? rawDates[0] ?? null;
 
-  const quarterly = result.earnings?.earningsChart?.quarterly || [];
-  const pastEarnings = quarterly.slice(-4).reverse().map(q => {
-    const actual = typeof q.actual === 'object' ? q.actual?.raw : q.actual;
-    const estimate = typeof q.estimate === 'object' ? q.estimate?.raw : q.estimate;
-    return { quarter: q.date, actual: actual ?? null, estimate: estimate ?? null };
+  // Build revenue map: quarter-end timestamp -> totalRevenue
+  const incomeHistory = result.incomeStatementHistoryQuarterly?.incomeStatementHistory || [];
+  const revByTs = {};
+  for (const stmt of incomeHistory) {
+    const ts = stmt.endDate?.raw ?? stmt.endDate;
+    if (ts != null) {
+      revByTs[ts] = stmt.totalRevenue?.raw ?? stmt.totalRevenue ?? null;
+    }
+  }
+
+  // EPS history with timestamps for matching
+  const epsHistory = result.earningsHistory?.history || [];
+  const pastEarnings = epsHistory.slice(0, 4).map(e => {
+    const qTs = e.quarter?.raw ?? e.quarter;
+    const actual = e.epsActual?.raw ?? e.epsActual ?? null;
+    const estimate = e.epsEstimate?.raw ?? e.epsEstimate ?? null;
+    const surprise = e.surprisePercent?.raw ?? e.surprisePercent ?? null;
+
+    let quarter = '—';
+    if (qTs) {
+      const d = new Date(qTs * 1000);
+      quarter = `${d.toLocaleString('en-US', { month: 'short' })} ${d.getFullYear()}`;
+    }
+
+    // Match revenue by exact timestamp then by proximity (45 days)
+    let revenueActual = qTs != null ? (revByTs[qTs] ?? null) : null;
+    if (revenueActual === null && qTs) {
+      for (const [ts, rev] of Object.entries(revByTs)) {
+        if (Math.abs(Number(ts) - qTs) < 45 * 86400) { revenueActual = rev; break; }
+      }
+    }
+
+    return { quarter, actual, estimate, surprise, revenueActual, revenueEstimate: null };
   });
 
   const trend = result.earningsTrend?.trend || [];
@@ -112,6 +141,8 @@ async function getNasdaqEarnings(symbol) {
     actual: parseNum(r.eps),
     estimate: parseNum(r.consensusForecast),
     surprise: parseNum(r.percentageSurprise),
+    revenueActual: null,
+    revenueEstimate: null,
   }));
 
   // Estimate next earnings ~91 days after last report

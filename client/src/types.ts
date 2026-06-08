@@ -62,6 +62,16 @@ export interface EarningsPastItem {
   actual: number | null;
   estimate: number | null;
   surprise?: number | null;
+  revenueActual?: number | null;
+  revenueEstimate?: number | null;
+}
+
+export interface PortfolioEntry {
+  id: string;
+  symbol: string;
+  quantity: number;
+  purchasePrice: number;
+  addedAt: string;
 }
 
 export interface EarningsData {

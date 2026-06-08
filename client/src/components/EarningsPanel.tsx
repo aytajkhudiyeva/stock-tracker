@@ -123,9 +123,9 @@ export default function EarningsPanel({ symbol }: Props) {
 
           <div style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '10px', overflow: 'hidden' }}>
             {/* Header */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr', gap: 0, padding: '8px 14px', background: '#0a0e1a', borderBottom: '1px solid #1e2d47' }}>
-              {['Quarter', t.actual, t.estimate, t.surpriseLabel].map(h => (
-                <div key={h} style={{ color: '#64748b', fontSize: '0.68rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.4px' }}>{h}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.85fr 0.9fr 1fr 1fr 0.85fr', gap: 0, padding: '8px 14px', background: '#0a0e1a', borderBottom: '1px solid #1e2d47' }}>
+              {['Quarter', t.epsActualLabel, t.epsEstimateLabel, t.revenueActualLabel, t.revenueEstimateLabel, t.resultLabel].map(h => (
+                <div key={h} style={{ color: '#64748b', fontSize: '0.66rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.3px' }}>{h}</div>
               ))}
             </div>
 
@@ -141,40 +141,48 @@ export default function EarningsPanel({ symbol }: Props) {
 
               return (
                 <div key={i} style={{
-                  display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr',
+                  display: 'grid', gridTemplateColumns: '1.1fr 0.85fr 0.9fr 1fr 1fr 0.85fr',
                   padding: '10px 14px', borderBottom: i < data.pastEarnings.length - 1 ? '1px solid #1e2d47' : 'none',
                   alignItems: 'center',
                 }}>
                   <div>
-                    <div style={{ color: '#e2e8f0', fontSize: '0.82rem', fontWeight: 600 }}>{formatQuarter(row.quarter)}</div>
+                    <div style={{ color: '#e2e8f0', fontSize: '0.8rem', fontWeight: 600 }}>{formatQuarter(row.quarter)}</div>
                     {row.dateReported && (
-                      <div style={{ color: '#64748b', fontSize: '0.68rem', marginTop: '2px' }}>
+                      <div style={{ color: '#64748b', fontSize: '0.64rem', marginTop: '2px' }}>
                         {t.reportedOn} {row.dateReported}
                       </div>
                     )}
                   </div>
 
-                  <div style={{ color: beat === true ? '#22c55e' : beat === false ? '#ef4444' : '#e2e8f0', fontWeight: 600, fontSize: '0.85rem' }}>
+                  <div style={{ color: beat === true ? '#22c55e' : beat === false ? '#ef4444' : '#e2e8f0', fontWeight: 600, fontSize: '0.82rem' }}>
                     {row.actual != null ? `$${row.actual.toFixed(2)}` : '—'}
                   </div>
 
-                  <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+                  <div style={{ color: '#94a3b8', fontSize: '0.82rem' }}>
                     {row.estimate != null ? `$${row.estimate.toFixed(2)}` : '—'}
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <div style={{ color: '#e2e8f0', fontSize: '0.82rem' }}>
+                    {row.revenueActual != null ? fmtRev(row.revenueActual) : '—'}
+                  </div>
+
+                  <div style={{ color: '#94a3b8', fontSize: '0.82rem' }}>
+                    {row.revenueEstimate != null ? fmtRev(row.revenueEstimate) : '—'}
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                     {beat !== null && (
                       <span style={{
                         background: beat ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
                         color: beat ? '#22c55e' : '#ef4444',
                         border: `1px solid ${beat ? 'rgba(34,197,94,0.25)' : 'rgba(239,68,68,0.25)'}`,
-                        borderRadius: '4px', padding: '1px 6px', fontSize: '0.68rem', fontWeight: 700,
+                        borderRadius: '4px', padding: '1px 6px', fontSize: '0.66rem', fontWeight: 700,
                       }}>
                         {beat ? t.beat : t.miss}
                       </span>
                     )}
                     {surprise != null && (
-                      <span style={{ color: surprise > 0 ? '#22c55e' : '#ef4444', fontSize: '0.75rem', fontWeight: 600 }}>
+                      <span style={{ color: surprise > 0 ? '#22c55e' : '#ef4444', fontSize: '0.7rem', fontWeight: 600 }}>
                         {surprise > 0 ? '+' : ''}{surprise.toFixed(1)}%
                       </span>
                     )}

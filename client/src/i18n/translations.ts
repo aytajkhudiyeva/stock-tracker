@@ -184,6 +184,30 @@ export interface Translations {
   earningsUnavailable: string;
   reportedOn: string;
   earningsIn: string;
+
+  // Earnings table columns
+  epsActualLabel: string;
+  epsEstimateLabel: string;
+  revenueActualLabel: string;
+  revenueEstimateLabel: string;
+  resultLabel: string;
+
+  // Portfolio
+  portfolio: string;
+  portfolioEmpty: string;
+  portfolioEmptyHint: string;
+  addPosition: string;
+  purchasePrice: string;
+  quantity: string;
+  totalValue: string;
+  totalCost: string;
+  totalPnl: string;
+  avgCost: string;
+  marketValue: string;
+  pnl: string;
+  shares: string;
+  portfolioSummary: string;
+  dashboardView: string;
 }
 
 const en: Translations = {
@@ -351,6 +375,28 @@ const en: Translations = {
   earningsUnavailable: 'Earnings data unavailable for this symbol',
   reportedOn: 'Reported',
   earningsIn: 'Earnings in',
+
+  epsActualLabel: 'EPS Actual',
+  epsEstimateLabel: 'EPS Est.',
+  revenueActualLabel: 'Rev. Actual',
+  revenueEstimateLabel: 'Rev. Est.',
+  resultLabel: 'Result',
+
+  portfolio: '💼 Portfolio',
+  portfolioEmpty: 'No positions yet',
+  portfolioEmptyHint: 'Add stocks to track your portfolio',
+  addPosition: '+ Add Position',
+  purchasePrice: 'Purchase Price ($)',
+  quantity: 'Quantity',
+  totalValue: 'Total Value',
+  totalCost: 'Cost Basis',
+  totalPnl: 'Total P&L',
+  avgCost: 'Avg Cost',
+  marketValue: 'Mkt Value',
+  pnl: 'P&L',
+  shares: 'Qty',
+  portfolioSummary: 'Portfolio Summary',
+  dashboardView: '📈 Dashboard',
 };
 
 const az: Translations = {
@@ -518,6 +564,28 @@ const az: Translations = {
   earningsUnavailable: 'Bu simvol üçün hesabat məlumatı yoxdur',
   reportedOn: 'Açıqlandı',
   earningsIn: 'Hesabat',
+
+  epsActualLabel: 'EPS Həqiqi',
+  epsEstimateLabel: 'EPS Gözlənilən',
+  revenueActualLabel: 'Gəlir Həqiqi',
+  revenueEstimateLabel: 'Gəlir Gözlənilən',
+  resultLabel: 'Nəticə',
+
+  portfolio: '💼 Portfel',
+  portfolioEmpty: 'Hələ mövqe yoxdur',
+  portfolioEmptyHint: 'Portfelinizi izləmək üçün səhm əlavə edin',
+  addPosition: '+ Mövqe Əlavə Et',
+  purchasePrice: 'Alış Qiyməti ($)',
+  quantity: 'Miqdar',
+  totalValue: 'Ümumi Dəyər',
+  totalCost: 'Maya Dəyəri',
+  totalPnl: 'Ümumi M/Z',
+  avgCost: 'Ort. Maya',
+  marketValue: 'Bazar Dəyəri',
+  pnl: 'M/Z',
+  shares: 'Miqdar',
+  portfolioSummary: 'Portfel Xülasəsi',
+  dashboardView: '📈 İdarə Paneli',
 };
 
 export const translations: Record<Lang, Translations> = { en, az };

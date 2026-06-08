@@ -9,9 +9,21 @@ import MetricsPanel from './components/MetricsPanel';
 import AlertsPanel from './components/AlertsPanel';
 import AnalysisPanel from './components/AnalysisPanel';
 import EarningsPanel from './components/EarningsPanel';
+import PortfolioPanel from './components/PortfolioPanel';
 import MarketOverview from './components/MarketOverview';
 import type { StockQuote } from './types';
 import './index.css';
+
+function isMarketOpen() {
+  try {
+    const nyStr = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+    const ny = new Date(nyStr);
+    const day = ny.getDay();
+    if (day === 0 || day === 6) return false;
+    const mins = ny.getHours() * 60 + ny.getMinutes();
+    return mins >= 570 && mins < 960; // 9:30 AM – 4:00 PM ET
+  } catch { return true; }
+}
 
 const MARKET_SYMBOLS = ['^GSPC', '^DJI', '^IXIC', '^VIX'];
 const REFRESH_INTERVAL = 30000;
@@ -37,6 +49,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [rightTab, setRightTab] = useState<RightTab>('chart');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [mainView, setMainView] = useState<'dashboard' | 'portfolio'>('dashboard');
 
   const loadQuotes = useCallback(async () => {
     if (watchlist.length === 0) { setLoading(false); return; }
@@ -61,7 +74,7 @@ export default function App() {
   }, [watchlist.join(',')]);
 
   useEffect(() => {
-    const id = setInterval(loadQuotes, REFRESH_INTERVAL);
+    const id = setInterval(() => { if (isMarketOpen()) loadQuotes(); }, REFRESH_INTERVAL);
     return () => clearInterval(id);
   }, [loadQuotes]);
 
@@ -108,6 +121,34 @@ export default function App() {
       <Header onSelectStock={handleSelectStock} onAddToWatchlist={handleAddToWatchlist} />
 
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
+        {/* View toggle */}
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+          {(['dashboard', 'portfolio'] as const).map(view => (
+            <button
+              key={view}
+              onClick={() => setMainView(view)}
+              style={{
+                padding: '7px 18px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
+                background: mainView === view ? 'rgba(59,130,246,0.15)' : 'transparent',
+                border: mainView === view ? '1px solid rgba(59,130,246,0.4)' : '1px solid #1e2d47',
+                color: mainView === view ? '#60a5fa' : '#64748b',
+                transition: 'all 0.15s',
+              }}
+            >
+              {view === 'dashboard' ? t.dashboardView : t.portfolio}
+            </button>
+          ))}
+        </div>
+
+        {/* Portfolio view */}
+        {mainView === 'portfolio' && (
+          <div className="card" style={{ padding: '24px' }}>
+            <PortfolioPanel quotes={quotes} />
+          </div>
+        )}
+
+        {/* Dashboard view */}
+        {mainView === 'dashboard' && <>
         {/* Market Overview */}
         {Object.keys(marketQuotes).length > 0 && (
           <div style={{ marginBottom: '20px' }}>
@@ -241,6 +282,7 @@ export default function App() {
             )}
           </div>
         </div>
+        </>}
       </div>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
