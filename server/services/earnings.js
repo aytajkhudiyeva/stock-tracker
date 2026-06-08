@@ -100,12 +100,19 @@ async function getNasdaqEarnings(symbol) {
     return null;
   }
 
-  const pastEarnings = rows.slice(0, 4).map(r => {
-    const actual = parseFloat((r.eps || '').replace(/[$,]/g, '')) || null;
-    const estimate = parseFloat((r.consensusForecast || '').replace(/[$,]/g, '')) || null;
-    const surprise = parseFloat(r.percentageSurprise) || null;
-    return { quarter: r.fiscalQtrEnd, dateReported: r.dateReported, actual, estimate, surprise };
-  });
+  const parseNum = v => {
+    if (typeof v === 'number') return isNaN(v) ? null : v;
+    if (typeof v === 'string') { const n = parseFloat(v.replace(/[$,]/g, '')); return isNaN(n) ? null : n; }
+    return null;
+  };
+
+  const pastEarnings = rows.slice(0, 4).map(r => ({
+    quarter: r.fiscalQtrEnd,
+    dateReported: r.dateReported,
+    actual: parseNum(r.eps),
+    estimate: parseNum(r.consensusForecast),
+    surprise: parseNum(r.percentageSurprise),
+  }));
 
   // Estimate next earnings ~91 days after last report
   let nextEarningsDate = null;
