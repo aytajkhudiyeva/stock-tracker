@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { fetchEarnings } from '../services/api';
 import type { StockQuote } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -23,7 +25,14 @@ function fmtLarge(n: number | undefined) {
 
 export default function StockCard({ quote, selected, onClick, onRemove }: StockCardProps) {
   const { t } = useLanguage();
+  const [earningsDays, setEarningsDays] = useState<number | null>(null);
   const up = quote.regularMarketChange >= 0;
+
+  useEffect(() => {
+    fetchEarnings(quote.symbol)
+      .then(d => { if (d.daysUntilEarnings != null && d.daysUntilEarnings >= 0 && d.daysUntilEarnings <= 14) setEarningsDays(d.daysUntilEarnings); })
+      .catch(() => {});
+  }, [quote.symbol]);
   const changeColor = up ? '#22c55e' : '#ef4444';
 
   return (
@@ -84,6 +93,19 @@ export default function StockCard({ quote, selected, onClick, onRemove }: StockC
           <div className="text-secondary" style={{ fontSize: '0.78rem', fontWeight: 500 }}>{quote.trailingPE ? fmt(quote.trailingPE, 1) : '—'}</div>
         </div>
       </div>
+
+      {earningsDays != null && (
+        <div style={{ marginTop: '8px' }}>
+          <span style={{
+            background: earningsDays <= 1 ? 'rgba(239,68,68,0.12)' : earningsDays <= 7 ? 'rgba(245,158,11,0.12)' : 'rgba(59,130,246,0.1)',
+            color: earningsDays <= 1 ? '#ef4444' : earningsDays <= 7 ? '#f59e0b' : '#60a5fa',
+            border: `1px solid ${earningsDays <= 1 ? 'rgba(239,68,68,0.25)' : earningsDays <= 7 ? 'rgba(245,158,11,0.25)' : 'rgba(59,130,246,0.2)'}`,
+            borderRadius: '5px', padding: '2px 7px', fontSize: '0.68rem', fontWeight: 700,
+          }}>
+            📅 {t.earningsIn} {earningsDays === 0 ? t.today : earningsDays === 1 ? t.tomorrow : `${earningsDays}d`}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

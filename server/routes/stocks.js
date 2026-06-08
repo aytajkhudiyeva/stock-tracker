@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const yahooFinance = require('../services/yfDirect');
+const { getEarnings } = require('../services/earnings');
 const {
   computeRSI, computeMACD, computeBollingerBands,
   computeMovingAverages, findSupportResistance, computeTrend, buildSignals,
@@ -116,6 +117,23 @@ router.get('/search/:query', async (req, res) => {
     const results = await yahooFinance.search(query, { quotesCount: 10 });
     const stocks = (results.quotes || []).filter(q => q.quoteType === 'EQUITY');
     res.json(stocks);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get('/earnings/:symbol', async (req, res) => {
+  try {
+    const { symbol } = req.params;
+    const data = await getEarnings(symbol.toUpperCase());
+    if (!data) return res.status(404).json({ error: 'Earnings data unavailable' });
+
+    const now = Date.now();
+    const daysUntil = data.nextEarningsDate
+      ? Math.round((new Date(data.nextEarningsDate).getTime() - now) / (24 * 60 * 60 * 1000))
+      : null;
+
+    res.json({ ...data, symbol: symbol.toUpperCase(), daysUntilEarnings: daysUntil });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

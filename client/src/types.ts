@@ -56,6 +56,24 @@ export interface SearchResult {
 
 export type Period = '1d' | '5d' | '1mo' | '3mo' | '6mo' | '1y' | '2y';
 
+export interface EarningsPastItem {
+  quarter: string;
+  dateReported?: string;
+  actual: number | null;
+  estimate: number | null;
+  surprise?: number | null;
+}
+
+export interface EarningsData {
+  symbol: string;
+  nextEarningsDate: string | null;
+  daysUntilEarnings: number | null;
+  epsEstimate: number | null;
+  revenueEstimate: number | null;
+  pastEarnings: EarningsPastItem[];
+  source: string;
+}
+
 export interface TechnicalAnalysis {
   symbol: string;
   price: number;

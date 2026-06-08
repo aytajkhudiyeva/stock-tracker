@@ -6,6 +6,7 @@ const cron = require('node-cron');
 const stockRoutes = require('./routes/stocks');
 const alertRoutes = require('./routes/alerts');
 const { checkAlerts } = require('./services/alertChecker');
+const { checkEarningsNotifications } = require('./services/earningsChecker');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -27,6 +28,15 @@ cron.schedule('* * * * *', async () => {
     await checkAlerts();
   } catch (err) {
     console.error('Alert check error:', err.message);
+  }
+});
+
+// Check earnings notifications daily at 09:00 UTC
+cron.schedule('0 9 * * *', async () => {
+  try {
+    await checkEarningsNotifications();
+  } catch (err) {
+    console.error('Earnings check error:', err.message);
   }
 });
 

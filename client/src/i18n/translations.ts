@@ -163,6 +163,27 @@ export interface Translations {
   // Analysis — loading/error
   computingIndicators: string;
   analysisFailed: string;
+
+  // Earnings
+  tabEarnings: string;
+  earningsCalendar: string;
+  nextEarnings: string;
+  daysUntil: string;
+  tomorrow: string;
+  today: string;
+  epsEstimate: string;
+  revEstimate: string;
+  pastEarningsTitle: string;
+  beat: string;
+  miss: string;
+  actual: string;
+  estimate: string;
+  surpriseLabel: string;
+  earningsLoading: string;
+  earningsFailed: string;
+  earningsUnavailable: string;
+  reportedOn: string;
+  earningsIn: string;
 }
 
 const en: Translations = {
@@ -310,6 +331,26 @@ const en: Translations = {
 
   computingIndicators: 'Computing technical indicators…',
   analysisFailed: 'Failed to load technical analysis',
+
+  tabEarnings: '📅 Earnings',
+  earningsCalendar: 'Earnings Calendar',
+  nextEarnings: 'Next Earnings',
+  daysUntil: 'days away',
+  tomorrow: 'Tomorrow',
+  today: 'Today',
+  epsEstimate: 'EPS Estimate',
+  revEstimate: 'Revenue Estimate',
+  pastEarningsTitle: 'Past Earnings (Last 4 Quarters)',
+  beat: 'Beat',
+  miss: 'Miss',
+  actual: 'Actual',
+  estimate: 'Estimate',
+  surpriseLabel: 'Surprise',
+  earningsLoading: 'Loading earnings data…',
+  earningsFailed: 'Could not load earnings data',
+  earningsUnavailable: 'Earnings data unavailable for this symbol',
+  reportedOn: 'Reported',
+  earningsIn: 'Earnings in',
 };
 
 const az: Translations = {
@@ -457,6 +498,26 @@ const az: Translations = {
 
   computingIndicators: 'Texniki göstəricilər hesablanır…',
   analysisFailed: 'Texniki analiz yüklənmədi',
+
+  tabEarnings: '📅 Hesabat',
+  earningsCalendar: 'Hesabat Təqvimi',
+  nextEarnings: 'Növbəti Hesabat',
+  daysUntil: 'gün sonra',
+  tomorrow: 'Sabah',
+  today: 'Bu gün',
+  epsEstimate: 'Gözlənilən EPS',
+  revEstimate: 'Gözlənilən Gəlir',
+  pastEarningsTitle: 'Keçmiş Hesabatlar (Son 4 Rüb)',
+  beat: 'Keçdi',
+  miss: 'Keçirdi',
+  actual: 'Həqiqi',
+  estimate: 'Gözlənilən',
+  surpriseLabel: 'Sürpriz',
+  earningsLoading: 'Hesabat məlumatları yüklənir…',
+  earningsFailed: 'Hesabat məlumatları yüklənmədi',
+  earningsUnavailable: 'Bu simvol üçün hesabat məlumatı yoxdur',
+  reportedOn: 'Açıqlandı',
+  earningsIn: 'Hesabat',
 };
 
 export const translations: Record<Lang, Translations> = { en, az };

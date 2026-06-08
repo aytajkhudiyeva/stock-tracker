@@ -1,4 +1,4 @@
-const yahooFinance = require('./yf');
+const yahooFinance = require('./yfDirect');
 const { getAlerts, updateAlert } = require('./alertStore');
 const { sendAlert } = require('./telegram');
 
