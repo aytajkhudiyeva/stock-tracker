@@ -10,6 +10,7 @@ import AlertsPanel from './components/AlertsPanel';
 import AnalysisPanel from './components/AnalysisPanel';
 import EarningsPanel from './components/EarningsPanel';
 import PortfolioPanel from './components/PortfolioPanel';
+import EconomicCalendar from './components/EconomicCalendar';
 import MarketOverview from './components/MarketOverview';
 import type { StockQuote } from './types';
 import './index.css';
@@ -49,7 +50,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [rightTab, setRightTab] = useState<RightTab>('chart');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [mainView, setMainView] = useState<'dashboard' | 'portfolio'>('dashboard');
+  const [mainView, setMainView] = useState<'dashboard' | 'portfolio' | 'economy'>('dashboard');
 
   const loadQuotes = useCallback(async () => {
     if (watchlist.length === 0) { setLoading(false); return; }
@@ -123,7 +124,7 @@ export default function App() {
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
         {/* View toggle */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-          {(['dashboard', 'portfolio'] as const).map(view => (
+          {(['dashboard', 'portfolio', 'economy'] as const).map(view => (
             <button
               key={view}
               onClick={() => setMainView(view)}
@@ -135,7 +136,7 @@ export default function App() {
                 transition: 'all 0.15s',
               }}
             >
-              {view === 'dashboard' ? t.dashboardView : t.portfolio}
+              {view === 'dashboard' ? t.dashboardView : view === 'portfolio' ? t.portfolio : t.economicCalendarView}
             </button>
           ))}
         </div>
@@ -144,6 +145,13 @@ export default function App() {
         {mainView === 'portfolio' && (
           <div className="card" style={{ padding: '24px' }}>
             <PortfolioPanel quotes={quotes} />
+          </div>
+        )}
+
+        {/* Economic Calendar view */}
+        {mainView === 'economy' && (
+          <div className="card" style={{ padding: '24px' }}>
+            <EconomicCalendar />
           </div>
         )}
 

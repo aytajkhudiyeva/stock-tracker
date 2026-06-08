@@ -66,6 +66,24 @@ export interface EarningsPastItem {
   revenueEstimate?: number | null;
 }
 
+export interface EconomicEvent {
+  id: string;
+  date: string;
+  time: string;
+  tz: string;
+  name: string;
+  nameAz: string;
+  country: string;
+  impact: 'high' | 'medium' | 'low';
+  unit: string;
+  actual: string | null;
+  forecast: string | null;
+  previous: string | null;
+  referenceMonth: string | null;
+  dataType: string;
+  released: boolean;
+}
+
 export interface PortfolioEntry {
   id: string;
   symbol: string;

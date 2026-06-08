@@ -5,8 +5,10 @@ const cors = require('cors');
 const cron = require('node-cron');
 const stockRoutes = require('./routes/stocks');
 const alertRoutes = require('./routes/alerts');
+const economicRoutes = require('./routes/economic');
 const { checkAlerts } = require('./services/alertChecker');
 const { checkEarningsNotifications } = require('./services/earningsChecker');
+const { checkEconomicNotifications } = require('./services/economicChecker');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -16,6 +18,7 @@ app.use(express.json());
 
 app.use('/api/stocks', stockRoutes);
 app.use('/api/alerts', alertRoutes);
+app.use('/api/economic', economicRoutes);
 
 app.get('/', (req, res) => res.json({ status: 'ok' }));
 app.get('/api/health', (req, res) => {
@@ -37,6 +40,15 @@ cron.schedule('0 9 * * *', async () => {
     await checkEarningsNotifications();
   } catch (err) {
     console.error('Earnings check error:', err.message);
+  }
+});
+
+// Check economic event notifications every 30 minutes
+cron.schedule('*/30 * * * *', async () => {
+  try {
+    await checkEconomicNotifications();
+  } catch (err) {
+    console.error('Economic check error:', err.message);
   }
 });
 

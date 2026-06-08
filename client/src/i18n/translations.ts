@@ -208,6 +208,27 @@ export interface Translations {
   shares: string;
   portfolioSummary: string;
   dashboardView: string;
+
+  // Economic Calendar
+  economicCalendar: string;
+  economicCalendarView: string;
+  econImpactHigh: string;
+  econImpactMedium: string;
+  econImpactLow: string;
+  econPrevious: string;
+  econForecast: string;
+  econActual: string;
+  econReleased: string;
+  econUpcoming: string;
+  econToday: string;
+  econAllEvents: string;
+  econHighOnly: string;
+  econLoading: string;
+  econFailed: string;
+  econNoEvents: string;
+  econRef: string;
+  econForecastNA: string;
+  econUS: string;
 }
 
 const en: Translations = {
@@ -397,6 +418,26 @@ const en: Translations = {
   shares: 'Qty',
   portfolioSummary: 'Portfolio Summary',
   dashboardView: '📈 Dashboard',
+
+  economicCalendar: 'Economic Calendar',
+  economicCalendarView: '🌍 Economy',
+  econImpactHigh: 'High',
+  econImpactMedium: 'Medium',
+  econImpactLow: 'Low',
+  econPrevious: 'Prev',
+  econForecast: 'Forecast',
+  econActual: 'Actual',
+  econReleased: 'Released',
+  econUpcoming: 'Upcoming',
+  econToday: 'Today',
+  econAllEvents: 'All Events',
+  econHighOnly: 'High Impact',
+  econLoading: 'Loading economic calendar…',
+  econFailed: 'Failed to load economic calendar',
+  econNoEvents: 'No events in this period',
+  econRef: 'Ref.',
+  econForecastNA: 'Consensus N/A',
+  econUS: 'United States',
 };
 
 const az: Translations = {
@@ -586,6 +627,26 @@ const az: Translations = {
   shares: 'Miqdar',
   portfolioSummary: 'Portfel Xülasəsi',
   dashboardView: '📈 İdarə Paneli',
+
+  economicCalendar: 'İqtisadi Təqvim',
+  economicCalendarView: '🌍 İqtisadiyyat',
+  econImpactHigh: 'Yüksək',
+  econImpactMedium: 'Orta',
+  econImpactLow: 'Aşağı',
+  econPrevious: 'Əvv.',
+  econForecast: 'Gözlənilən',
+  econActual: 'Faktiki',
+  econReleased: 'Açıqlandı',
+  econUpcoming: 'Gözlənilir',
+  econToday: 'Bu gün',
+  econAllEvents: 'Bütün Hadisələr',
+  econHighOnly: 'Yüksək Təsir',
+  econLoading: 'İqtisadi təqvim yüklənir…',
+  econFailed: 'İqtisadi təqvim yüklənmədi',
+  econNoEvents: 'Bu dövrdə hadisə yoxdur',
+  econRef: 'İstinad',
+  econForecastNA: 'Konsensus mövcud deyil',
+  econUS: 'Birləşmiş Ştatlar',
 };
 
 export const translations: Record<Lang, Translations> = { en, az };
