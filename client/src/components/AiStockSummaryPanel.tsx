@@ -67,21 +67,23 @@ export default function AiStockSummaryPanel({ quote }: Props) {
 
   const isUp = quote.regularMarketChange >= 0;
   const upside = forecast?.upsidePercent;
+  const safeUpside = upside != null && upside !== undefined ? upside : null;
   const newsTone = sentimentFor((news?.items || []).slice(0, 5).map(item => item.title).join(' ')) as 'positive' | 'neutral' | 'negative';
   const riskTone = !isUp || analysis?.summary.signal.includes('Sell') ? 'watch' : 'positive';
+
   const bullets = lang === 'az'
     ? [
         `${quote.symbol} $${fmt(quote.regularMarketPrice)} qiymətindədir və günlük hərəkət ${isUp ? 'müsbət' : 'mənfi'}: ${fmt(quote.regularMarketChangePercent)}%.`,
         forecast?.targetMeanPrice
-          ? `Analitik hədəfi $${fmt(forecast.targetMeanPrice)}; ${upside != null ? `${upside >= 0 ? '+' : ''}${upside.toFixed(1)}% gözlənilən hərəkət` : 'hərəkət datası məhduddur'}. Üçüncü tərəf sentimenti: ${displayConsensus(forecast.consensus, lang)}.`
-          : 'Bu simvol üçün analitik hədəf datası məhduddur.',
+          ? `Analitik hədəfi $${fmt(forecast.targetMeanPrice)}; ${safeUpside != null ? `${safeUpside >= 0 ? '+' : ''}${safeUpside.toFixed(1)}% gözlənilən hərəkət` : 'hərəkət datası məhduddur'}. Üçüncü tərəf sentimenti: ${displayConsensus(forecast.consensus, lang)}.`
+          : 'Analitik hədəf datası məhduddur.',
         analysis ? `Texniki model: ${analysis.summary.signal}; trend: ${analysis.trend.replace(/_/g, ' ')}.` : 'Texniki model hələ yüklənir və ya əlçatan deyil.',
         news?.items?.length ? `Son ${Math.min(news.items.length, 5)} başlıq üzrə xəbər tonu ${newsTone === 'positive' ? 'müsbət' : newsTone === 'negative' ? 'mənfi' : 'neytral'} görünür.` : 'Son xəbər axını hazırda əlçatan deyil.',
       ]
     : [
         `${quote.symbol} is trading at $${fmt(quote.regularMarketPrice)} with a ${isUp ? 'positive' : 'negative'} daily move of ${fmt(quote.regularMarketChangePercent)}%.`,
         forecast?.targetMeanPrice
-          ? `Analyst target is $${fmt(forecast.targetMeanPrice)} with ${upside != null ? `${upside >= 0 ? '+' : ''}${upside.toFixed(1)}% implied move` : 'limited move data'}. Third-party sentiment: ${displayConsensus(forecast.consensus, lang)}.`
+          ? `Analyst target is $${fmt(forecast.targetMeanPrice)} with ${safeUpside != null ? `${safeUpside >= 0 ? '+' : ''}${safeUpside.toFixed(1)}% implied move` : 'limited move data'}. Third-party sentiment: ${displayConsensus(forecast.consensus, lang)}.`
           : 'Analyst target data is limited for this symbol.',
         analysis ? `Technical model is ${analysis.summary.signal}; trend is ${analysis.trend.replace(/_/g, ' ')}.` : 'Technical model is still loading or unavailable.',
         news?.items?.length ? `Latest news tone looks ${newsTone} across ${Math.min(news.items.length, 5)} recent headlines.` : 'Recent headline feed is unavailable right now.',
@@ -103,7 +105,7 @@ export default function AiStockSummaryPanel({ quote }: Props) {
       <div style={{ display: 'grid', gap: 1, border: '1px solid #2d2b20', background: '#2d2b20' }}>
         {[
           { label: ui.priceAction, value: isUp ? ui.positive : ui.negative, tone: isUp ? 'positive' : 'negative' },
-          { label: ui.analystSentiment, value: displayConsensus(forecast?.consensus, lang), tone: upside != null && upside > 10 ? 'positive' : upside != null && upside < 0 ? 'negative' : 'neutral' },
+          { label: ui.analystSentiment, value: displayConsensus(forecast?.consensus, lang), tone: safeUpside != null && safeUpside > 10 ? 'positive' : safeUpside != null && safeUpside < 0 ? 'negative' : 'neutral' },
           { label: ui.newsTone, value: newsTone === 'positive' ? ui.positive : newsTone === 'negative' ? ui.negative : ui.neutral, tone: newsTone },
           { label: ui.riskFlag, value: riskTone === 'watch' ? ui.watch : ui.normal, tone: riskTone },
         ].map(row => (
