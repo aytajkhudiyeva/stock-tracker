@@ -1,5 +1,11 @@
 {
   "installCommand": "cd client && npm install",
   "buildCommand": "cd client && npx tsc -b && npx vite build",
-  "outputDirectory": "client/dist"
+  "outputDirectory": "client/dist",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://stock-tracker-production-06b0.up.railway.app/api/:path*"
+    }
+  ]
 }
