@@ -1,0 +1,275 @@
+import { useState } from 'react';
+
+interface Broker {
+  id: string;
+  name: string;
+  type: string;
+  domain: string;
+  description: string;
+  registerUrl: string;
+  websiteUrl: string;
+  tags: string[];
+  featured?: boolean;
+  initials: string;
+  bgColor: string;
+  textColor: string;
+}
+
+const BROKERS: Broker[] = [
+  {
+    id: 'investaz',
+    name: 'InvestAZ',
+    type: 'İnvestisiya Şirkəti',
+    domain: 'investaz.az',
+    description: 'Azərbaycanın aparıcı investisiya şirkəti. Qlobal bazarlara CFD ticarəti imkanı.',
+    registerUrl: 'https://cabinet.investaz.az/register',
+    websiteUrl: 'https://investaz.az',
+    tags: ['FIMSA', 'MT5', 'CFD', 'Forex'],
+    featured: true,
+    initials: 'IA',
+    bgColor: '#1e3a5f',
+    textColor: '#0092bc',
+  },
+  {
+    id: 'pashainvest',
+    name: 'PASHA Invest',
+    type: 'Broker Şirkəti',
+    domain: 'pashainvest.az',
+    description: 'PASHA Holding-in investisiya qolu. Fond bazarı və qiymətli kağızlarda ixtisaslaşma.',
+    registerUrl: 'https://pashainvest.az',
+    websiteUrl: 'https://pashainvest.az',
+    tags: ['FIMSA', 'Fond Bazarı', 'BSE'],
+    initials: 'PI',
+    bgColor: '#064e3b',
+    textColor: '#34d399',
+  },
+  {
+    id: 'kapital',
+    name: 'Kapital Broker',
+    type: 'Bank Broker',
+    domain: 'kapitalbank.az',
+    description: 'Kapital Bank-ın broker xidməti. Bank hesabı ilə tam inteqrasiya və rahat köçürmə.',
+    registerUrl: 'https://www.kapitalbank.az',
+    websiteUrl: 'https://www.kapitalbank.az',
+    tags: ['FIMSA', 'Bank', 'BSE'],
+    initials: 'KB',
+    bgColor: '#451a03',
+    textColor: '#fb923c',
+  },
+  {
+    id: 'unicapital',
+    name: 'Unicapital',
+    type: 'İnvestisiya Şirkəti',
+    domain: 'unicapital.az',
+    description: 'Bakı Fond Birjasında yerli qiymətli kağızlar üzrə əməliyyatlar.',
+    registerUrl: 'https://unicapital.az',
+    websiteUrl: 'https://unicapital.az',
+    tags: ['FIMSA', 'BSE', 'Yerli Bazar'],
+    initials: 'UC',
+    bgColor: '#2e1065',
+    textColor: '#a78bfa',
+  },
+  {
+    id: 'cfi',
+    name: 'CFI Financial',
+    type: 'Beynəlxalq Broker',
+    domain: 'cfi.co',
+    description: 'Beynəlxalq lisenziyalı broker. Bakıda nümayəndəliyi mövcuddur. Forex və CFD.',
+    registerUrl: 'https://www.cfi.co/open-live-account/',
+    websiteUrl: 'https://www.cfi.co',
+    tags: ['CySEC', 'MT5', 'Forex', 'CFD'],
+    initials: 'CF',
+    bgColor: '#450a0a',
+    textColor: '#f87171',
+  },
+];
+
+function BrokerLogo({ broker }: { broker: Broker }) {
+  const [srcIndex, setSrcIndex] = useState(0);
+
+  const sources = [
+    `https://logo.clearbit.com/${broker.domain}`,
+    `https://www.google.com/s2/favicons?domain=${broker.domain}&sz=128`,
+  ];
+
+  if (srcIndex < sources.length) {
+    return (
+      <img
+        src={sources[srcIndex]}
+        alt={broker.name}
+        onError={() => setSrcIndex(i => i + 1)}
+        style={{
+          width: 48, height: 48,
+          borderRadius: 8,
+          objectFit: 'contain',
+          background: '#ffffff',
+          padding: 5,
+          flexShrink: 0,
+          border: '1px solid #dce3ed',
+        }}
+      />
+    );
+  }
+
+  return (
+    <div style={{
+      width: 48, height: 48,
+      borderRadius: 8,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontWeight: 700, fontSize: 14,
+      flexShrink: 0,
+      background: broker.bgColor,
+      color: broker.textColor,
+    }}>
+      {broker.initials}
+    </div>
+  );
+}
+
+function BrokerCard({ broker }: { broker: Broker }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: 'relative',
+        background: '#ffffff',
+        border: broker.featured
+          ? '2px solid #0092bc'
+          : `1px solid ${hovered ? '##8b99ad' : '#dce3ed'}`,
+        borderRadius: 12,
+        padding: '1.25rem 1rem 1rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+        transition: 'border-color 0.2s, transform 0.15s',
+        transform: hovered ? 'translateY(-2px)' : 'none',
+      }}
+    >
+      {broker.featured && (
+        <span style={{
+          position: 'absolute', top: -1, right: 12,
+          fontSize: '0.65rem', fontWeight: 600,
+          background: '#0092bc', color: '#eff6ff',
+          padding: '3px 8px',
+          borderRadius: '0 0 6px 6px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.03em',
+        }}>
+          Yerli Lider
+        </span>
+      )}
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <BrokerLogo broker={broker} />
+        <div>
+          <p style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 600, color: '#1a2433' }}>
+            {broker.name}
+          </p>
+          <p style={{ margin: 0, fontSize: '0.75rem', color: '#6e7d92' }}>
+            {broker.type}
+          </p>
+        </div>
+      </div>
+
+      {/* Description */}
+      <p style={{ margin: 0, fontSize: '0.8125rem', color: '#5b6b80', lineHeight: 1.55, flex: 1 }}>
+        {broker.description}
+      </p>
+
+      {/* Tags */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+        {broker.tags.map(tag => (
+          <span key={tag} style={{
+            fontSize: '0.6875rem', fontWeight: 500,
+            padding: '2px 7px', borderRadius: 4,
+            background: '#eef2f7', color: '#5b6b80',
+            border: '1px solid #dce3ed',
+          }}>
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Hesab Aç button */}
+      <a
+        href={broker.registerUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: 'block', textAlign: 'center',
+          padding: '9px 0',
+          fontSize: '0.875rem', fontWeight: 600,
+          color: '#1a2433',
+          background: hovered ? '#007ba1' : 'transparent',
+          border: `1px solid ${hovered ? '#0092bc' : '##8b99ad'}`,
+          borderRadius: 8,
+          textDecoration: 'none',
+          transition: 'background 0.15s, border-color 0.15s, color 0.15s',
+          marginTop: 4,
+        }}
+      >
+        Hesab Aç →
+      </a>
+
+      {/* Website link */}
+      <a
+        href={broker.websiteUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: 'block', textAlign: 'center',
+          fontSize: '0.75rem', color: '##8b99ad',
+          textDecoration: 'none',
+        }}
+      >
+        {broker.domain}
+      </a>
+    </div>
+  );
+}
+
+export default function BrokersSection() {
+  return (
+    <section style={{ padding: '2rem 0' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem', gap: 12 }}>
+        <div>
+          <h2 style={{ margin: '0 0 4px', fontSize: '1.25rem', fontWeight: 600, color: '#1a2433' }}>
+            🇦🇿 Yerli Brokerlər
+          </h2>
+          <p style={{ margin: 0, fontSize: '0.875rem', color: '#5b6b80' }}>
+            Azərbaycanda lisenziyalı investisiya şirkətləri
+          </p>
+        </div>
+        <span style={{
+          flexShrink: 0, fontSize: '0.75rem', fontWeight: 500,
+          background: '#ffffff', color: '#0092bc',
+          padding: '4px 12px', borderRadius: 6,
+          border: '1px solid #dce3ed',
+        }}>
+          {BROKERS.length} şirkət
+        </span>
+      </div>
+
+      {/* Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
+        gap: '1rem',
+      }}>
+        {BROKERS.map(broker => (
+          <BrokerCard key={broker.id} broker={broker} />
+        ))}
+      </div>
+
+      {/* Disclaimer */}
+      <p style={{ fontSize: '0.75rem', color: '##8b99ad', marginTop: '1.25rem', textAlign: 'center' }}>
+        ⚠️ Bu siyahı yalnız məlumat məqsədilə hazırlanmışdır. İnvestisiya tövsiyəsi deyil.
+      </p>
+    </section>
+  );
+}

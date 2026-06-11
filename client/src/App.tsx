@@ -2,34 +2,39 @@ import { useState, useEffect, useCallback } from 'react';
 import { fetchQuotes, fetchQuote } from './services/api';
 import { useWatchlist } from './hooks/useWatchlist';
 import { useLanguage } from './i18n/LanguageContext';
+import { uiLabels } from './i18n/uiLabels';
 import Header from './components/Header';
 import StockCard from './components/StockCard';
 import StockChart from './components/StockChart';
 import MetricsPanel from './components/MetricsPanel';
 import AlertsPanel from './components/AlertsPanel';
 import AnalysisPanel from './components/AnalysisPanel';
+import AnalystForecastPanel from './components/AnalystForecastPanel';
+import AiStockSummaryPanel from './components/AiStockSummaryPanel';
+import NewsSentimentPanel from './components/NewsSentimentPanel';
+import CorporateActivityPanel from './components/CorporateActivityPanel';
+import CompareStocksPanel from './components/CompareStocksPanel';
+import WatchlistHeatmap from './components/WatchlistHeatmap';
+import SectorIndustryMap from './components/SectorIndustryMap';
+import ValuationScorePanel from './components/ValuationScorePanel';
+import OptionsSentimentPanel from './components/OptionsSentimentPanel';
+import TechnicalScanner from './components/TechnicalScanner';
+import StockScreener from './components/StockScreener';
+import DailyBrief from './components/DailyBrief';
+import TradingJournal from './components/TradingJournal';
+import MobileTodayView from './components/MobileTodayView';
 import EarningsPanel from './components/EarningsPanel';
 import PortfolioPanel from './components/PortfolioPanel';
 import EconomicCalendar from './components/EconomicCalendar';
-import MarketOverview from './components/MarketOverview';
+import MarketOverview from './components/MarketOverview'
+import BrokersSection from './components/BrokersSection';
 import type { StockQuote } from './types';
 import './index.css';
-
-function isMarketOpen() {
-  try {
-    const nyStr = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
-    const ny = new Date(nyStr);
-    const day = ny.getDay();
-    if (day === 0 || day === 6) return false;
-    const mins = ny.getHours() * 60 + ny.getMinutes();
-    return mins >= 570 && mins < 960; // 9:30 AM – 4:00 PM ET
-  } catch { return true; }
-}
 
 const MARKET_SYMBOLS = ['^GSPC', '^DJI', '^IXIC', '^VIX'];
 const REFRESH_INTERVAL = 30000;
 
-type RightTab = 'chart' | 'metrics' | 'alerts' | 'analysis' | 'earnings';
+type RightTab = 'summary' | 'chart' | 'metrics' | 'valuation' | 'options' | 'alerts' | 'analysis' | 'forecast' | 'news' | 'activity' | 'compare' | 'earnings';
 
 function LoadingCard() {
   return (
@@ -43,18 +48,20 @@ function LoadingCard() {
 
 export default function App() {
   const { watchlist, addSymbol, removeSymbol, hasSymbol } = useWatchlist();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const ui = uiLabels(lang);
   const [quotes, setQuotes] = useState<Record<string, StockQuote>>({});
   const [marketQuotes, setMarketQuotes] = useState<Record<string, StockQuote>>({});
   const [selectedSymbol, setSelectedSymbol] = useState<string>('NVDA');
   const [loading, setLoading] = useState(true);
-  const [rightTab, setRightTab] = useState<RightTab>('chart');
+  const [rightTab, setRightTab] = useState<RightTab>('summary');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [mainView, setMainView] = useState<'dashboard' | 'portfolio' | 'economy'>('dashboard');
+const [mainView, setMainView] = useState<'dashboard' | 'brief' | 'today' | 'scanner' | 'screener' | 'journal' | 'portfolio' | 'economy' | 'brokers'>('dashboard');  const [loadError, setLoadError] = useState(false);
 
   const loadQuotes = useCallback(async () => {
     if (watchlist.length === 0) { setLoading(false); return; }
     try {
+      setLoadError(false);
       const [watchlistData, marketData] = await Promise.all([
         fetchQuotes(watchlist),
         fetchQuotes(MARKET_SYMBOLS).catch(() => ({})),
@@ -64,6 +71,7 @@ export default function App() {
       setLastUpdated(new Date());
     } catch (err) {
       console.error('Failed to load quotes', err);
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -75,13 +83,13 @@ export default function App() {
   }, [watchlist.join(',')]);
 
   useEffect(() => {
-    const id = setInterval(() => { if (isMarketOpen()) loadQuotes(); }, REFRESH_INTERVAL);
+    const id = setInterval(loadQuotes, REFRESH_INTERVAL);
     return () => clearInterval(id);
   }, [loadQuotes]);
 
   const handleSelectStock = async (symbol: string) => {
     setSelectedSymbol(symbol);
-    setRightTab('chart');
+    setRightTab('summary');
     if (!quotes[symbol]) {
       try {
         const q = await fetchQuote(symbol);
@@ -110,57 +118,81 @@ export default function App() {
   }
 
   const TAB_LABELS: Record<RightTab, string> = {
+    summary: ui.summary,
     chart: t.tabChart,
     metrics: t.tabMetrics,
+    valuation: ui.valuation,
+    options: ui.options,
     analysis: t.tabAnalysis,
+    forecast: t.tabForecast,
+    news: ui.news,
+    activity: ui.activity,
+    compare: ui.compare,
     earnings: t.tabEarnings,
     alerts: t.tabAlerts,
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0e1a' }}>
+    <div className="app-shell">
       <Header onSelectStock={handleSelectStock} onAddToWatchlist={handleAddToWatchlist} />
 
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
+        <div className="app-container">
+        <div className="compliance-banner">
+          {ui.compliance}
+        </div>
+
         {/* View toggle */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-          {(['dashboard', 'portfolio', 'economy'] as const).map(view => (
-            <button
+        <div className="view-tabs">
+{(['dashboard', 'brief', 'today', 'scanner', 'screener', 'journal', 'portfolio', 'economy', 'brokers'] as const).map(view => (            <button
               key={view}
               onClick={() => setMainView(view)}
-              style={{
-                padding: '7px 18px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
-                background: mainView === view ? 'rgba(59,130,246,0.15)' : 'transparent',
-                border: mainView === view ? '1px solid rgba(59,130,246,0.4)' : '1px solid #1e2d47',
-                color: mainView === view ? '#60a5fa' : '#64748b',
-                transition: 'all 0.15s',
-              }}
+              className={`view-tab ${mainView === view ? 'view-tab-active' : ''}`}
             >
-              {view === 'dashboard' ? t.dashboardView : view === 'portfolio' ? t.portfolio : t.economicCalendarView}
-            </button>
+{view === 'dashboard' ? t.dashboardView : view === 'brief' ? ui.brief : view === 'today' ? ui.today : view === 'scanner' ? ui.scanner : view === 'screener' ? ui.screener : view === 'journal' ? ui.journal : view === 'portfolio' ? t.portfolio : view === 'economy' ? t.economicCalendarView : ui.brokers}            </button>
           ))}
         </div>
 
+        {mainView === 'brief' && <DailyBrief quotes={quotes} />}
+        {mainView === 'today' && <MobileTodayView quotes={quotes} onSelect={(sym) => { setSelectedSymbol(sym); setRightTab('summary'); setMainView('dashboard'); }} />}
+        {mainView === 'scanner' && <TechnicalScanner quotes={quotes} />}
+        {mainView === 'screener' && <StockScreener quotes={quotes} />}
+        {mainView === 'journal' && <TradingJournal />}
+
         {/* Portfolio view */}
         {mainView === 'portfolio' && (
-          <div className="card" style={{ padding: '24px' }}>
+          <div className="card page-panel">
             <PortfolioPanel quotes={quotes} />
           </div>
         )}
 
         {/* Economic Calendar view */}
         {mainView === 'economy' && (
-          <div className="card" style={{ padding: '24px' }}>
+          <div className="card page-panel">
             <EconomicCalendar />
           </div>
         )}
+        {/* Brokers view */}
+{mainView === 'brokers' && (
+  <div className="card page-panel">
+    <BrokersSection />
+  </div>
+)}
 
         {/* Dashboard view */}
         {mainView === 'dashboard' && <>
+        {loadError && (
+          <div className="status-banner" style={{ marginBottom: '16px' }}>
+            <span>{t.quoteLoadFailed}</span>
+            <button className="btn-secondary" onClick={loadQuotes} style={{ padding: '6px 12px', fontSize: '0.78rem' }}>
+              {t.retry}
+            </button>
+          </div>
+        )}
+
         {/* Market Overview */}
         {Object.keys(marketQuotes).length > 0 && (
           <div style={{ marginBottom: '20px' }}>
-            <div className="text-muted" style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '10px' }}>
+            <div className="section-kicker">
               {t.marketOverview}
             </div>
             <MarketOverview quotes={marketQuotes} />
@@ -168,12 +200,16 @@ export default function App() {
         )}
 
         {/* Main layout */}
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '16px', alignItems: 'start' }}>
+        <WatchlistHeatmap quotes={quotes} onSelect={(sym) => { setSelectedSymbol(sym); setRightTab('summary'); }} />
+        <SectorIndustryMap quotes={quotes} />
+
+        {/* Main layout */}
+        <div className="dashboard-grid">
 
           {/* Watchlist */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <div className="text-muted" style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+              <div className="section-kicker" style={{ marginBottom: 0 }}>
                 {t.watchlist} ({watchlist.length})
               </div>
               {lastUpdated && (
@@ -189,9 +225,9 @@ export default function App() {
                 : watchlist.map(sym => {
                     const q = quotes[sym];
                     if (!q) return (
-                      <div key={sym} className="card" style={{ padding: '16px', color: '#64748b', fontSize: '0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div key={sym} className="card" style={{ padding: '16px', color: '#6e7d92', fontSize: '0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span>{sym}</span>
-                        <button onClick={() => removeSymbol(sym)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '1rem' }}>×</button>
+                        <button onClick={() => removeSymbol(sym)} style={{ background: 'transparent', border: 'none', color: '#6e7d92', cursor: 'pointer', fontSize: '1rem' }}>×</button>
                       </div>
                     );
                     return (
@@ -199,7 +235,7 @@ export default function App() {
                         key={sym}
                         quote={q}
                         selected={selectedSymbol === sym}
-                        onClick={() => { setSelectedSymbol(sym); setRightTab('chart'); }}
+                        onClick={() => { setSelectedSymbol(sym); setRightTab('summary'); }}
                         onRemove={() => removeSymbol(sym)}
                       />
                     );
@@ -212,12 +248,12 @@ export default function App() {
           {/* Detail Panel */}
           <div>
             {selectedQuote ? (
-              <div className="card" style={{ padding: '24px' }}>
+              <div className="card detail-panel">
                 {/* Stock header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+                <div className="detail-header">
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                      <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.5px' }}>
+                      <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 900, color: '#f7b500', letterSpacing: '0' }}>
                         {selectedQuote.symbol}
                       </h1>
                       <span className="text-secondary" style={{ fontSize: '1rem' }}>
@@ -231,8 +267,8 @@ export default function App() {
                         >{t.addToWatchlist}</button>
                       )}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '2rem', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-1px' }}>
+                    <div className="price-row">
+                      <span key={selectedQuote.regularMarketPrice} className="price-live" style={{ fontSize: '2rem', fontWeight: 900, color: '#f4f4ec', letterSpacing: '0' }}>
                         ${fmt(selectedQuote.regularMarketPrice)}
                       </span>
                       <span style={{
@@ -251,8 +287,8 @@ export default function App() {
                 </div>
 
                 {/* Tabs */}
-                <div style={{ display: 'flex', borderBottom: '1px solid #1e2d47', marginBottom: '20px' }}>
-                  {(['chart', 'metrics', 'analysis', 'earnings', 'alerts'] as RightTab[]).map(tab => (
+                <div className="detail-tabs">
+                  {(['summary', 'chart', 'metrics', 'valuation', 'analysis', 'forecast', 'options', 'news', 'activity', 'compare', 'earnings', 'alerts'] as RightTab[]).map(tab => (
                     <button
                       key={tab}
                       onClick={() => setRightTab(tab)}
@@ -260,8 +296,8 @@ export default function App() {
                         padding: '8px 18px',
                         background: 'transparent',
                         border: 'none',
-                        borderBottom: `2px solid ${rightTab === tab ? '#3b82f6' : 'transparent'}`,
-                        color: rightTab === tab ? '#60a5fa' : '#64748b',
+                        borderBottom: `2px solid ${rightTab === tab ? '#f7b500' : 'transparent'}`,
+                        color: rightTab === tab ? '#f7b500' : '#8b8b7a',
                         cursor: 'pointer',
                         fontSize: '0.85rem',
                         fontWeight: 600,
@@ -274,14 +310,21 @@ export default function App() {
                   ))}
                 </div>
 
+                {rightTab === 'summary'  && <AiStockSummaryPanel quote={selectedQuote} />}
                 {rightTab === 'chart'    && <StockChart symbol={selectedQuote.symbol} isUp={isUp} currentPrice={selectedQuote.regularMarketPrice} />}
                 {rightTab === 'metrics'  && <MetricsPanel quote={selectedQuote} />}
+                {rightTab === 'valuation' && <ValuationScorePanel quote={selectedQuote} />}
                 {rightTab === 'analysis' && <AnalysisPanel symbol={selectedQuote.symbol} price={selectedQuote.regularMarketPrice} />}
+                {rightTab === 'forecast' && <AnalystForecastPanel symbol={selectedQuote.symbol} />}
+                {rightTab === 'options'  && <OptionsSentimentPanel quote={selectedQuote} />}
+                {rightTab === 'news'     && <NewsSentimentPanel symbol={selectedQuote.symbol} />}
+                {rightTab === 'activity' && <CorporateActivityPanel symbol={selectedQuote.symbol} />}
+                {rightTab === 'compare'  && <CompareStocksPanel baseSymbol={selectedQuote.symbol} watchlist={watchlist} />}
                 {rightTab === 'earnings' && <EarningsPanel symbol={selectedQuote.symbol} />}
                 {rightTab === 'alerts'   && <AlertsPanel defaultSymbol={selectedQuote.symbol} />}
               </div>
             ) : (
-              <div className="card" style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
+              <div className="card empty-state">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ margin: '0 auto 16px', display: 'block', opacity: 0.4 }}>
                   <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
                 </svg>
@@ -319,7 +362,7 @@ function AddStockButton({ onAdd }: { onAdd: (s: string) => void }) {
   );
 
   return (
-    <form onSubmit={submit} style={{ display: 'flex', gap: '6px' }}>
+    <form onSubmit={submit} className="add-stock-form">
       <input
         autoFocus
         className="input-field"

@@ -195,4 +195,102 @@ function buildSignals(rsi, macd, bb, ma) {
   return { signals, summary: { signal: overallSignal, score: buyCount - sellCount, buyCount, neutralCount, sellCount } };
 }
 
-module.exports = { computeRSI, computeMACD, computeBollingerBands, computeMovingAverages, findSupportResistance, computeTrend, buildSignals };
+// ── ATR ───────────────────────────────────────────────────────────────────────
+
+function computeATR(highs, lows, closes, period = 14) {
+  if (highs.length < period + 1) return null;
+  const trs = [];
+  for (let i = 1; i < highs.length; i++) {
+    trs.push(Math.max(
+      highs[i] - lows[i],
+      Math.abs(highs[i] - closes[i - 1]),
+      Math.abs(lows[i]  - closes[i - 1])
+    ));
+  }
+  if (trs.length < period) return null;
+  let atr = trs.slice(0, period).reduce((a, b) => a + b, 0) / period;
+  for (let i = period; i < trs.length; i++) {
+    atr = (atr * (period - 1) + trs[i]) / period; // Wilder's smoothing
+  }
+  return atr;
+}
+
+// ── TP/SL ─────────────────────────────────────────────────────────────────────
+// For each ATR baseline target, snap to the nearest pivot/SR level within 1.5%.
+// Entry = current market price.  Bearish direction (short) not modelled:
+// TP levels are always above price, SL levels always below.
+
+function computeTPSL(price, atr, pivots, resistances = [], supports = []) {
+  if (!atr || !price || atr <= 0) return null;
+
+  // ATR baselines
+  const atrTP = [price + atr, price + 2 * atr, price + 3 * atr];
+  const atrSL = [price - 0.75 * atr, price - 1.5 * atr];
+
+  // Technical candidates above current price
+  const tpCandidates = [];
+  if (pivots) {
+    if (pivots.r1 > price) tpCandidates.push({ price: pivots.r1, source: 'pivot', pivotLabel: 'R1' });
+    if (pivots.r2 > price) tpCandidates.push({ price: pivots.r2, source: 'pivot', pivotLabel: 'R2' });
+    if (pivots.r3 > price) tpCandidates.push({ price: pivots.r3, source: 'pivot', pivotLabel: 'R3' });
+  }
+  for (const r of resistances) {
+    if (r > price * 1.002) tpCandidates.push({ price: r, source: 'sr', pivotLabel: null });
+  }
+
+  // Technical candidates below current price
+  const slCandidates = [];
+  if (pivots) {
+    if (pivots.pp < price) slCandidates.push({ price: pivots.pp, source: 'pivot', pivotLabel: 'PP' });
+    if (pivots.s1 < price) slCandidates.push({ price: pivots.s1, source: 'pivot', pivotLabel: 'S1' });
+    if (pivots.s2 < price) slCandidates.push({ price: pivots.s2, source: 'pivot', pivotLabel: 'S2' });
+    if (pivots.s3 < price) slCandidates.push({ price: pivots.s3, source: 'pivot', pivotLabel: 'S3' });
+  }
+  for (const s of supports) {
+    if (s < price * 0.998) slCandidates.push({ price: s, source: 'sr', pivotLabel: null });
+  }
+
+  // Snap baseline to nearest candidate within 1.5%
+  function snap(baseline, candidates) {
+    let best = null, bestDist = Infinity;
+    for (const c of candidates) {
+      const dist = Math.abs(c.price - baseline) / baseline;
+      if (dist < 0.015 && dist < bestDist) { best = c; bestDist = dist; }
+    }
+    return best;
+  }
+
+  function build(baseline, candidates) {
+    const snapped = snap(baseline, candidates);
+    return snapped
+      ? { price: snapped.price, source: snapped.source, pivotLabel: snapped.pivotLabel }
+      : { price: baseline, source: 'atr', pivotLabel: null };
+  }
+
+  const tpArr = [build(atrTP[0], tpCandidates), build(atrTP[1], tpCandidates), build(atrTP[2], tpCandidates)];
+  const slArr = [build(atrSL[0], slCandidates), build(atrSL[1], slCandidates)];
+
+  // Enforce strict ordering (prevent duplicate prices from snapping)
+  tpArr.sort((a, b) => a.price - b.price);
+  if (tpArr[1].price <= tpArr[0].price) tpArr[1].price = tpArr[0].price + atr * 0.5;
+  if (tpArr[2].price <= tpArr[1].price) tpArr[2].price = tpArr[1].price + atr * 0.5;
+
+  slArr.sort((a, b) => b.price - a.price); // descending — tightest SL first
+  if (slArr[1].price >= slArr[0].price) slArr[1].price = slArr[0].price - atr * 0.5;
+
+  const risk = price - slArr[0].price;
+  const pct = p => +((p - price) / price * 100).toFixed(2);
+  const rr  = p => risk > 0.0001 ? +((p - price) / risk).toFixed(2) : null;
+  const fmt = p => +p.toFixed(2);
+
+  return {
+    atr: +atr.toFixed(4),
+    tp1: { price: fmt(tpArr[0].price), pct: pct(tpArr[0].price), rr: rr(tpArr[0].price), source: tpArr[0].source, pivotLabel: tpArr[0].pivotLabel },
+    tp2: { price: fmt(tpArr[1].price), pct: pct(tpArr[1].price), rr: rr(tpArr[1].price), source: tpArr[1].source, pivotLabel: tpArr[1].pivotLabel },
+    tp3: { price: fmt(tpArr[2].price), pct: pct(tpArr[2].price), rr: rr(tpArr[2].price), source: tpArr[2].source, pivotLabel: tpArr[2].pivotLabel },
+    sl1: { price: fmt(slArr[0].price), pct: pct(slArr[0].price), source: slArr[0].source, pivotLabel: slArr[0].pivotLabel },
+    sl2: { price: fmt(slArr[1].price), pct: pct(slArr[1].price), source: slArr[1].source, pivotLabel: slArr[1].pivotLabel },
+  };
+}
+
+module.exports = { computeRSI, computeMACD, computeBollingerBands, computeMovingAverages, findSupportResistance, computeTrend, buildSignals, computeATR, computeTPSL };

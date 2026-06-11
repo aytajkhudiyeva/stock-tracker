@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { searchStocks } from '../services/api';
 import { useLanguage } from '../i18n/LanguageContext';
 import type { SearchResult } from '../types';
@@ -10,6 +10,9 @@ interface HeaderProps {
 
 export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps) {
   const { t, lang, toggleLang } = useLanguage();
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    try { return (localStorage.getItem('theme') as 'dark' | 'light') || 'dark'; } catch { return 'dark'; }
+  });
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -41,28 +44,33 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
     setQuery(''); setResults([]); setOpen(false);
   };
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try { localStorage.setItem('theme', theme); } catch {}
+  }, [theme]);
+
   return (
-    <header style={{ background: '#0a0e1a', borderBottom: '1px solid #1e2d47' }} className="sticky top-0 z-50">
-      <div className="max-w-screen-xl mx-auto flex items-center justify-between px-6 py-4 gap-6">
+    <header className="site-header">
+      <div className="site-header-inner">
 
         {/* Logo */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', borderRadius: '10px', padding: '8px' }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+        <div className="brand-lockup">
+          <div style={{ background: '#f7b500', borderRadius: '2px', padding: '8px', border: '1px solid #ffc83d' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#050505" strokeWidth="2.5">
               <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
               <polyline points="16 7 22 7 22 13" />
             </svg>
           </div>
           <div>
-            <div className="font-bold text-white" style={{ fontSize: '1.1rem', letterSpacing: '-0.3px' }}>StockTrack</div>
+            <div className="font-bold text-white" style={{ fontSize: '1.1rem', letterSpacing: '0.2px' }}>StockAZ</div>
             <div className="text-muted" style={{ fontSize: '0.7rem' }}>{t.tagline}</div>
           </div>
         </div>
 
         {/* Search */}
-        <div className="relative flex-1 max-w-md">
+        <div className="header-search">
           <div style={{ position: 'relative' }}>
-            <svg style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6e7d92' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
@@ -77,7 +85,7 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
             />
             {searching && (
               <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)' }}>
-                <div style={{ width: '14px', height: '14px', border: '2px solid #1e2d47', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <div style={{ width: '14px', height: '14px', border: '2px solid #2b2b24', borderTopColor: '#f7b500', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
               </div>
             )}
           </div>
@@ -108,7 +116,7 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
         </div>
 
         {/* Right side: Live + Language toggle */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="header-actions">
           <div className="flex items-center gap-2">
             <div className="pulse-dot" />
             <span className="text-secondary" style={{ fontSize: '0.8rem' }}>{t.live}</span>
@@ -119,8 +127,8 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
             onClick={toggleLang}
             style={{
               display: 'flex', alignItems: 'center',
-              background: '#0f1629', border: '1px solid #1e2d47',
-              borderRadius: '7px', padding: '3px', cursor: 'pointer', gap: '2px',
+              background: '#050505', border: '1px solid #2b2b24',
+              borderRadius: '2px', padding: '3px', cursor: 'pointer', gap: '2px',
             }}
             title={lang === 'en' ? 'Switch to Azerbaijani' : 'İngilis dilinə keç'}
           >
@@ -128,13 +136,23 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
               <span key={l} style={{
                 padding: '3px 9px', borderRadius: '5px',
                 fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.3px',
-                background: lang === l ? '#3b82f6' : 'transparent',
-                color: lang === l ? '#ffffff' : '#64748b',
+                background: lang === l ? '#f7b500' : 'transparent',
+                color: lang === l ? '#050505' : '#8b8b7a',
                 transition: 'all 0.15s',
               }}>
                 {l.toUpperCase()}
               </span>
             ))}
+          </button>
+
+          <button
+            onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+            className="theme-toggle"
+            title={theme === 'dark' ? t.lightTheme : t.darkTheme}
+            aria-label={theme === 'dark' ? t.lightTheme : t.darkTheme}
+          >
+            <span className={theme === 'dark' ? 'theme-toggle-active' : ''}>{t.darkTheme}</span>
+            <span className={theme === 'light' ? 'theme-toggle-active' : ''}>{t.lightTheme}</span>
           </button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 const { getAlerts } = require('./alertStore');
 const { getEarnings } = require('./earnings');
-const { sendAlert } = require('./telegram');
+const { getDefaultChatIds, sendAlert } = require('./telegram');
 
 // Track which notifications have already been sent today
 const sentToday = new Set(); // key: `${symbol}:${daysUntil}:${date}`
@@ -8,9 +8,7 @@ const sentToday = new Set(); // key: `${symbol}:${daysUntil}:${date}`
 async function checkEarningsNotifications() {
   const alerts = getAlerts();
   const symbols = [...new Set(alerts.map(a => a.symbol))];
-  const chatIds = [...new Set(alerts.map(a => a.chatId).filter(Boolean))];
-  if (process.env.TELEGRAM_CHAT_ID) chatIds.push(process.env.TELEGRAM_CHAT_ID);
-  const uniqueChatIds = [...new Set(chatIds)];
+  const uniqueChatIds = [...new Set([...alerts.map(a => a.chatId).filter(Boolean), ...getDefaultChatIds()])];
   if (!symbols.length || !uniqueChatIds.length) return;
 
   const today = new Date().toISOString().split('T')[0];

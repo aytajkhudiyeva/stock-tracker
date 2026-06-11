@@ -1,17 +1,16 @@
 const { buildCalendar } = require('./economicCalendar');
-
-let bot = null;
-try {
-  const TelegramBot = require('node-telegram-bot-api');
-  if (process.env.TELEGRAM_BOT_TOKEN) {
-    bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
-  }
-} catch {}
-
-const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const { getDefaultChatIds, sendBroadcast } = require('./telegram');
+const { getActiveWhatsappPhones } = require('./whatsappSubscriberStore');
+const { sendWhatsappBroadcast } = require('./whatsapp');
 
 // Track sent notifications: key = "type:eventId:date"
 const sent = new Set();
+const NOTIFY_IMPACTS = new Set((process.env.ECONOMIC_NOTIFY_IMPACTS || 'high,medium').split(',').map(s => s.trim()).filter(Boolean));
+const REMINDER_MINUTES = (process.env.ECONOMIC_REMINDER_MINUTES || '60')
+  .split(',')
+  .map(v => parseInt(v.trim(), 10))
+  .filter(v => Number.isFinite(v) && v > 0)
+  .sort((a, b) => b - a);
 
 function nowET() {
   const s = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
@@ -47,7 +46,9 @@ function buildReleaseMsg(ev) {
 
 function buildReminderMsg(ev, minutesUntil) {
   const prevFmt = fmtValue(ev.previous, ev.unit);
-  const when = minutesUntil <= 65 ? '1 saat sonra' : `${Math.round(minutesUntil / 60)} saat sonra`;
+  const when = minutesUntil >= 60
+    ? `${Math.round(minutesUntil / 60)} saat sonra`
+    : `${minutesUntil} dəqiqə sonra`;
   let msg = `⏰ <b>${when}</b>: ABŞ ${ev.nameAz} açıqlanacaq`;
   if (ev.referenceMonth) msg += ` (${ev.referenceMonth})`;
   if (prevFmt) msg += `\nƏvvəlki: ${prevFmt}`;
@@ -56,16 +57,12 @@ function buildReminderMsg(ev, minutesUntil) {
 }
 
 async function sendMsg(text) {
-  if (!bot || !CHAT_ID) return;
-  try {
-    await bot.sendMessage(CHAT_ID, text, { parse_mode: 'HTML' });
-  } catch (e) {
-    console.error('[EconChecker] Telegram error:', e.message);
-  }
+  await sendBroadcast(text);
+  await sendWhatsappBroadcast(text);
 }
 
 async function checkEconomicNotifications() {
-  if (!bot || !CHAT_ID) return;
+  if (getDefaultChatIds().length === 0 && getActiveWhatsappPhones().length === 0) return;
 
   let events;
   try {
@@ -80,7 +77,7 @@ async function checkEconomicNotifications() {
   const nowMins = etNow.getHours() * 60 + etNow.getMinutes();
 
   for (const ev of events) {
-    if (ev.impact !== 'high') continue;
+    if (!NOTIFY_IMPACTS.has(ev.impact)) continue;
 
     // ── Release notification (event is today, time has passed, has actual value) ──
     if (ev.date === today && ev.released && ev.actual != null) {
@@ -94,15 +91,19 @@ async function checkEconomicNotifications() {
       }
     }
 
-    // ── 1-hour reminder (event is today, 45-75 mins before release) ──────────
+    // ── Scheduled reminders before release ───────────────────────────────────
     if (ev.date === today && !ev.released) {
-      const reminderKey = `reminder:${ev.id}:${today}`;
-      if (!sent.has(reminderKey)) {
-        const evMins = etMinutes(ev.time);
-        const minsUntil = evMins - nowMins;
-        if (minsUntil >= 45 && minsUntil <= 75) {
-          sent.add(reminderKey);
-          await sendMsg(buildReminderMsg(ev, minsUntil));
+      const evMins = etMinutes(ev.time);
+      const minsUntil = evMins - nowMins;
+      for (const reminderMinute of REMINDER_MINUTES) {
+        const reminderKey = `reminder:${reminderMinute}:${ev.id}:${today}`;
+        if (!sent.has(reminderKey)) {
+          const windowStart = reminderMinute - 5;
+          const windowEnd = reminderMinute + 5;
+          if (minsUntil >= windowStart && minsUntil <= windowEnd) {
+            sent.add(reminderKey);
+            await sendMsg(buildReminderMsg(ev, reminderMinute));
+          }
         }
       }
     }

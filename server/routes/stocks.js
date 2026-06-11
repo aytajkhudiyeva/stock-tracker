@@ -111,6 +111,36 @@ router.get('/analysis/:symbol', async (req, res) => {
   }
 });
 
+router.get('/forecast/:symbol', async (req, res) => {
+  try {
+    const { symbol } = req.params;
+    const forecast = await yahooFinance.analystForecast(symbol.toUpperCase());
+    res.json(forecast);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get('/news/:symbol', async (req, res) => {
+  try {
+    const { symbol } = req.params;
+    const data = await yahooFinance.news(symbol.toUpperCase());
+    res.json(data);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get('/activity/:symbol', async (req, res) => {
+  try {
+    const { symbol } = req.params;
+    const data = await yahooFinance.corporateActivity(symbol.toUpperCase());
+    res.json(data);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 router.get('/search/:query', async (req, res) => {
   try {
     const { query } = req.params;

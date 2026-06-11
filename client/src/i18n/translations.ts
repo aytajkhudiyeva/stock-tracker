@@ -16,11 +16,20 @@ export interface Translations {
   enterTicker: string;
   add: string;
   selectStock: string;
+  quoteLoadFailed: string;
+  retry: string;
+  previousWeek: string;
+  nextWeek: string;
+  currentWeek: string;
+  noEventsThisDay: string;
+  darkTheme: string;
+  lightTheme: string;
 
   // Tabs
   tabChart: string;
   tabMetrics: string;
   tabAnalysis: string;
+  tabForecast: string;
   tabAlerts: string;
 
   // Stock card
@@ -164,6 +173,34 @@ export interface Translations {
   computingIndicators: string;
   analysisFailed: string;
 
+  // Analyst forecast
+  analystForecast: string;
+  analystConsensus: string;
+  analystPriceTarget: string;
+  averageTarget: string;
+  highTarget: string;
+  lowTarget: string;
+  medianTarget: string;
+  impliedMove: string;
+  basedOnAnalysts: string;
+  ratingBreakdown: string;
+  recentRatings: string;
+  noForecastData: string;
+  forecastLoading: string;
+  forecastFailed: string;
+  strongBuyLabel: string;
+  moderateBuyLabel: string;
+  buyLabel: string;
+  holdLabel: string;
+  sellLabel: string;
+  strongSellLabel: string;
+  firmLabel: string;
+  actionLabel: string;
+  ratingLabel: string;
+  dateLabel: string;
+  fromLabel: string;
+  sourceLabel: string;
+
   // Earnings
   tabEarnings: string;
   earningsCalendar: string;
@@ -229,6 +266,17 @@ export interface Translations {
   econRef: string;
   econForecastNA: string;
   econUS: string;
+  econWhatsappTitle: string;
+  econWhatsappPhonePlaceholder: string;
+  econWhatsappSubscribe: string;
+  econWhatsappTest: string;
+  econWhatsappSaving: string;
+  econWhatsappSuccess: string;
+  econWhatsappTestSent: string;
+  econWhatsappInvalid: string;
+  econWhatsappFailed: string;
+  econWhatsappDevMode: string;
+  econWhatsappTestNotConfigured: string;
 
   // Intraday / Pivot Points
   pivotPoint: string;
@@ -255,11 +303,20 @@ const en: Translations = {
   enterTicker: 'Enter ticker...',
   add: 'Add',
   selectStock: 'Select a stock to view details',
+  quoteLoadFailed: 'Market data could not be loaded right now.',
+  retry: 'Retry',
+  previousWeek: 'Previous week',
+  nextWeek: 'Next week',
+  currentWeek: 'This week',
+  noEventsThisDay: 'No scheduled events',
+  darkTheme: 'Dark',
+  lightTheme: 'Light',
 
-  tabChart: '📈 Chart',
-  tabMetrics: '📊 Metrics',
-  tabAnalysis: '🔬 Analysis',
-  tabAlerts: '🔔 Alerts',
+  tabChart: 'Chart',
+  tabMetrics: 'Metrics',
+  tabAnalysis: 'Analysis',
+  tabForecast: 'Forecast',
+  tabAlerts: 'Alerts',
 
   marketCap: 'Market Cap',
   peRatio: 'P/E Ratio',
@@ -325,19 +382,19 @@ const en: Translations = {
   neutral: 'Neutral',
   downtrend: 'Downtrend',
   strongDowntrend: 'Strong Downtrend',
-  buyCount: 'Buy',
+  buyCount: 'Bullish',
   neutralCount: 'Neutral',
-  sellCount: 'Sell',
+  sellCount: 'Bearish',
   indicatorSignals: 'Indicator Signals',
 
-  strongBuy: 'Strong Buy',
-  buy: 'Buy',
-  sell: 'Sell',
-  strongSell: 'Strong Sell',
+  strongBuy: 'Strong Bullish',
+  buy: 'Bullish',
+  sell: 'Bearish',
+  strongSell: 'Strong Bearish',
 
-  pillBuy: '▲ Buy',
+  pillBuy: '▲ Bullish',
   pillNeutral: '— Neutral',
-  pillSell: '▼ Sell',
+  pillSell: '▼ Bearish',
 
   insufficientData: 'Insufficient data',
   oversold: 'Oversold',
@@ -387,7 +444,34 @@ const en: Translations = {
   computingIndicators: 'Computing technical indicators…',
   analysisFailed: 'Failed to load technical analysis',
 
-  tabEarnings: '📅 Earnings',
+  analystForecast: 'Analyst Forecast',
+  analystConsensus: 'Analyst Sentiment',
+  analystPriceTarget: '12-Month Price Target',
+  averageTarget: 'Average Target',
+  highTarget: 'High Target',
+  lowTarget: 'Low Target',
+  medianTarget: 'Median Target',
+  impliedMove: 'Implied Move',
+  basedOnAnalysts: 'Based on analysts',
+  ratingBreakdown: 'Rating Breakdown',
+  recentRatings: 'Recent Rating Changes',
+  noForecastData: 'No analyst forecast data is available for this symbol',
+  forecastLoading: 'Loading analyst forecast…',
+  forecastFailed: 'Could not load analyst forecast',
+  strongBuyLabel: 'Strong Bullish',
+  moderateBuyLabel: 'Moderately Bullish',
+  buyLabel: 'Bullish',
+  holdLabel: 'Hold',
+  sellLabel: 'Bearish',
+  strongSellLabel: 'Strong Bearish',
+  firmLabel: 'Firm',
+  actionLabel: 'Action',
+  ratingLabel: 'Rating',
+  dateLabel: 'Date',
+  fromLabel: 'From',
+  sourceLabel: 'Source',
+
+  tabEarnings: 'Earnings',
   earningsCalendar: 'Earnings Calendar',
   nextEarnings: 'Next Earnings',
   daysUntil: 'days away',
@@ -413,7 +497,7 @@ const en: Translations = {
   revenueEstimateLabel: 'Rev. Est.',
   resultLabel: 'Result',
 
-  portfolio: '💼 Portfolio',
+  portfolio: 'Portfolio',
   portfolioEmpty: 'No positions yet',
   portfolioEmptyHint: 'Add stocks to track your portfolio',
   addPosition: '+ Add Position',
@@ -427,10 +511,10 @@ const en: Translations = {
   pnl: 'P&L',
   shares: 'Qty',
   portfolioSummary: 'Portfolio Summary',
-  dashboardView: '📈 Dashboard',
+  dashboardView: 'Dashboard',
 
   economicCalendar: 'Economic Calendar',
-  economicCalendarView: '🌍 Economy',
+  economicCalendarView: 'Economy',
   econImpactHigh: 'High',
   econImpactMedium: 'Medium',
   econImpactLow: 'Low',
@@ -448,6 +532,17 @@ const en: Translations = {
   econRef: 'Ref.',
   econForecastNA: 'Consensus N/A',
   econUS: 'United States',
+  econWhatsappTitle: 'WhatsApp alerts',
+  econWhatsappPhonePlaceholder: '+994501234567',
+  econWhatsappSubscribe: 'Activate',
+  econWhatsappTest: 'Send test',
+  econWhatsappSaving: 'Working...',
+  econWhatsappSuccess: 'WhatsApp alerts are active for economic releases.',
+  econWhatsappTestSent: 'Test message was sent.',
+  econWhatsappInvalid: 'Enter a valid mobile number with country code.',
+  econWhatsappFailed: 'WhatsApp could not be activated right now.',
+  econWhatsappDevMode: 'Number saved. Add WhatsApp API credentials to send real messages.',
+  econWhatsappTestNotConfigured: 'Test was not sent: WhatsApp API credentials are missing.',
 
   pivotPoint: 'Pivot Point',
   pivotLevels: 'Pivot Levels',
@@ -473,11 +568,20 @@ const az: Translations = {
   enterTicker: 'Tikker daxil edin...',
   add: 'Əlavə Et',
   selectStock: 'Detalları görmək üçün səhm seçin',
+  quoteLoadFailed: 'Bazar məlumatları hazırda yüklənmədi.',
+  retry: 'Yenidən yoxla',
+  previousWeek: 'Əvvəlki həftə',
+  nextWeek: 'Növbəti həftə',
+  currentWeek: 'Bu həftə',
+  noEventsThisDay: 'Planlanmış xəbər yoxdur',
+  darkTheme: 'Tünd',
+  lightTheme: 'Açıq',
 
-  tabChart: '📈 Qrafik',
-  tabMetrics: '📊 Göstəricilər',
-  tabAnalysis: '🔬 Analiz',
-  tabAlerts: '🔔 Xəbərdarlıqlar',
+  tabChart: 'Qrafik',
+  tabMetrics: 'Göstəricilər',
+  tabAnalysis: 'Analiz',
+  tabForecast: 'Proqnoz',
+  tabAlerts: 'Xəbərdarlıqlar',
 
   marketCap: 'Bazar Kap.',
   peRatio: 'P/E Əmsalı',
@@ -543,19 +647,19 @@ const az: Translations = {
   neutral: 'Neytral',
   downtrend: 'Düşüş Trendi',
   strongDowntrend: 'Güclü Düşüş Trendi',
-  buyCount: 'Alış',
+  buyCount: 'Yüksəliş',
   neutralCount: 'Neytral',
-  sellCount: 'Satış',
+  sellCount: 'Düşüş',
   indicatorSignals: 'İndikator Siqnalları',
 
-  strongBuy: 'Güclü Alış',
-  buy: 'Alış',
-  sell: 'Satış',
-  strongSell: 'Güclü Satış',
+  strongBuy: 'Güclü Yüksəliş',
+  buy: 'Yüksəliş',
+  sell: 'Düşüş',
+  strongSell: 'Güclü Düşüş',
 
-  pillBuy: '▲ Alış',
+  pillBuy: '▲ Yüksəliş',
   pillNeutral: '— Neytral',
-  pillSell: '▼ Satış',
+  pillSell: '▼ Düşüş',
 
   insufficientData: 'Məlumat kifayət etmir',
   oversold: 'Həddən artıq satılmış',
@@ -605,7 +709,34 @@ const az: Translations = {
   computingIndicators: 'Texniki göstəricilər hesablanır…',
   analysisFailed: 'Texniki analiz yüklənmədi',
 
-  tabEarnings: '📅 Hesabat',
+  analystForecast: 'Analitik Proqnozu',
+  analystConsensus: 'Analitik Sentimenti',
+  analystPriceTarget: '12 Aylıq Hədəf Qiymət',
+  averageTarget: 'Orta Hədəf',
+  highTarget: 'Yuxarı Hədəf',
+  lowTarget: 'Aşağı Hədəf',
+  medianTarget: 'Median Hədəf',
+  impliedMove: 'Gözlənən Hərəkət',
+  basedOnAnalysts: 'Analitik əsasında',
+  ratingBreakdown: 'Reytinq Bölgüsü',
+  recentRatings: 'Son Reytinq Dəyişiklikləri',
+  noForecastData: 'Bu simvol üçün analitik proqnozu yoxdur',
+  forecastLoading: 'Analitik proqnozu yüklənir…',
+  forecastFailed: 'Analitik proqnozu yüklənmədi',
+  strongBuyLabel: 'Güclü Yüksəliş',
+  moderateBuyLabel: 'Orta Yüksəliş',
+  buyLabel: 'Yüksəliş',
+  holdLabel: 'Saxla',
+  sellLabel: 'Düşüş',
+  strongSellLabel: 'Güclü Düşüş',
+  firmLabel: 'Şirkət',
+  actionLabel: 'Əməliyyat',
+  ratingLabel: 'Reytinq',
+  dateLabel: 'Tarix',
+  fromLabel: 'Əvvəlki',
+  sourceLabel: 'Mənbə',
+
+  tabEarnings: 'Hesabat',
   earningsCalendar: 'Hesabat Təqvimi',
   nextEarnings: 'Növbəti Hesabat',
   daysUntil: 'gün sonra',
@@ -631,7 +762,7 @@ const az: Translations = {
   revenueEstimateLabel: 'Gəlir Gözlənilən',
   resultLabel: 'Nəticə',
 
-  portfolio: '💼 Portfel',
+  portfolio: 'Portfel',
   portfolioEmpty: 'Hələ mövqe yoxdur',
   portfolioEmptyHint: 'Portfelinizi izləmək üçün səhm əlavə edin',
   addPosition: '+ Mövqe Əlavə Et',
@@ -645,10 +776,10 @@ const az: Translations = {
   pnl: 'M/Z',
   shares: 'Miqdar',
   portfolioSummary: 'Portfel Xülasəsi',
-  dashboardView: '📈 İdarə Paneli',
+  dashboardView: 'İdarə Paneli',
 
   economicCalendar: 'İqtisadi Təqvim',
-  economicCalendarView: '🌍 İqtisadiyyat',
+  economicCalendarView: 'İqtisadiyyat',
   econImpactHigh: 'Yüksək',
   econImpactMedium: 'Orta',
   econImpactLow: 'Aşağı',
@@ -666,6 +797,17 @@ const az: Translations = {
   econRef: 'İstinad',
   econForecastNA: 'Konsensus mövcud deyil',
   econUS: 'Birləşmiş Ştatlar',
+  econWhatsappTitle: 'WhatsApp bildirişləri',
+  econWhatsappPhonePlaceholder: '+994501234567',
+  econWhatsappSubscribe: 'Aktiv et',
+  econWhatsappTest: 'Test göndər',
+  econWhatsappSaving: 'İcra olunur...',
+  econWhatsappSuccess: 'İqtisadi açıqlamalar üçün WhatsApp bildirişləri aktivdir.',
+  econWhatsappTestSent: 'Test mesajı göndərildi.',
+  econWhatsappInvalid: 'Ölkə kodu ilə düzgün mobil nömrə daxil edin.',
+  econWhatsappFailed: 'WhatsApp hazırda aktiv edilə bilmədi.',
+  econWhatsappDevMode: 'Nömrə saxlanıldı. Real mesaj üçün WhatsApp API açarlarını əlavə edin.',
+  econWhatsappTestNotConfigured: 'Test göndərilmədi: WhatsApp API açarları yoxdur.',
 
   pivotPoint: 'Pivot Nöqtəsi',
   pivotLevels: 'Pivot Səviyyələri',

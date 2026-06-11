@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchEconomicCalendar } from '../services/api';
+import { fetchEconomicCalendar, sendWhatsappTest, subscribeEconomicWhatsapp } from '../services/api';
 import { useLanguage } from '../i18n/LanguageContext';
 import type { EconomicEvent } from '../types';
 
@@ -20,6 +20,23 @@ function todayStr() {
   return new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
 }
 
+function toDateStr(d: Date) {
+  return d.toISOString().split('T')[0];
+}
+
+function startOfWeek(date = new Date()) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12));
+  const dow = d.getUTCDay() === 0 ? 6 : d.getUTCDay() - 1;
+  d.setUTCDate(d.getUTCDate() - dow);
+  return toDateStr(d);
+}
+
+function addDays(dateStr: string, days: number) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + days);
+  return toDateStr(d);
+}
+
 function fmtDate(iso: string, lang: string) {
   try {
     const d = new Date(iso + 'T12:00:00Z');
@@ -29,19 +46,13 @@ function fmtDate(iso: string, lang: string) {
   } catch { return iso; }
 }
 
-function groupByWeek(events: EconomicEvent[]) {
+function groupByDay(events: EconomicEvent[]) {
   const groups: Record<string, EconomicEvent[]> = {};
   for (const ev of events) {
-    const d = new Date(ev.date + 'T12:00:00Z');
-    // Monday of the week
-    const dow = d.getUTCDay() === 0 ? 6 : d.getUTCDay() - 1;
-    const monday = new Date(d);
-    monday.setUTCDate(d.getUTCDate() - dow);
-    const key = monday.toISOString().split('T')[0];
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(ev);
+    if (!groups[ev.date]) groups[ev.date] = [];
+    groups[ev.date].push(ev);
   }
-  return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+  return groups;
 }
 
 function weekLabel(mondayStr: string, lang: string) {
@@ -59,24 +70,70 @@ export default function EconomicCalendar() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<ImpactFilter>('all');
+  const [weekStart, setWeekStart] = useState(() => startOfWeek());
+  const [whatsappPhone, setWhatsappPhone] = useState('');
+  const [whatsappStatus, setWhatsappStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [whatsappMessage, setWhatsappMessage] = useState('');
 
   useEffect(() => {
     setLoading(true);
     setError('');
-    fetchEconomicCalendar(14, 60)
+    fetchEconomicCalendar(21, 60)
       .then(d => { setEvents(d.events); setLoading(false); })
       .catch(() => { setError(t.econFailed); setLoading(false); });
   }, []);
 
+  const normalisedWhatsappPhone = whatsappPhone.trim().replace(/[\s()-]/g, '');
+
+  const validateWhatsappPhone = () => /^\+?[1-9]\d{7,14}$/.test(normalisedWhatsappPhone);
+
+  const handleWhatsappSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateWhatsappPhone()) {
+      setWhatsappStatus('error');
+      setWhatsappMessage(t.econWhatsappInvalid);
+      return;
+    }
+    setWhatsappStatus('loading');
+    setWhatsappMessage('');
+    try {
+      const result = await subscribeEconomicWhatsapp(whatsappPhone);
+      setWhatsappPhone(result.phone);
+      setWhatsappStatus('success');
+      setWhatsappMessage(result.configured ? t.econWhatsappSuccess : t.econWhatsappDevMode);
+    } catch {
+      setWhatsappStatus('error');
+      setWhatsappMessage(t.econWhatsappFailed);
+    }
+  };
+
+  const handleWhatsappTest = async () => {
+    if (!validateWhatsappPhone()) {
+      setWhatsappStatus('error');
+      setWhatsappMessage(t.econWhatsappInvalid);
+      return;
+    }
+    setWhatsappStatus('loading');
+    setWhatsappMessage('');
+    try {
+      const result = await sendWhatsappTest(whatsappPhone);
+      setWhatsappStatus(result.configured ? 'success' : 'error');
+      setWhatsappMessage(result.configured ? t.econWhatsappTestSent : t.econWhatsappTestNotConfigured);
+    } catch {
+      setWhatsappStatus('error');
+      setWhatsappMessage(t.econWhatsappFailed);
+    }
+  };
+
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px', color: '#64748b' }}>
-      <div style={{ width: '28px', height: '28px', border: '3px solid #1e2d47', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 0.8s linear infinite', marginRight: '12px' }} />
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px', color: '#6e7d92' }}>
+      <div style={{ width: '28px', height: '28px', border: '3px solid #1e2d47', borderTopColor: '#0092bc', borderRadius: '50%', animation: 'spin 0.8s linear infinite', marginRight: '12px' }} />
       {t.econLoading}
     </div>
   );
 
   if (error) return (
-    <div style={{ textAlign: 'center', padding: '64px', color: '#64748b' }}>
+    <div style={{ textAlign: 'center', padding: '64px', color: '#6e7d92' }}>
       <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🌍</div>
       <div>{error}</div>
     </div>
@@ -87,68 +144,121 @@ export default function EconomicCalendar() {
     : filter === 'high' ? events.filter(e => e.impact === 'high')
     : events.filter(e => e.impact === 'medium' || e.impact === 'high');
 
-  const weeks = groupByWeek(filtered);
+  const weekEnd = addDays(weekStart, 6);
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const weekEvents = filtered.filter(e => e.date >= weekStart && e.date <= weekEnd);
+  const eventsByDay = groupByDay(weekEvents);
 
   return (
     <div>
       {/* Header row */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
-        <h2 style={{ margin: 0, color: '#f1f5f9', fontSize: '1.2rem', fontWeight: 700 }}>
+        <h2 style={{ margin: 0, color: '#1a2433', fontSize: '1.2rem', fontWeight: 700 }}>
           🌍 {t.economicCalendar}
         </h2>
-        <div style={{ display: 'flex', gap: '6px' }}>
-          {(['all', 'high', 'medium'] as ImpactFilter[]).map(f => (
-            <button key={f}
-              onClick={() => setFilter(f)}
-              style={{
-                padding: '5px 14px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600,
-                cursor: 'pointer', transition: 'all 0.15s',
-                background: filter === f ? 'rgba(59,130,246,0.15)' : 'transparent',
-                border: filter === f ? '1px solid rgba(59,130,246,0.4)' : '1px solid #1e2d47',
-                color: filter === f ? '#60a5fa' : '#64748b',
-              }}
-            >
-              {f === 'all' ? t.econAllEvents : f === 'high' ? t.econHighOnly : t.econImpactMedium + '+'}
+        <div className="econ-toolbar">
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <button className="btn-secondary" onClick={() => setWeekStart(addDays(weekStart, -7))} style={{ padding: '5px 10px', fontSize: '0.75rem' }}>
+              ← {t.previousWeek}
             </button>
-          ))}
+            <button className="btn-secondary" onClick={() => setWeekStart(startOfWeek())} style={{ padding: '5px 10px', fontSize: '0.75rem' }}>
+              {t.currentWeek}
+            </button>
+            <button className="btn-secondary" onClick={() => setWeekStart(addDays(weekStart, 7))} style={{ padding: '5px 10px', fontSize: '0.75rem' }}>
+              {t.nextWeek} →
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: '6px' }}>
+            {(['all', 'high', 'medium'] as ImpactFilter[]).map(f => (
+              <button key={f}
+                onClick={() => setFilter(f)}
+                className={`view-tab ${filter === f ? 'view-tab-active' : ''}`}
+                style={{ padding: '5px 14px', fontSize: '0.75rem' }}
+              >
+                {f === 'all' ? t.econAllEvents : f === 'high' ? t.econHighOnly : t.econImpactMedium + '+'}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
+
+      <form onSubmit={handleWhatsappSubscribe} className="econ-whatsapp-panel">
+        <div>
+          <div style={{ color: '#1a2433', fontSize: '0.86rem', fontWeight: 700 }}>{t.econWhatsappTitle}</div>
+          {whatsappMessage && (
+            <div style={{ color: whatsappStatus === 'success' ? '#22c55e' : '#ef4444', fontSize: '0.72rem', marginTop: '4px' }}>
+              {whatsappMessage}
+            </div>
+          )}
+        </div>
+        <div className="econ-whatsapp-controls">
+          <input
+            className="input-field"
+            value={whatsappPhone}
+            onChange={e => { setWhatsappPhone(e.target.value); setWhatsappStatus('idle'); setWhatsappMessage(''); }}
+            placeholder={t.econWhatsappPhonePlaceholder}
+            inputMode="tel"
+          />
+          <button className="btn-secondary" type="button" disabled={whatsappStatus === 'loading'} onClick={handleWhatsappTest} style={{ whiteSpace: 'nowrap' }}>
+            {whatsappStatus === 'loading' ? t.econWhatsappSaving : t.econWhatsappTest}
+          </button>
+          <button className="btn-primary" type="submit" disabled={whatsappStatus === 'loading'} style={{ whiteSpace: 'nowrap' }}>
+            {whatsappStatus === 'loading' ? t.econWhatsappSaving : t.econWhatsappSubscribe}
+          </button>
+        </div>
+      </form>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 1, border: '1px solid #2d2b20', background: '#2d2b20', marginBottom: 18 }}>
+        {[
+          { event: 'CPI above forecast', map: 'Rate-sensitive growth risk flag: AI chips / EV volatility can rise; banks mixed.' },
+          { event: 'Fed hawkish tone', map: 'Long-duration tech sentiment can cool; cash-flow defensives may hold steadier.' },
+          { event: 'NFP hot print', map: 'Yields can reprice; mega-cap growth and small caps may see different sensitivity.' },
+          { event: 'Retail sales weak', map: 'Consumer tech and discretionary demand flags become more visible.' },
+        ].map(item => (
+          <div key={item.event} style={{ background: '#080808', padding: 12 }}>
+            <div style={{ color: '#f7b500', fontSize: '0.68rem', fontWeight: 900, textTransform: 'uppercase' }}>{item.event}</div>
+            <div style={{ color: '#b4b49f', fontSize: '0.78rem', marginTop: 6, lineHeight: 1.4 }}>{item.map}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="econ-week-title">{weekLabel(weekStart, lang)}</div>
 
       {/* Legend */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
         {(['high', 'medium', 'low'] as const).map(imp => (
           <div key={imp} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: IMPACT_COLORS[imp].dot }} />
-            <span style={{ fontSize: '0.72rem', color: '#64748b' }}>
+            <span style={{ fontSize: '0.72rem', color: '#6e7d92' }}>
               {imp === 'high' ? t.econImpactHigh : imp === 'medium' ? t.econImpactMedium : t.econImpactLow}
             </span>
           </div>
         ))}
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#3b82f6' }} />
-          <span style={{ fontSize: '0.72rem', color: '#64748b' }}>{t.econReleased}</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#0092bc' }} />
+          <span style={{ fontSize: '0.72rem', color: '#6e7d92' }}>{t.econReleased}</span>
         </div>
       </div>
 
-      {filtered.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '48px', color: '#64748b', fontSize: '0.88rem' }}>
+      {weekEvents.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '48px', color: '#6e7d92', fontSize: '0.88rem' }}>
           {t.econNoEvents}
         </div>
       )}
 
-      {weeks.map(([mondayKey, weekEvents]) => (
-        <div key={mondayKey} style={{ marginBottom: '24px' }}>
-          {/* Week header */}
-          <div style={{
-            fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px',
-            color: '#475569', marginBottom: '8px', paddingBottom: '6px', borderBottom: '1px solid #1e2d47',
-          }}>
-            {weekLabel(mondayKey, lang)}
+      {weekDays.map(day => {
+        const dayEvents = eventsByDay[day] || [];
+        return (
+        <div key={day} style={{ marginBottom: '18px' }}>
+          <div className="econ-day-header">
+            <span>{fmtDate(day, lang)}</span>
+            <span>{dayEvents.length}</span>
           </div>
-
-          {/* Events */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            {weekEvents.map(ev => {
+            {dayEvents.length === 0 && (
+              <div className="econ-empty-day">{t.noEventsThisDay}</div>
+            )}
+            {dayEvents.map(ev => {
               const colors = IMPACT_COLORS[ev.impact];
               const isToday = ev.date === today;
               const isPast = ev.date < today;
@@ -169,10 +279,10 @@ export default function EconomicCalendar() {
                 }}>
 
                   {/* Date */}
-                  <div style={{ color: isToday ? '#60a5fa' : '#64748b', fontSize: '0.72rem', fontWeight: isToday ? 700 : 400 }}>
+                  <div style={{ color: isToday ? '#0092bc' : '#6e7d92', fontSize: '0.72rem', fontWeight: isToday ? 700 : 400 }}>
                     {isToday
-                      ? <span style={{ color: '#60a5fa', fontWeight: 700 }}>{t.econToday} {ev.time} ET</span>
-                      : <>{fmtDate(ev.date, lang)}<br /><span style={{ color: '#475569' }}>{ev.time} ET</span></>
+                      ? <span style={{ color: '#0092bc', fontWeight: 700 }}>{t.econToday} {ev.time} ET</span>
+                      : <>{fmtDate(ev.date, lang)}<br /><span style={{ color: '##8b99ad' }}>{ev.time} ET</span></>
                     }
                   </div>
 
@@ -183,11 +293,11 @@ export default function EconomicCalendar() {
 
                   {/* Event name + reference */}
                   <div>
-                    <div style={{ color: '#f1f5f9', fontSize: '0.85rem', fontWeight: 600 }}>
+                    <div style={{ color: '#1a2433', fontSize: '0.85rem', fontWeight: 600 }}>
                       {icon} {name}
                     </div>
                     {ev.referenceMonth && (
-                      <div style={{ color: '#475569', fontSize: '0.68rem', marginTop: '1px' }}>
+                      <div style={{ color: '##8b99ad', fontSize: '0.68rem', marginTop: '1px' }}>
                         {t.econRef} {ev.referenceMonth}
                       </div>
                     )}
@@ -195,16 +305,16 @@ export default function EconomicCalendar() {
 
                   {/* Previous */}
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ color: '#475569', fontSize: '0.62rem', textTransform: 'uppercase', marginBottom: '2px' }}>{t.econPrevious}</div>
-                    <div style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 500 }}>
+                    <div style={{ color: '##8b99ad', fontSize: '0.62rem', textTransform: 'uppercase', marginBottom: '2px' }}>{t.econPrevious}</div>
+                    <div style={{ color: '#5b6b80', fontSize: '0.8rem', fontWeight: 500 }}>
                       {ev.previous != null ? `${ev.previous}${ev.unit !== 'K' ? ev.unit : ''}` : '—'}
                     </div>
                   </div>
 
                   {/* Forecast */}
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ color: '#475569', fontSize: '0.62rem', textTransform: 'uppercase', marginBottom: '2px' }}>{t.econForecast}</div>
-                    <div style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 500 }}>
+                    <div style={{ color: '##8b99ad', fontSize: '0.62rem', textTransform: 'uppercase', marginBottom: '2px' }}>{t.econForecast}</div>
+                    <div style={{ color: '#5b6b80', fontSize: '0.8rem', fontWeight: 500 }}>
                       {ev.forecast != null ? `${ev.forecast}${ev.unit !== 'K' ? ev.unit : ''}` : '—'}
                     </div>
                   </div>
@@ -213,7 +323,7 @@ export default function EconomicCalendar() {
                   <div style={{ textAlign: 'right' }}>
                     {ev.released && ev.actual != null ? (
                       <>
-                        <div style={{ color: '#475569', fontSize: '0.62rem', textTransform: 'uppercase', marginBottom: '2px' }}>{t.econActual}</div>
+                        <div style={{ color: '##8b99ad', fontSize: '0.62rem', textTransform: 'uppercase', marginBottom: '2px' }}>{t.econActual}</div>
                         <div style={{ color: '#22c55e', fontSize: '0.85rem', fontWeight: 700 }}>
                           {ev.actual}{ev.unit !== 'K' ? ev.unit : ''}
                         </div>
@@ -221,7 +331,7 @@ export default function EconomicCalendar() {
                     ) : ev.released ? (
                       <span style={{
                         background: 'rgba(100,116,139,0.15)', border: '1px solid #1e2d47',
-                        color: '#64748b', borderRadius: '4px', padding: '2px 7px', fontSize: '0.66rem',
+                        color: '#6e7d92', borderRadius: '4px', padding: '2px 7px', fontSize: '0.66rem',
                       }}>
                         {t.econReleased}
                       </span>
@@ -229,7 +339,7 @@ export default function EconomicCalendar() {
                       <span style={{
                         background: isToday ? 'rgba(59,130,246,0.1)' : 'rgba(100,116,139,0.1)',
                         border: `1px solid ${isToday ? 'rgba(59,130,246,0.25)' : '#1e2d47'}`,
-                        color: isToday ? '#60a5fa' : '#64748b',
+                        color: isToday ? '#0092bc' : '#6e7d92',
                         borderRadius: '4px', padding: '2px 7px', fontSize: '0.66rem',
                       }}>
                         {isToday ? t.econToday : t.econUpcoming}
@@ -241,9 +351,9 @@ export default function EconomicCalendar() {
             })}
           </div>
         </div>
-      ))}
+      )})}
 
-      <div style={{ color: '#334155', fontSize: '0.68rem', textAlign: 'center', marginTop: '16px' }}>
+      <div style={{ color: '#dce3ed', fontSize: '0.68rem', textAlign: 'center', marginTop: '16px' }}>
         Data: BLS (CPI, NFP, Unemployment, PPI) · Dates are approximate (±1 week) · {t.econForecastNA}
       </div>
     </div>

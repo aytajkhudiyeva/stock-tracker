@@ -50,7 +50,7 @@ export default function AlertsPanel({ defaultSymbol }: Props) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 style={{ color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', margin: 0 }}>
+          <h3 style={{ color: '#5b6b80', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', margin: 0 }}>
             {t.priceAlerts}
           </h3>
           <div className="text-muted" style={{ fontSize: '0.72rem', marginTop: '2px' }}>
@@ -69,20 +69,33 @@ export default function AlertsPanel({ defaultSymbol }: Props) {
       )}
 
       {showForm && (
-        <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)', borderRadius: '8px', padding: '12px 14px', marginBottom: '12px', fontSize: '0.8rem', color: '#94a3b8' }}>
-          <div style={{ color: '#60a5fa', fontWeight: 600, marginBottom: '4px' }}>{t.telegramSetup}</div>
+        <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)', borderRadius: '8px', padding: '12px 14px', marginBottom: '12px', fontSize: '0.8rem', color: '#5b6b80' }}>
+          <div style={{ color: '#0092bc', fontWeight: 600, marginBottom: '4px' }}>{t.telegramSetup}</div>
           <div>{t.telegramStep1.replace('@BotFather', '')}
-            <a href="https://t.me/BotFather" target="_blank" rel="noreferrer" style={{ color: '#60a5fa' }}>@BotFather</a>
+            <a href="https://t.me/BotFather" target="_blank" rel="noreferrer" style={{ color: '#0092bc' }}>@BotFather</a>
           </div>
           <div>{t.telegramStep2}</div>
           <div>{t.telegramStep3.replace('@userinfobot', '')}
-            <a href="https://t.me/userinfobot" target="_blank" rel="noreferrer" style={{ color: '#60a5fa' }}>@userinfobot</a>
+            <a href="https://t.me/userinfobot" target="_blank" rel="noreferrer" style={{ color: '#0092bc' }}>@userinfobot</a>
           </div>
         </div>
       )}
 
       {showForm && (
         <form onSubmit={handleCreate} style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '10px', padding: '16px', marginBottom: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(120px, 1fr))', gap: 6, marginBottom: 12 }}>
+            {[
+              { label: 'RSI < 30', hint: 'Oversold setup' },
+              { label: 'Target Change', hint: 'Analyst update' },
+              { label: 'Earnings -3d', hint: 'Calendar risk' },
+              { label: 'Volume 2x', hint: 'Unusual activity' },
+            ].map(preset => (
+              <button key={preset.label} type="button" className="btn-secondary" style={{ padding: '8px', textAlign: 'left' }} onClick={() => setSuccess(`${preset.label} smart alert template selected. Add a price level to activate Telegram delivery.`)}>
+                <div style={{ color: '#f7b500', fontSize: '0.72rem', fontWeight: 900 }}>{preset.label}</div>
+                <div style={{ color: '#8b8b7a', fontSize: '0.65rem' }}>{preset.hint}</div>
+              </button>
+            ))}
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
             <div>
               <label className="text-muted" style={{ fontSize: '0.72rem', display: 'block', marginBottom: '4px' }}>{t.symbolLabel}</label>
@@ -136,7 +149,7 @@ export default function AlertsPanel({ defaultSymbol }: Props) {
       )}
 
       {alerts.length === 0 && !showForm && (
-        <div style={{ textAlign: 'center', padding: '32px 0', color: '#64748b' }}>
+        <div style={{ textAlign: 'center', padding: '32px 0', color: '#6e7d92' }}>
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 10px', display: 'block', opacity: 0.5 }}>
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -160,7 +173,7 @@ function AlertRow({ alert, onDelete, locale }: { alert: Alert; onDelete: (id: st
     }}>
       <div>
         <div className="flex items-center gap-2">
-          <span style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.88rem' }}>{alert.symbol}</span>
+          <span style={{ color: '#1a2433', fontWeight: 700, fontSize: '0.88rem' }}>{alert.symbol}</span>
           <span style={{
             background: alert.condition === 'above' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
             color: alert.condition === 'above' ? '#22c55e' : '#ef4444',

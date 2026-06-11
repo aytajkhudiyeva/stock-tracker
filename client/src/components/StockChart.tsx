@@ -71,18 +71,18 @@ function PivotTable({ pivots, currentPrice, todayOpen, todayHigh, todayLow, t }:
       {/* Session stats */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '14px', flexWrap: 'wrap' }}>
         {([
-          { label: t.open,    val: todayOpen, color: '#94a3b8' },
+          { label: t.open,    val: todayOpen, color: '#5b6b80' },
           { label: t.dayHigh, val: todayHigh, color: '#22c55e' },
           { label: t.dayLow,  val: todayLow,  color: '#ef4444' },
         ] as const).map(({ label, val, color }) => val != null && (
           <div key={label} style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '6px', padding: '5px 10px' }}>
-            <div style={{ color: '#475569', fontSize: '0.6rem', textTransform: 'uppercase', marginBottom: '1px' }}>{label}</div>
+            <div style={{ color: '##8b99ad', fontSize: '0.6rem', textTransform: 'uppercase', marginBottom: '1px' }}>{label}</div>
             <div style={{ color, fontSize: '0.82rem', fontWeight: 700 }}>${val.toFixed(2)}</div>
           </div>
         ))}
         <div style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '6px', padding: '5px 10px' }}>
-          <div style={{ color: '#475569', fontSize: '0.6rem', textTransform: 'uppercase', marginBottom: '1px' }}>{t.prevDay} ({pivots.prevDate})</div>
-          <div style={{ color: '#64748b', fontSize: '0.75rem' }}>
+          <div style={{ color: '##8b99ad', fontSize: '0.6rem', textTransform: 'uppercase', marginBottom: '1px' }}>{t.prevDay} ({pivots.prevDate})</div>
+          <div style={{ color: '#6e7d92', fontSize: '0.75rem' }}>
             H: ${pivots.prevHigh.toFixed(2)} · L: ${pivots.prevLow.toFixed(2)} · C: ${pivots.prevClose.toFixed(2)}
           </div>
         </div>
@@ -91,7 +91,7 @@ function PivotTable({ pivots, currentPrice, todayOpen, todayHigh, todayLow, t }:
       {/* Header */}
       <div style={{
         fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px',
-        color: '#475569', marginBottom: '6px',
+        color: '##8b99ad', marginBottom: '6px',
         display: 'grid', gridTemplateColumns: '36px 88px 74px 1fr', gap: '0 10px', padding: '0 12px',
       }}>
         <span>{t.pivotLevels}</span>
@@ -117,7 +117,7 @@ function PivotTable({ pivots, currentPrice, todayOpen, todayHigh, todayLow, t }:
             {/* Label */}
             <div style={{ color: lv.color, fontWeight: 700, fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
               {lv.label}
-              {lv.near && <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#60a5fa', display: 'inline-block', boxShadow: '0 0 6px #60a5fa' }} />}
+              {lv.near && <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#0092bc', display: 'inline-block', boxShadow: '0 0 6px #0092bc' }} />}
             </div>
             {/* Price */}
             <div style={{ color: '#e2e8f0', fontSize: '0.82rem', fontWeight: 600, textAlign: 'right', fontFamily: 'monospace' }}>
@@ -140,7 +140,7 @@ function PivotTable({ pivots, currentPrice, todayOpen, todayHigh, todayLow, t }:
         ))}
       </div>
 
-      <div style={{ marginTop: '10px', color: '#334155', fontSize: '0.65rem', textAlign: 'center' }}>
+      <div style={{ marginTop: '10px', color: '#dce3ed', fontSize: '0.65rem', textAlign: 'center' }}>
         {t.pivotPoint}: PP = (H+L+C)/3 · R/S = Classic method · 15-min delayed
       </div>
     </div>
@@ -175,10 +175,10 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
 
   if (!candles.length) {
     return (
-      <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6e7d92', flexDirection: 'column', gap: '8px' }}>
         <div style={{ fontSize: '1.8rem' }}>📊</div>
         <div style={{ fontSize: '0.85rem' }}>{t.noIntradayData}</div>
-        {data.tradingDate && <div style={{ fontSize: '0.75rem', color: '#334155' }}>{data.tradingDate}</div>}
+        {data.tradingDate && <div style={{ fontSize: '0.75rem', color: '#dce3ed' }}>{data.tradingDate}</div>}
       </div>
     );
   }
@@ -189,12 +189,12 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
     if (!d) return null;
     return (
       <div className="card" style={{ padding: '9px 13px', border: '1px solid #2a3f5f', minWidth: '170px' }}>
-        <div style={{ color: '#64748b', fontSize: '0.7rem', marginBottom: '5px' }}>{fmtET(d.date)} ET</div>
+        <div style={{ color: '#6e7d92', fontSize: '0.7rem', marginBottom: '5px' }}>{fmtET(d.date)} ET</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 10px' }}>
-          <div><span style={{ color: '#475569', fontSize: '0.65rem' }}>{t.open} </span><span style={{ color: '#e2e8f0', fontSize: '0.8rem' }}>${d.open?.toFixed(2)}</span></div>
-          <div><span style={{ color: '#475569', fontSize: '0.65rem' }}>{t.close} </span><span style={{ color: '#e2e8f0', fontSize: '0.8rem' }}>${d.close?.toFixed(2)}</span></div>
-          <div><span style={{ color: '#475569', fontSize: '0.65rem' }}>{t.high} </span><span style={{ color: '#22c55e', fontSize: '0.8rem' }}>${d.high?.toFixed(2)}</span></div>
-          <div><span style={{ color: '#475569', fontSize: '0.65rem' }}>{t.low} </span><span style={{ color: '#ef4444', fontSize: '0.8rem' }}>${d.low?.toFixed(2)}</span></div>
+          <div><span style={{ color: '##8b99ad', fontSize: '0.65rem' }}>{t.open} </span><span style={{ color: '#e2e8f0', fontSize: '0.8rem' }}>${d.open?.toFixed(2)}</span></div>
+          <div><span style={{ color: '##8b99ad', fontSize: '0.65rem' }}>{t.close} </span><span style={{ color: '#e2e8f0', fontSize: '0.8rem' }}>${d.close?.toFixed(2)}</span></div>
+          <div><span style={{ color: '##8b99ad', fontSize: '0.65rem' }}>{t.high} </span><span style={{ color: '#22c55e', fontSize: '0.8rem' }}>${d.high?.toFixed(2)}</span></div>
+          <div><span style={{ color: '##8b99ad', fontSize: '0.65rem' }}>{t.low} </span><span style={{ color: '#ef4444', fontSize: '0.8rem' }}>${d.low?.toFixed(2)}</span></div>
         </div>
         {d.vwap != null && (
           <div style={{ marginTop: '5px', paddingTop: '4px', borderTop: '1px solid #1e2d47' }}>
@@ -202,7 +202,7 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
             <span style={{ color: '#f59e0b', fontWeight: 700, fontSize: '0.8rem' }}>${d.vwap.toFixed(2)}</span>
           </div>
         )}
-        <div style={{ color: '#475569', fontSize: '0.65rem', marginTop: '3px' }}>
+        <div style={{ color: '##8b99ad', fontSize: '0.65rem', marginTop: '3px' }}>
           {t.volume}: {d.volume >= 1000000 ? `${(d.volume / 1000000).toFixed(2)}M` : d.volume >= 1000 ? `${(d.volume / 1000).toFixed(0)}K` : d.volume}
         </div>
       </div>
@@ -215,29 +215,29 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
       <div style={{ display: 'flex', gap: '14px', marginBottom: '8px', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <div style={{ width: '16px', height: '2px', background: color }} />
-          <span style={{ color: '#64748b', fontSize: '0.68rem' }}>{t.close}</span>
+          <span style={{ color: '#6e7d92', fontSize: '0.68rem' }}>{t.close}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <div style={{ width: '16px', height: '2px', background: '#f59e0b', borderTop: '1px dashed #f59e0b' }} />
-          <span style={{ color: '#64748b', fontSize: '0.68rem' }}>{t.vwap}</span>
+          <span style={{ color: '#6e7d92', fontSize: '0.68rem' }}>{t.vwap}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <div style={{ width: '10px', height: '8px', background: 'rgba(59,130,246,0.2)', borderRadius: '1px' }} />
-          <span style={{ color: '#64748b', fontSize: '0.68rem' }}>{t.volume}</span>
+          <span style={{ color: '#6e7d92', fontSize: '0.68rem' }}>{t.volume}</span>
         </div>
         {pivots && (
           <>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <div style={{ width: '16px', height: '1px', borderTop: '1px dashed #ef4444' }} />
-              <span style={{ color: '#64748b', fontSize: '0.68rem' }}>{t.resistance}</span>
+              <span style={{ color: '#6e7d92', fontSize: '0.68rem' }}>{t.resistance}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <div style={{ width: '16px', height: '1px', borderTop: '1px dashed #f59e0b' }} />
-              <span style={{ color: '#64748b', fontSize: '0.68rem' }}>PP</span>
+              <span style={{ color: '#6e7d92', fontSize: '0.68rem' }}>PP</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <div style={{ width: '16px', height: '1px', borderTop: '1px dashed #22c55e' }} />
-              <span style={{ color: '#64748b', fontSize: '0.68rem' }}>{t.support}</span>
+              <span style={{ color: '#6e7d92', fontSize: '0.68rem' }}>{t.support}</span>
             </div>
           </>
         )}
@@ -257,7 +257,7 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
           <XAxis
             dataKey="date"
             tickFormatter={fmtET}
-            tick={{ fill: '#64748b', fontSize: 10 }}
+            tick={{ fill: '#6e7d92', fontSize: 10 }}
             axisLine={false} tickLine={false}
             interval="preserveStartEnd"
           />
@@ -266,7 +266,7 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
           <YAxis
             yAxisId="price"
             domain={[minP, maxP]}
-            tick={{ fill: '#64748b', fontSize: 10 }}
+            tick={{ fill: '#6e7d92', fontSize: 10 }}
             axisLine={false} tickLine={false}
             tickFormatter={v => `$${v.toFixed(1)}`}
             width={52}
@@ -299,8 +299,8 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
           {todayOpen != null && todayOpen >= minP && todayOpen <= maxP && (
             <ReferenceLine
               yAxisId="price" y={todayOpen}
-              stroke="#475569" strokeDasharray="6 4" strokeWidth={1}
-              label={{ value: 'O', position: 'insideTopRight', fill: '#475569', fontSize: 9 }}
+              stroke="##8b99ad" strokeDasharray="6 4" strokeWidth={1}
+              label={{ value: 'O', position: 'insideTopRight', fill: '##8b99ad', fontSize: 9 }}
             />
           )}
 
@@ -371,8 +371,8 @@ function HistoricalChart({ data, color, gradientId, period, t }: HistChartProps)
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="#1e2d47" vertical={false} />
-        <XAxis dataKey="date" tickFormatter={d => formatDate(d, period)} tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-        <YAxis domain={[minC - pad, maxC + pad]} tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `$${v.toFixed(0)}`} width={55} />
+        <XAxis dataKey="date" tickFormatter={d => formatDate(d, period)} tick={{ fill: '#6e7d92', fontSize: 11 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+        <YAxis domain={[minC - pad, maxC + pad]} tick={{ fill: '#6e7d92', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `$${v.toFixed(0)}`} width={55} />
         <Tooltip content={<CustomTooltip />} />
         <Area type="monotone" dataKey="close" stroke={color} strokeWidth={2} fill={`url(#${gradientId})`} dot={false} activeDot={{ r: 4, fill: color, stroke: '#0a0e1a', strokeWidth: 2 }} />
       </AreaChart>
@@ -418,23 +418,23 @@ export default function StockChart({ symbol, isUp, currentPrice }: Props) {
             key={p.value}
             onClick={() => setPeriod(p.value)}
             style={{
-              padding: '5px 11px', borderRadius: '6px', border: 'none', cursor: 'pointer',
-              fontSize: '0.78rem', fontWeight: 600, transition: 'all 0.15s',
-              background: period === p.value ? '#3b82f6' : 'transparent',
-              color: period === p.value ? 'white' : '#64748b',
+              padding: '5px 11px', borderRadius: '2px', border: '1px solid #2d2b20', cursor: 'pointer',
+              fontSize: '0.78rem', fontWeight: 800, transition: 'all 0.15s',
+              background: period === p.value ? '#f7b500' : 'transparent',
+              color: period === p.value ? '#050505' : '#8b8b7a',
             }}
-            onMouseEnter={e => { if (period !== p.value) e.currentTarget.style.color = '#94a3b8'; }}
-            onMouseLeave={e => { if (period !== p.value) e.currentTarget.style.color = '#64748b'; }}
+            onMouseEnter={e => { if (period !== p.value) e.currentTarget.style.color = '#f7b500'; }}
+            onMouseLeave={e => { if (period !== p.value) e.currentTarget.style.color = '#8b8b7a'; }}
           >{p.label}</button>
         ))}
       </div>
 
       {loading ? (
         <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '32px', height: '32px', border: '3px solid #1e2d47', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          <div style={{ width: '32px', height: '32px', border: '3px solid #2d2b20', borderTopColor: '#f7b500', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         </div>
       ) : error ? (
-        <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6e7d92', flexDirection: 'column', gap: '8px' }}>
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <span style={{ fontSize: '0.85rem' }}>{period === '1d' ? t.intradayFailed : t.chartFailed}</span>
         </div>

@@ -159,3 +159,68 @@ export interface TechnicalAnalysis {
     score: number; buyCount: number; neutralCount: number; sellCount: number;
   };
 }
+
+export interface AnalystForecast {
+  symbol: string;
+  shortName: string | null;
+  currentPrice: number | null;
+  targetHighPrice: number | null;
+  targetLowPrice: number | null;
+  targetMeanPrice: number | null;
+  targetMedianPrice: number | null;
+  upsidePercent: number | null;
+  recommendationMean: number | null;
+  recommendationKey: string | null;
+  consensus: 'Strong Buy' | 'Moderate Buy' | 'Buy' | 'Hold' | 'Sell' | 'Strong Sell' | 'N/A';
+  analystCount: number | null;
+  source: string;
+  sourceUrl?: string | null;
+  trend: Array<{
+    period: string;
+    strongBuy: number;
+    buy: number;
+    hold: number;
+    sell: number;
+    strongSell: number;
+  }>;
+  upgrades: Array<{
+    date: string | null;
+    firm: string;
+    toGrade: string;
+    fromGrade: string;
+    action: string;
+  }>;
+}
+
+export interface NewsItem {
+  title: string;
+  publisher: string;
+  link: string;
+  providerPublishTime: string | null;
+  summary: string;
+  thumbnail: string | null;
+}
+
+export interface StockNews {
+  symbol: string;
+  items: NewsItem[];
+}
+
+export interface CorporateActivity {
+  symbol: string;
+  source: string;
+  insiderSignal: string;
+  institutionalSignal: string;
+  insiderSummary: string;
+  institutionalSummary: string;
+  ownership: {
+    institutions: number | null;
+    insiders: number | null;
+    publicFloat: number | null;
+  };
+  recentItems: Array<{
+    label: string;
+    value: string;
+    tone: 'positive' | 'neutral' | 'watch';
+  }>;
+}

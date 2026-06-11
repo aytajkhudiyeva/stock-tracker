@@ -42,20 +42,20 @@ export default function StockCard({ quote, selected, onClick, onRemove }: StockC
       style={{
         padding: '16px',
         position: 'relative',
-        borderColor: selected ? '#3b82f6' : undefined,
-        boxShadow: selected ? '0 0 0 1px #3b82f6' : undefined,
+        borderColor: selected ? '#f7b500' : undefined,
+        boxShadow: selected ? 'inset 3px 0 0 #f7b500' : undefined,
       }}
     >
       <button
         onClick={e => { e.stopPropagation(); onRemove(); }}
         style={{
           position: 'absolute', top: '10px', right: '10px',
-          background: 'transparent', border: 'none', color: '#64748b',
+          background: 'transparent', border: 'none', color: '#6e7d92',
           cursor: 'pointer', padding: '2px', borderRadius: '4px', lineHeight: 1,
           fontSize: '1rem', transition: 'color 0.15s',
         }}
         onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-        onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+        onMouseLeave={e => (e.currentTarget.style.color = '#6e7d92')}
         title={t.removeFromWatchlist}
       >×</button>
 
@@ -67,7 +67,7 @@ export default function StockCard({ quote, selected, onClick, onRemove }: StockC
       </div>
 
       <div style={{ marginBottom: '8px' }}>
-        <div className="font-bold" style={{ fontSize: '1.35rem', color: '#f1f5f9', letterSpacing: '-0.5px' }}>
+        <div key={quote.regularMarketPrice} className="font-bold price-live" style={{ fontSize: '1.35rem', color: '#f4f4ec', letterSpacing: '0' }}>
           ${fmt(quote.regularMarketPrice)}
         </div>
       </div>
@@ -98,11 +98,11 @@ export default function StockCard({ quote, selected, onClick, onRemove }: StockC
         <div style={{ marginTop: '8px' }}>
           <span style={{
             background: earningsDays <= 1 ? 'rgba(239,68,68,0.12)' : earningsDays <= 7 ? 'rgba(245,158,11,0.12)' : 'rgba(59,130,246,0.1)',
-            color: earningsDays <= 1 ? '#ef4444' : earningsDays <= 7 ? '#f59e0b' : '#60a5fa',
+            color: earningsDays <= 1 ? '#ef4444' : earningsDays <= 7 ? '#f59e0b' : '#f7b500',
             border: `1px solid ${earningsDays <= 1 ? 'rgba(239,68,68,0.25)' : earningsDays <= 7 ? 'rgba(245,158,11,0.25)' : 'rgba(59,130,246,0.2)'}`,
             borderRadius: '5px', padding: '2px 7px', fontSize: '0.68rem', fontWeight: 700,
           }}>
-            📅 {t.earningsIn} {earningsDays === 0 ? t.today : earningsDays === 1 ? t.tomorrow : `${earningsDays}d`}
+            {t.earningsIn} {earningsDays === 0 ? t.today : earningsDays === 1 ? t.tomorrow : `${earningsDays}d`}
           </span>
         </div>
       )}

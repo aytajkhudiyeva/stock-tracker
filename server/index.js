@@ -1,5 +1,6 @@
 require('dotenv').config();
 console.log(`[startup] node ${process.version}, PORT=${process.env.PORT}, cwd=${process.cwd()}`);
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const cron = require('node-cron');
@@ -20,10 +21,15 @@ app.use('/api/stocks', stockRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/economic', economicRoutes);
 
-app.get('/', (req, res) => res.json({ status: 'ok' }));
 app.get('/api/health', (req, res) => {
   console.log(`[health] ${new Date().toISOString()} from ${req.ip}`);
   res.json({ status: 'ok' });
+});
+
+const clientDist = path.join(__dirname, '..', 'client', 'dist');
+app.use(express.static(clientDist));
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(clientDist, 'index.html'));
 });
 
 cron.schedule('* * * * *', async () => {
@@ -43,8 +49,8 @@ cron.schedule('0 9 * * *', async () => {
   }
 });
 
-// Check economic event notifications every 30 minutes
-cron.schedule('*/30 * * * *', async () => {
+// Check economic event notifications every 5 minutes
+cron.schedule('*/5 * * * *', async () => {
   try {
     await checkEconomicNotifications();
   } catch (err) {

@@ -34,14 +34,14 @@ export default function MetricsPanel({ quote }: Props) {
           <div className="text-secondary" style={{ fontSize: '0.82rem' }}>{label}</div>
           {hint && <div className="text-muted" style={{ fontSize: '0.68rem' }}>{hint}</div>}
         </div>
-        <div style={{ color: '#f1f5f9', fontSize: '0.88rem', fontWeight: 600, textAlign: 'right' }}>{value}</div>
+        <div style={{ color: '#f4f4ec', fontSize: '0.88rem', fontWeight: 700, textAlign: 'right' }}>{value}</div>
       </div>
     );
   }
 
   return (
     <div>
-      <h3 style={{ color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '4px', marginTop: 0 }}>
+      <h3 style={{ color: '#5b6b80', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '4px', marginTop: 0 }}>
         {t.financialMetrics}
       </h3>
 
@@ -55,7 +55,7 @@ export default function MetricsPanel({ quote }: Props) {
         ].map(({ label, value }) => (
           <div key={label} style={{ background: '#0f1629', borderRadius: '8px', padding: '10px 12px', border: '1px solid #1e2d47' }}>
             <div className="text-muted" style={{ fontSize: '0.68rem', marginBottom: '3px' }}>{label}</div>
-            <div style={{ color: '#f1f5f9', fontSize: '0.9rem', fontWeight: 600 }}>{value}</div>
+            <div style={{ color: '#f4f4ec', fontSize: '0.9rem', fontWeight: 700 }}>{value}</div>
           </div>
         ))}
       </div>
@@ -77,7 +77,7 @@ export default function MetricsPanel({ quote }: Props) {
             <div style={{
               position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)',
               left: `${Math.min(100, Math.max(0, ((quote.regularMarketPrice - quote.fiftyTwoWeekLow) / (quote.fiftyTwoWeekHigh - quote.fiftyTwoWeekLow)) * 100))}%`,
-              width: '10px', height: '10px', background: '#f1f5f9', borderRadius: '50%',
+              width: '10px', height: '10px', background: '#f7b500', borderRadius: '50%',
               border: '2px solid #0a0e1a',
             }} />
           </div>

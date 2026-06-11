@@ -19,17 +19,6 @@ function fmtLarge(n: number) {
   return `$${fmt(n)}`;
 }
 
-function isMarketOpen() {
-  try {
-    const nyStr = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
-    const ny = new Date(nyStr);
-    const day = ny.getDay();
-    if (day === 0 || day === 6) return false;
-    const mins = ny.getHours() * 60 + ny.getMinutes();
-    return mins >= 570 && mins < 960;
-  } catch { return true; }
-}
-
 export default function PortfolioPanel({ quotes }: Props) {
   const { t } = useLanguage();
   const { portfolio, addPosition, removePosition } = usePortfolio();
@@ -56,7 +45,7 @@ export default function PortfolioPanel({ quotes }: Props) {
   useEffect(() => { refreshPrices(); }, [refreshPrices]);
 
   useEffect(() => {
-    const id = setInterval(() => { if (isMarketOpen()) refreshPrices(); }, 30000);
+    const id = setInterval(refreshPrices, 30000);
     return () => clearInterval(id);
   }, [refreshPrices]);
 
@@ -81,6 +70,19 @@ export default function PortfolioPanel({ quotes }: Props) {
   const totalPnl = totalValue - totalCost;
   const totalPnlPct = totalCost > 0 ? (totalPnl / totalCost) * 100 : 0;
   const hasPrices = rows.some(r => r.mktValue != null);
+  const largest = rows.reduce<typeof rows[number] | null>((max, row) => {
+    if (!row.mktValue) return max;
+    if (!max || (row.mktValue || 0) > (max.mktValue || 0)) return row;
+    return max;
+  }, null);
+  const concentration = largest?.mktValue && totalValue > 0 ? (largest.mktValue / totalValue) * 100 : 0;
+  const weightedMove = rows.reduce((sum, row) => {
+    const quote = quotes[row.symbol];
+    const weight = row.mktValue && totalValue > 0 ? row.mktValue / totalValue : 0;
+    return sum + weight * Math.abs(quote?.regularMarketChangePercent || 0);
+  }, 0);
+  const riskScore = Math.min(100, Math.round(concentration * 0.65 + weightedMove * 6));
+  const riskLabel = riskScore >= 70 ? 'High' : riskScore >= 40 ? 'Medium' : 'Low';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,14 +98,14 @@ export default function PortfolioPanel({ quotes }: Props) {
   };
 
   const pnlColor = (v: number | null) => {
-    if (v == null) return '#94a3b8';
+    if (v == null) return '#5b6b80';
     return v >= 0 ? '#22c55e' : '#ef4444';
   };
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', margin: 0 }}>
+        <h3 style={{ color: '#5b6b80', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', margin: 0 }}>
           {t.portfolioSummary}
         </h3>
         {!showForm && (
@@ -111,7 +113,7 @@ export default function PortfolioPanel({ quotes }: Props) {
             onClick={() => setShowForm(true)}
             style={{
               background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)',
-              color: '#60a5fa', borderRadius: '8px', padding: '6px 14px',
+              color: '#0092bc', borderRadius: '8px', padding: '6px 14px',
               fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
             }}
           >
@@ -122,19 +124,35 @@ export default function PortfolioPanel({ quotes }: Props) {
 
       {/* Summary cards */}
       {portfolio.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '12px' }}>
           {[
-            { label: t.totalValue, value: hasPrices ? fmtLarge(totalValue) : '—', color: '#f1f5f9' },
-            { label: t.totalCost, value: fmtLarge(totalCost), color: '#94a3b8' },
+            { label: t.totalValue, value: hasPrices ? fmtLarge(totalValue) : '—', color: '#f4f4ec' },
+            { label: t.totalCost, value: fmtLarge(totalCost), color: '#5b6b80' },
             {
               label: t.totalPnl,
               value: hasPrices ? `${totalPnl >= 0 ? '+' : ''}${fmtLarge(totalPnl)} (${totalPnlPct >= 0 ? '+' : ''}${fmt(totalPnlPct, 1)}%)` : '—',
-              color: hasPrices ? pnlColor(totalPnl) : '#94a3b8',
+              color: hasPrices ? pnlColor(totalPnl) : '#5b6b80',
             },
           ].map(card => (
             <div key={card.label} style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '10px', padding: '14px' }}>
-              <div style={{ color: '#64748b', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>{card.label}</div>
+              <div style={{ color: '#6e7d92', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>{card.label}</div>
               <div style={{ color: card.color, fontWeight: 700, fontSize: '1rem' }}>{card.value}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {portfolio.length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(130px, 1fr))', gap: 1, border: '1px solid #2d2b20', background: '#2d2b20', marginBottom: 20 }}>
+          {[
+            { label: 'Risk Score', value: `${riskScore}/100`, color: riskScore >= 70 ? '#ff3b30' : riskScore >= 40 ? '#f7b500' : '#16d46b' },
+            { label: 'Risk Level', value: riskLabel, color: riskScore >= 70 ? '#ff3b30' : riskScore >= 40 ? '#f7b500' : '#16d46b' },
+            { label: 'Largest Position', value: largest ? `${largest.symbol} ${concentration.toFixed(1)}%` : '-', color: '#f4f4ec' },
+            { label: 'Volatility Drag', value: `${weightedMove.toFixed(2)}%`, color: '#f7b500' },
+          ].map(card => (
+            <div key={card.label} style={{ background: '#080808', padding: 12 }}>
+              <div style={{ color: '#8b8b7a', fontSize: '0.68rem', fontWeight: 900, textTransform: 'uppercase' }}>{card.label}</div>
+              <div style={{ color: card.color, fontWeight: 900, fontSize: '1rem', marginTop: 5 }}>{card.value}</div>
             </div>
           ))}
         </div>
@@ -143,10 +161,10 @@ export default function PortfolioPanel({ quotes }: Props) {
       {/* Add position form */}
       {showForm && (
         <form onSubmit={handleSubmit} style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '10px', padding: '16px', marginBottom: '20px' }}>
-          <div style={{ color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, marginBottom: '12px' }}>{t.addPosition}</div>
+          <div style={{ color: '#5b6b80', fontSize: '0.78rem', fontWeight: 600, marginBottom: '12px' }}>{t.addPosition}</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '12px' }}>
             <div>
-              <div style={{ color: '#64748b', fontSize: '0.68rem', marginBottom: '4px' }}>{t.symbolLabel}</div>
+              <div style={{ color: '#6e7d92', fontSize: '0.68rem', marginBottom: '4px' }}>{t.symbolLabel}</div>
               <input
                 autoFocus
                 className="input-field"
@@ -157,7 +175,7 @@ export default function PortfolioPanel({ quotes }: Props) {
               />
             </div>
             <div>
-              <div style={{ color: '#64748b', fontSize: '0.68rem', marginBottom: '4px' }}>{t.quantity}</div>
+              <div style={{ color: '#6e7d92', fontSize: '0.68rem', marginBottom: '4px' }}>{t.quantity}</div>
               <input
                 className="input-field"
                 type="number"
@@ -170,7 +188,7 @@ export default function PortfolioPanel({ quotes }: Props) {
               />
             </div>
             <div>
-              <div style={{ color: '#64748b', fontSize: '0.68rem', marginBottom: '4px' }}>{t.purchasePrice}</div>
+              <div style={{ color: '#6e7d92', fontSize: '0.68rem', marginBottom: '4px' }}>{t.purchasePrice}</div>
               <input
                 className="input-field"
                 type="number"
@@ -196,29 +214,25 @@ export default function PortfolioPanel({ quotes }: Props) {
 
       {/* Holdings table */}
       {portfolio.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>💼</div>
-          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#94a3b8', marginBottom: '6px' }}>{t.portfolioEmpty}</div>
+        <div style={{ textAlign: 'center', padding: '48px', color: '#6e7d92' }}>
+          <div style={{ fontSize: '0.78rem', marginBottom: '12px', color: '#f7b500', fontWeight: 800, letterSpacing: '0.8px' }}>PORTFOLIO</div>
+          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#5b6b80', marginBottom: '6px' }}>{t.portfolioEmpty}</div>
           <div style={{ fontSize: '0.8rem' }}>{t.portfolioEmptyHint}</div>
         </div>
       ) : (
-        <div style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '10px', overflow: 'hidden' }}>
+        <div className="portfolio-table-wrap">
           {/* Table header */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 0.6fr 0.8fr 0.8fr 0.9fr 0.9fr 0.9fr 0.4fr', padding: '8px 16px', background: '#0a0e1a', borderBottom: '1px solid #1e2d47', gap: 0 }}>
+          <div className="portfolio-table-row portfolio-table-head">
             {[t.symbolLabel, t.shares, t.avgCost, 'Price', t.marketValue, `${t.pnl} $`, `${t.pnl} %`, ''].map((h, i) => (
-              <div key={i} style={{ color: '#64748b', fontSize: '0.66rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.3px' }}>{h}</div>
+              <div key={i} style={{ color: '#6e7d92', fontSize: '0.66rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.3px' }}>{h}</div>
             ))}
           </div>
 
           {rows.map((row, i) => (
-            <div key={row.id} style={{
-              display: 'grid', gridTemplateColumns: '1fr 0.6fr 0.8fr 0.8fr 0.9fr 0.9fr 0.9fr 0.4fr',
-              padding: '12px 16px', borderBottom: i < rows.length - 1 ? '1px solid #1e2d47' : 'none',
-              alignItems: 'center',
-            }}>
-              <div style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.88rem' }}>{row.symbol}</div>
+            <div key={row.id} className="portfolio-table-row" style={{ borderBottom: i < rows.length - 1 ? '1px solid #1e2d47' : 'none' }}>
+              <div style={{ color: '#f7b500', fontWeight: 800, fontSize: '0.88rem' }}>{row.symbol}</div>
               <div style={{ color: '#e2e8f0', fontSize: '0.82rem' }}>{row.quantity}</div>
-              <div style={{ color: '#94a3b8', fontSize: '0.82rem' }}>${fmt(row.purchasePrice)}</div>
+              <div style={{ color: '#5b6b80', fontSize: '0.82rem' }}>${fmt(row.purchasePrice)}</div>
               <div style={{ color: '#e2e8f0', fontSize: '0.82rem' }}>
                 {row.price != null ? `$${fmt(row.price)}` : '—'}
               </div>
@@ -234,9 +248,9 @@ export default function PortfolioPanel({ quotes }: Props) {
               <div style={{ textAlign: 'right' }}>
                 <button
                   onClick={() => removePosition(row.id)}
-                  style={{ background: 'transparent', border: 'none', color: '#475569', cursor: 'pointer', fontSize: '0.9rem', padding: '2px 4px', transition: 'color 0.15s' }}
+                  style={{ background: 'transparent', border: 'none', color: '##8b99ad', cursor: 'pointer', fontSize: '0.9rem', padding: '2px 4px', transition: 'color 0.15s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '##8b99ad')}
                   title={t.remove}
                 >×</button>
               </div>

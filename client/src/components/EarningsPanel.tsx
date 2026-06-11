@@ -43,14 +43,14 @@ export default function EarningsPanel({ symbol }: Props) {
   }, [symbol]);
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px', color: '#64748b' }}>
-      <div style={{ width: '28px', height: '28px', border: '3px solid #1e2d47', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 0.8s linear infinite', marginRight: '12px' }} />
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px', color: '#6e7d92' }}>
+      <div style={{ width: '28px', height: '28px', border: '3px solid #1e2d47', borderTopColor: '#0092bc', borderRadius: '50%', animation: 'spin 0.8s linear infinite', marginRight: '12px' }} />
       {t.earningsLoading}
     </div>
   );
 
   if (error || !data) return (
-    <div style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
+    <div style={{ textAlign: 'center', padding: '48px', color: '#6e7d92' }}>
       <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📅</div>
       <div style={{ fontSize: '0.85rem' }}>{error || t.earningsUnavailable}</div>
     </div>
@@ -62,11 +62,14 @@ export default function EarningsPanel({ symbol }: Props) {
   else if (days === 1) daysLabel = t.tomorrow;
   else if (days != null && days > 0) daysLabel = `${days} ${t.daysUntil}`;
 
-  const urgentColor = days != null && days <= 7 ? '#f59e0b' : days != null && days <= 1 ? '#ef4444' : '#3b82f6';
+  const urgentColor = days != null && days <= 7 ? '#f59e0b' : days != null && days <= 1 ? '#ef4444' : '#0092bc';
+  const beatCount = data.pastEarnings.filter(row => row.actual != null && row.estimate != null && row.actual >= row.estimate).length;
+  const missCount = data.pastEarnings.filter(row => row.actual != null && row.estimate != null && row.actual < row.estimate).length;
+  const volFlag = days != null && days >= 0 && days <= 7 ? 'Elevated event window' : days != null && days <= 14 ? 'Approaching event window' : 'Normal calendar window';
 
   return (
     <div>
-      <h3 style={{ color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '16px', marginTop: 0 }}>
+      <h3 style={{ color: '#5b6b80', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '16px', marginTop: 0 }}>
         {t.earningsCalendar}
       </h3>
 
@@ -75,10 +78,10 @@ export default function EarningsPanel({ symbol }: Props) {
         <div style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div style={{ color: '#94a3b8', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '6px' }}>
+              <div style={{ color: '#5b6b80', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '6px' }}>
                 {t.nextEarnings}
               </div>
-              <div style={{ color: '#f1f5f9', fontSize: '1.05rem', fontWeight: 700 }}>
+              <div style={{ color: '#1a2433', fontSize: '1.05rem', fontWeight: 700 }}>
                 {fmtDate(data.nextEarningsDate, lang)}
               </div>
             </div>
@@ -99,14 +102,14 @@ export default function EarningsPanel({ symbol }: Props) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '14px' }}>
               {data.epsEstimate != null && (
                 <div style={{ background: '#0a0e1a', borderRadius: '8px', padding: '10px 12px', border: '1px solid #1e2d47' }}>
-                  <div style={{ color: '#64748b', fontSize: '0.68rem', marginBottom: '4px' }}>{t.epsEstimate}</div>
-                  <div style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1rem' }}>${data.epsEstimate.toFixed(2)}</div>
+                  <div style={{ color: '#6e7d92', fontSize: '0.68rem', marginBottom: '4px' }}>{t.epsEstimate}</div>
+                  <div style={{ color: '#1a2433', fontWeight: 700, fontSize: '1rem' }}>${data.epsEstimate.toFixed(2)}</div>
                 </div>
               )}
               {data.revenueEstimate != null && (
                 <div style={{ background: '#0a0e1a', borderRadius: '8px', padding: '10px 12px', border: '1px solid #1e2d47' }}>
-                  <div style={{ color: '#64748b', fontSize: '0.68rem', marginBottom: '4px' }}>{t.revEstimate}</div>
-                  <div style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1rem' }}>{fmtRev(data.revenueEstimate)}</div>
+                  <div style={{ color: '#6e7d92', fontSize: '0.68rem', marginBottom: '4px' }}>{t.revEstimate}</div>
+                  <div style={{ color: '#1a2433', fontWeight: 700, fontSize: '1rem' }}>{fmtRev(data.revenueEstimate)}</div>
                 </div>
               )}
             </div>
@@ -114,10 +117,25 @@ export default function EarningsPanel({ symbol }: Props) {
         </div>
       )}
 
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 1, border: '1px solid #2d2b20', background: '#2d2b20', marginBottom: 16 }}>
+        {[
+          { label: 'EPS / Revenue Setup', value: `${data.epsEstimate != null ? `$${data.epsEstimate.toFixed(2)} EPS` : 'EPS -'} · ${data.revenueEstimate != null ? fmtRev(data.revenueEstimate) : 'Revenue -'}` },
+          { label: 'Last 4 Result Mix', value: `${beatCount} beat · ${missCount} miss` },
+          { label: 'Beat Scenario', value: 'Watch target/estimate revisions after report' },
+          { label: 'Miss Scenario', value: 'Watch support zones and estimate cuts' },
+          { label: 'Volatility Flag', value: volFlag },
+        ].map(item => (
+          <div key={item.label} style={{ background: '#080808', padding: 12 }}>
+            <div style={{ color: '#f7b500', fontSize: '0.68rem', fontWeight: 900, textTransform: 'uppercase' }}>{item.label}</div>
+            <div style={{ color: '#b4b49f', fontSize: '0.8rem', marginTop: 5 }}>{item.value}</div>
+          </div>
+        ))}
+      </div>
+
       {/* Past Earnings Table */}
       {data.pastEarnings && data.pastEarnings.length > 0 && (
         <div>
-          <div style={{ color: '#94a3b8', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>
+          <div style={{ color: '#5b6b80', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>
             {t.pastEarningsTitle}
           </div>
 
@@ -125,7 +143,7 @@ export default function EarningsPanel({ symbol }: Props) {
             {/* Header */}
             <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.85fr 0.9fr 1fr 1fr 0.85fr', gap: 0, padding: '8px 14px', background: '#0a0e1a', borderBottom: '1px solid #1e2d47' }}>
               {['Quarter', t.epsActualLabel, t.epsEstimateLabel, t.revenueActualLabel, t.revenueEstimateLabel, t.resultLabel].map(h => (
-                <div key={h} style={{ color: '#64748b', fontSize: '0.66rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.3px' }}>{h}</div>
+                <div key={h} style={{ color: '#6e7d92', fontSize: '0.66rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.3px' }}>{h}</div>
               ))}
             </div>
 
@@ -148,7 +166,7 @@ export default function EarningsPanel({ symbol }: Props) {
                   <div>
                     <div style={{ color: '#e2e8f0', fontSize: '0.8rem', fontWeight: 600 }}>{formatQuarter(row.quarter)}</div>
                     {row.dateReported && (
-                      <div style={{ color: '#64748b', fontSize: '0.64rem', marginTop: '2px' }}>
+                      <div style={{ color: '#6e7d92', fontSize: '0.64rem', marginTop: '2px' }}>
                         {t.reportedOn} {row.dateReported}
                       </div>
                     )}
@@ -158,7 +176,7 @@ export default function EarningsPanel({ symbol }: Props) {
                     {row.actual != null ? `$${row.actual.toFixed(2)}` : '—'}
                   </div>
 
-                  <div style={{ color: '#94a3b8', fontSize: '0.82rem' }}>
+                  <div style={{ color: '#5b6b80', fontSize: '0.82rem' }}>
                     {row.estimate != null ? `$${row.estimate.toFixed(2)}` : '—'}
                   </div>
 
@@ -166,7 +184,7 @@ export default function EarningsPanel({ symbol }: Props) {
                     {row.revenueActual != null ? fmtRev(row.revenueActual) : '—'}
                   </div>
 
-                  <div style={{ color: '#94a3b8', fontSize: '0.82rem' }}>
+                  <div style={{ color: '#5b6b80', fontSize: '0.82rem' }}>
                     {row.revenueEstimate != null ? fmtRev(row.revenueEstimate) : '—'}
                   </div>
 

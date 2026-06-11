@@ -29,7 +29,7 @@ const BLS_TTL = 4 * 60 * 60 * 1000;
 
 // Per-date Nasdaq cache: Map<dateStr, { rows, time }>
 const _nasdaqCache = new Map();
-const NASDAQ_TTL = 4 * 60 * 60 * 1000;
+const NASDAQ_TTL = 5 * 60 * 1000;
 
 // ── Static schedules ──────────────────────────────────────────────────────────
 // FOMC 2026 + early 2027 decision dates at 14:00 ET
@@ -79,6 +79,17 @@ function addDays(dateStr, n) {
   const d = new Date(dateStr + 'T12:00:00Z');
   d.setUTCDate(d.getUTCDate() + n);
   return toDateStr(d);
+}
+
+function eachDateStr(start, end) {
+  const out = [];
+  const d = new Date(start);
+  d.setUTCHours(12, 0, 0, 0);
+  while (d <= end) {
+    out.push(toDateStr(d));
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return out;
 }
 
 // ── BLS DATA ──────────────────────────────────────────────────────────────────
@@ -239,6 +250,117 @@ function extractConsensus(rows, dataType, unit) {
   }
 
   return null;
+}
+
+function mapNasdaqImpact(eventName) {
+  const name = eventName.toLowerCase();
+  if (
+    name.includes('fed') ||
+    name.includes('fomc') ||
+    name.includes('cpi') ||
+    name.includes('payroll') ||
+    name.includes('unemployment') ||
+    name.includes('gdp')
+  ) return 'high';
+  if (
+    name.includes('ppi') ||
+    name.includes('retail') ||
+    name.includes('pmi') ||
+    name.includes('ism') ||
+    name.includes('consumer confidence') ||
+    name.includes('jobless') ||
+    name.includes('durable goods') ||
+    name.includes('housing')
+  ) return 'medium';
+  return 'low';
+}
+
+function mapNasdaqType(eventName) {
+  const name = eventName.toLowerCase();
+  if (name.includes('cpi')) return 'cpi';
+  if (name.includes('ppi')) return 'ppi';
+  if (name.includes('payroll')) return 'nfp';
+  if (name.includes('unemployment')) return 'unemployment';
+  if (name.includes('retail')) return 'retail';
+  if (name.includes('gdp')) return 'gdp';
+  if (name.includes('fed') || name.includes('fomc')) return 'fomc';
+  if (name.includes('pmi') || name.includes('ism')) return 'pmi';
+  if (name.includes('housing')) return 'housing';
+  if (name.includes('jobless')) return 'jobs';
+  return 'macro';
+}
+
+function normaliseUnit(value) {
+  if (!value) return '';
+  if (value.includes('%')) return '%';
+  if (/[kK]\b/.test(value)) return 'K';
+  return '';
+}
+
+function stripHtml(value) {
+  return (value || '').replace(/&nbsp;/g, ' ').replace(/<[^>]*>/g, '').trim();
+}
+
+function nasdaqRowToEvent(row, dateStr, index) {
+  const eventName = stripHtml(row.eventName);
+  if (!eventName || row.country !== 'United States') return null;
+  const actual = stripHtml(row.actual);
+  const consensus = stripHtml(row.consensus);
+  const previous = stripHtml(row.previous);
+  const unit = normaliseUnit(actual || consensus || previous);
+  const dataType = mapNasdaqType(eventName);
+  return {
+    id: `nasdaq-${dateStr}-${index}-${eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    date: dateStr,
+    time: row.gmt || '08:30',
+    tz: 'ET',
+    name: eventName,
+    nameAz: eventName,
+    country: 'US',
+    impact: mapNasdaqImpact(eventName),
+    unit,
+    actual: actual || null,
+    forecast: consensus || null,
+    previous: previous || null,
+    referenceMonth: null,
+    dataType,
+    released: Boolean(actual),
+  };
+}
+
+async function fetchNasdaqEvents(fromDate, toDate) {
+  const dates = eachDateStr(fromDate, toDate);
+  const results = await Promise.allSettled(dates.map(d => fetchNasdaqDay(d)));
+  const events = [];
+  results.forEach((result, i) => {
+    if (result.status !== 'fulfilled') return;
+    result.value.forEach((row, rowIndex) => {
+      const ev = nasdaqRowToEvent(row, dates[i], rowIndex);
+      if (ev) events.push(ev);
+    });
+  });
+  return events;
+}
+
+function mergeEvents(primary, secondary) {
+  const out = [...primary];
+  for (const ev of secondary) {
+    const evName = ev.name.toLowerCase();
+    const duplicate = out.find(existing =>
+      existing.date === ev.date &&
+      (existing.name.toLowerCase() === evName ||
+       existing.dataType === ev.dataType && existing.time === ev.time)
+    );
+    if (duplicate) {
+      duplicate.forecast = duplicate.forecast ?? ev.forecast;
+      duplicate.previous = duplicate.previous ?? ev.previous;
+      duplicate.actual = duplicate.actual ?? ev.actual;
+      duplicate.released = duplicate.released || ev.released;
+      continue;
+    }
+    out.push(ev);
+  }
+  return out;
 }
 
 // For a list of events, fetch Nasdaq consensus in parallel (only for near-term dates).
@@ -427,7 +549,10 @@ async function buildCalendar(daysBack = 14, daysAhead = 60) {
     }
   }
 
-  const sorted = events.sort((a, b) =>
+  const nasdaqEvents = await fetchNasdaqEvents(fromDate, toDate);
+  const merged = mergeEvents(events, nasdaqEvents);
+
+  const sorted = merged.sort((a, b) =>
     a.date.localeCompare(b.date) || a.time.localeCompare(b.time)
   );
 
