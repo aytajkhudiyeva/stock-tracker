@@ -35,7 +35,7 @@ function displayConsensus(consensus: string | undefined, lang: 'en' | 'az') {
 function sentimentFor(text: string) {
   const positive = ['beat', 'growth', 'upgrade', 'raises', 'strong', 'bullish', 'record', 'surge', 'profit'];
   const negative = ['miss', 'cut', 'downgrade', 'weak', 'bearish', 'probe', 'falls', 'drop', 'risk'];
-  const haystack = text.toLowerCase();
+  const haystack = ((text) ?? '').toLowerCase();
   const p = positive.filter(word => haystack.includes(word)).length;
   const n = negative.filter(word => haystack.includes(word)).length;
   if (p > n) return 'positive';

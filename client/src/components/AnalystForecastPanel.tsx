@@ -41,7 +41,7 @@ function translateConsensus(consensus: AnalystForecast['consensus'], labels: {
 
 function normaliseAction(action: string) {
   if (!action) return '-';
-  return action.replace(/_/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase());
+  return action.replace(/_/g, ' ').replace(/\b\w/g, ch => ((ch) ?? '').toUpperCase());
 }
 
 export default function AnalystForecastPanel({ symbol }: Props) {

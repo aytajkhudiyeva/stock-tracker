@@ -7,7 +7,7 @@ import type { NewsItem } from '../types';
 interface Props { symbol: string; }
 
 function sentiment(title: string) {
-  const s = title.toLowerCase();
+  const s = ((title) ?? '').toLowerCase();
   const pos = ['upgrade', 'beats', 'beat', 'rally', 'surge', 'growth', 'strong', 'raises', 'record'];
   const neg = ['downgrade', 'miss', 'falls', 'drop', 'weak', 'risk', 'probe', 'cuts', 'bear'];
   const p = pos.filter(w => s.includes(w)).length;

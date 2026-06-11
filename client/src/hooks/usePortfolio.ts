@@ -20,8 +20,8 @@ export function usePortfolio() {
 
   const addPosition = useCallback((symbol: string, quantity: number, purchasePrice: number) => {
     const entry: PortfolioEntry = {
-      id: `${symbol.toUpperCase()}-${Date.now()}`,
-      symbol: symbol.toUpperCase(),
+      id: `${((symbol) ?? '').toUpperCase()}-${Date.now()}`,
+      symbol: ((symbol) ?? '').toUpperCase(),
       quantity,
       purchasePrice,
       addedAt: new Date().toISOString(),

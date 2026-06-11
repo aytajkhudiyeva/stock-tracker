@@ -367,7 +367,7 @@ function AddStockButton({ onAdd }: { onAdd: (s: string) => void }) {
         autoFocus
         className="input-field"
         value={value}
-        onChange={e => setValue(e.target.value.toUpperCase())}
+        onChange={e => setValue(((e.target.value) ?? '').toUpperCase())}
         placeholder={t.enterTicker}
         style={{ flex: 1 }}
       />

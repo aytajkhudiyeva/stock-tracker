@@ -29,7 +29,7 @@ export default function TradingJournal() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.symbol.trim()) return;
-    save([{ id: `${Date.now()}`, createdAt: new Date().toISOString(), ...form, symbol: form.symbol.toUpperCase() }, ...entries]);
+    save([{ id: `${Date.now()}`, createdAt: new Date().toISOString(), ...form, symbol: ((form.symbol) ?? '').toUpperCase() }, ...entries]);
     setForm({ symbol: '', thesis: '', entry: '', target: '', stop: '', outcome: '', lesson: '' });
   };
   return (
@@ -37,7 +37,7 @@ export default function TradingJournal() {
       <div className="section-kicker">{ui.tradingJournal}</div>
       <div style={{ color: '#8b8b7a', fontSize: '0.75rem', marginBottom: 10 }}>{ui.journalDisclaimer}</div>
       <form onSubmit={submit} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 14 }}>
-        {(['symbol', 'entry', 'target', 'stop'] as const).map(k => <input key={k} className="input-field" placeholder={k.toUpperCase()} value={form[k]} onChange={e => setForm({ ...form, [k]: e.target.value })} />)}
+        {(['symbol', 'entry', 'target', 'stop'] as const).map(k => <input key={k} className="input-field" placeholder={((k) ?? '').toUpperCase()} value={form[k]} onChange={e => setForm({ ...form, [k]: e.target.value })} />)}
         <input className="input-field" style={{ gridColumn: 'span 2' }} placeholder={ui.whyContext} value={form.thesis} onChange={e => setForm({ ...form, thesis: e.target.value })} />
         <input className="input-field" placeholder={ui.outcome} value={form.outcome} onChange={e => setForm({ ...form, outcome: e.target.value })} />
         <input className="input-field" placeholder={ui.lesson} value={form.lesson} onChange={e => setForm({ ...form, lesson: e.target.value })} />

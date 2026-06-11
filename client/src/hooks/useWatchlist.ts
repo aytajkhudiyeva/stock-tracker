@@ -18,7 +18,7 @@ export function useWatchlist() {
   }, [watchlist]);
 
   const addSymbol = (symbol: string) => {
-    const s = symbol.toUpperCase().trim();
+    const s = ((symbol) ?? '').toUpperCase().trim();
     if (s && !watchlist.includes(s)) {
       setWatchlist(prev => [...prev, s]);
     }
@@ -28,7 +28,7 @@ export function useWatchlist() {
     setWatchlist(prev => prev.filter(s => s !== symbol));
   };
 
-  const hasSymbol = (symbol: string) => watchlist.includes(symbol.toUpperCase());
+  const hasSymbol = (symbol: string) => watchlist.includes(((symbol) ?? '').toUpperCase());
 
   return { watchlist, addSymbol, removeSymbol, hasSymbol };
 }

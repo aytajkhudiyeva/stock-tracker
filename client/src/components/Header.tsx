@@ -140,7 +140,7 @@ export default function Header({ onSelectStock, onAddToWatchlist }: HeaderProps)
                 color: lang === l ? '#050505' : '#8b8b7a',
                 transition: 'all 0.15s',
               }}>
-                {l.toUpperCase()}
+                {((l) ?? '').toUpperCase()}
               </span>
             ))}
           </button>

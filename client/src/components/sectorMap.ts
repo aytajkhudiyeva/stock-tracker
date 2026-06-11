@@ -13,5 +13,5 @@ export const SECTOR_MAP: Record<string, { sector: string; industry: string }> = 
 };
 
 export function classifySymbol(symbol: string) {
-  return SECTOR_MAP[symbol.toUpperCase()] || { sector: 'Other', industry: 'Unclassified' };
+  return SECTOR_MAP[((symbol) ?? '').toUpperCase()] || { sector: 'Other', industry: 'Unclassified' };
 }

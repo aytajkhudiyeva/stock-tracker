@@ -25,7 +25,7 @@ export default function AlertsPanel({ defaultSymbol }: Props) {
     if (!symbol || !targetPrice) return;
     setLoading(true); setError('');
     try {
-      const alert = await createAlert({ symbol: symbol.toUpperCase(), targetPrice: parseFloat(targetPrice), condition, chatId: chatId || undefined });
+      const alert = await createAlert({ symbol: ((symbol) ?? '').toUpperCase(), targetPrice: parseFloat(targetPrice), condition, chatId: chatId || undefined });
       setAlerts(prev => [alert, ...prev]);
       setSuccess(t.alertCreated);
       setTargetPrice(''); setShowForm(false);
@@ -99,7 +99,7 @@ export default function AlertsPanel({ defaultSymbol }: Props) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
             <div>
               <label className="text-muted" style={{ fontSize: '0.72rem', display: 'block', marginBottom: '4px' }}>{t.symbolLabel}</label>
-              <input className="input-field" value={symbol} onChange={e => setSymbol(e.target.value.toUpperCase())} placeholder="NVDA" required />
+              <input className="input-field" value={symbol} onChange={e => setSymbol(((e.target.value) ?? '').toUpperCase())} placeholder="NVDA" required />
             </div>
             <div>
               <label className="text-muted" style={{ fontSize: '0.72rem', display: 'block', marginBottom: '4px' }}>{t.targetPrice}</label>

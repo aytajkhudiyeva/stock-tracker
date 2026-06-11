@@ -169,7 +169,7 @@ export default function PortfolioPanel({ quotes }: Props) {
                 autoFocus
                 className="input-field"
                 value={formSymbol}
-                onChange={e => setFormSymbol(e.target.value.toUpperCase())}
+                onChange={e => setFormSymbol(((e.target.value) ?? '').toUpperCase())}
                 placeholder="AAPL"
                 style={{ width: '100%', boxSizing: 'border-box' }}
               />
