@@ -27,7 +27,7 @@ export default function TechnicalScanner({ quotes }: Props) {
     const q = quotes[symbol];
     const a = analysis[symbol];
     const flags: Array<{ label: string; tone: string }> = [];
-    if (a?.rsi?.value != null && a.rsi.value < 35) flags.push({ label: `${ui.rsiLow} (${a.rsi.value.toFixed(1)})`, tone: '#f7b500' });
+    if (a?.rsi?.value != null && a.rsi.value < 35) flags.push({ label: `${ui.rsiLow} (${((a.rsi.value) ?? 0).toFixed(1)})`, tone: '#f7b500' });
     if (a?.movingAverages.cross === 'golden') flags.push({ label: ui.goldenCrossObserved, tone: '#16d46b' });
     if (a?.supportResistance.resistances[0] && q.regularMarketPrice > a.supportResistance.resistances[0] * 0.98) flags.push({ label: ui.nearResistance, tone: '#ff6b00' });
     if (q.regularMarketChangePercent < -3 && q.regularMarketVolume) flags.push({ label: ui.highSelloffFlag, tone: '#ff3b30' });

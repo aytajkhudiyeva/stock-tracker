@@ -24,7 +24,7 @@ export default function WatchlistHeatmap({ quotes, onSelect }: Props) {
         {rows.map(q => (
           <button key={q.symbol} onClick={() => onSelect(q.symbol)} style={{ border: '1px solid #2d2b20', background: bg(q.regularMarketChangePercent), padding: 12, minHeight: 76, textAlign: 'left', cursor: 'pointer' }}>
             <div style={{ color: '#f4f4ec', fontWeight: 900 }}>{q.symbol}</div>
-            <div style={{ color: '#f4f4ec', fontSize: '1.05rem', fontWeight: 900 }}>${q.regularMarketPrice.toFixed(2)}</div>
+            <div style={{ color: '#f4f4ec', fontSize: '1.05rem', fontWeight: 900 }}>${((q.regularMarketPrice) ?? 0).toFixed(2)}</div>
             <div style={{ color: '#f4f4ec', fontSize: '0.75rem' }}>{q.regularMarketChangePercent >= 0 ? '+' : ''}{(q.regularMarketChangePercent ?? 0).toFixed(2)}%</div>
           </button>
         ))}

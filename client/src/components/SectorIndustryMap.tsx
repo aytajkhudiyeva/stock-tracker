@@ -34,7 +34,7 @@ export default function SectorIndustryMap({ quotes, compact = false }: Props) {
             <div key={sector} style={{ background: '#080808', padding: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
                 <span style={{ color: '#f7b500', fontWeight: 900, fontSize: '0.82rem' }}>{sector}</span>
-                <span style={{ color: '#f4f4ec', fontWeight: 900, fontSize: '0.82rem' }}>{pct.toFixed(0)}%</span>
+                <span style={{ color: '#f4f4ec', fontWeight: 900, fontSize: '0.82rem' }}>{((pct) ?? 0).toFixed(0)}%</span>
               </div>
               <div style={{ height: 7, background: '#15130c', border: '1px solid #2d2b20', marginTop: 8 }}>
                 <div style={{ width: `${pct}%`, height: '100%', background: '#f7b500' }} />

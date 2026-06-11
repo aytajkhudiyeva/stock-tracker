@@ -22,7 +22,7 @@ export default function OptionsSentimentPanel({ quote }: Props) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, border: '1px solid #2d2b20', background: '#2d2b20' }}>
         {[
           [ui.callPutTone, callPutTone, callPutTone === ui.callLeaning ? '#16d46b' : callPutTone === ui.putLeaning ? '#ff3b30' : '#f7b500'],
-          [ui.ivProxy, `${ivProxy.toFixed(1)}%`, ivProxy > 55 ? '#ff6b00' : '#f7b500'],
+          [ui.ivProxy, `${((ivProxy) ?? 0).toFixed(1)}%`, ivProxy > 55 ? '#ff6b00' : '#f7b500'],
           [ui.unusualActivity, unusual ? ui.flagged : ui.normal, unusual ? '#ff6b00' : '#16d46b'],
         ].map(([label, value, color]) => (
           <div key={label} style={{ background: '#080808', padding: 12 }}>

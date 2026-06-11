@@ -45,7 +45,7 @@ export default function CorporateActivityPanel({ symbol }: Props) {
         ].map(([label, value]) => (
           <div key={label as string} style={{ background: '#080808', padding: 12 }}>
             <div style={{ color: '#8b8b7a', fontSize: '0.68rem', fontWeight: 900, textTransform: 'uppercase' }}>{label}</div>
-            <div style={{ color: '#f4f4ec', fontSize: '1.15rem', fontWeight: 900 }}>{typeof value === 'number' ? `${value.toFixed(1)}%` : '-'}</div>
+            <div style={{ color: '#f4f4ec', fontSize: '1.15rem', fontWeight: 900 }}>{typeof value === 'number' ? `${((value) ?? 0).toFixed(1)}%` : '-'}</div>
           </div>
         ))}
       </div>

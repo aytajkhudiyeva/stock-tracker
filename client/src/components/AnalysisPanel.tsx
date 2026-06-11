@@ -132,7 +132,7 @@ function RSICard({ rsi }: { rsi: TechnicalAnalysis['rsi'] }) {
       ) : (
         <>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '10px' }}>
-            <span style={{ fontSize: '1.8rem', fontWeight: 800, color, letterSpacing: '-1px' }}>{v.toFixed(1)}</span>
+            <span style={{ fontSize: '1.8rem', fontWeight: 800, color, letterSpacing: '-1px' }}>{((v) ?? 0).toFixed(1)}</span>
             <span style={{ fontSize: '0.78rem', color: '#6e7d92' }}>{label}</span>
           </div>
           <RangeBar pct={v} leftColor="#22c55e" rightColor="#ef4444" leftThreshold={30} rightThreshold={70} />
@@ -202,7 +202,7 @@ function BBCard({ bb }: { bb: TechnicalAnalysis['bollingerBands'] }) {
     <MiniCard>
       <SectionTitle>{t.sigBB}</SectionTitle>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '10px' }}>
-        <span style={{ fontSize: '1.3rem', fontWeight: 800, color: posColor }}>{pct.toFixed(0)}%B</span>
+        <span style={{ fontSize: '1.3rem', fontWeight: 800, color: posColor }}>{((pct) ?? 0).toFixed(0)}%B</span>
         <span style={{ fontSize: '0.78rem', color: '#6e7d92' }}>{posLabel}</span>
       </div>
       <RangeBar pct={pct} leftColor="#22c55e" rightColor="#ef4444" leftThreshold={20} rightThreshold={80} />
@@ -297,7 +297,7 @@ function SRCard({ sr, price }: { sr: TechnicalAnalysis['supportResistance']; pri
           {[...sr.resistances].reverse().map((r, i) => (
             <div key={`r${i}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 10px', borderRadius: '5px', background: 'rgba(239,68,68,0.06)' }}>
               <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#ef4444', opacity: 0.5, flexShrink: 0 }} />
-              <span style={{ flex: 1, fontSize: '0.85rem', color: '#1a2433', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${r.toFixed(2)}</span>
+              <span style={{ flex: 1, fontSize: '0.85rem', color: '#1a2433', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${((r) ?? 0).toFixed(2)}</span>
               <span style={{ fontSize: '0.72rem', color: '#ef4444', minWidth: '68px' }}>{t.resistance}</span>
               <span style={{ fontSize: '0.72rem', color: '#6e7d92', minWidth: '48px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                 +{((r / price - 1) * 100).toFixed(1)}%
@@ -306,13 +306,13 @@ function SRCard({ sr, price }: { sr: TechnicalAnalysis['supportResistance']; pri
           ))}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px', borderRadius: '5px', background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.18)' }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0092bc', flexShrink: 0 }} />
-            <span style={{ flex: 1, fontSize: '0.88rem', color: '#0092bc', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>${price.toFixed(2)}</span>
+            <span style={{ flex: 1, fontSize: '0.88rem', color: '#0092bc', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>${((price) ?? 0).toFixed(2)}</span>
             <span style={{ fontSize: '0.72rem', color: '#0092bc' }}>{t.currentPrice}</span>
           </div>
           {sr.supports.map((s, i) => (
             <div key={`s${i}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 10px', borderRadius: '5px', background: 'rgba(34,197,94,0.06)' }}>
               <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#22c55e', opacity: 0.5, flexShrink: 0 }} />
-              <span style={{ flex: 1, fontSize: '0.85rem', color: '#1a2433', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${s.toFixed(2)}</span>
+              <span style={{ flex: 1, fontSize: '0.85rem', color: '#1a2433', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${((s) ?? 0).toFixed(2)}</span>
               <span style={{ fontSize: '0.72rem', color: '#22c55e', minWidth: '68px' }}>{t.support}</span>
               <span style={{ fontSize: '0.72rem', color: '#6e7d92', minWidth: '48px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                 {((s / price - 1) * 100).toFixed(1)}%

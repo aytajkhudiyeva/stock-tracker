@@ -180,7 +180,7 @@ function AlertRow({ alert, onDelete, locale }: { alert: Alert; onDelete: (id: st
             border: `1px solid ${alert.condition === 'above' ? 'rgba(34,197,94,0.25)' : 'rgba(239,68,68,0.25)'}`,
             fontSize: '0.68rem', fontWeight: 600, padding: '1px 6px', borderRadius: '4px',
           }}>
-            {alert.condition === 'above' ? t.aboveLabel : t.belowLabel} ${alert.targetPrice.toFixed(2)}
+            {alert.condition === 'above' ? t.aboveLabel : t.belowLabel} ${((alert.targetPrice) ?? 0).toFixed(2)}
           </span>
           {alert.triggered && (
             <span style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', fontSize: '0.68rem', fontWeight: 600, padding: '1px 6px', borderRadius: '4px', border: '1px solid rgba(34,197,94,0.25)' }}>
@@ -190,7 +190,7 @@ function AlertRow({ alert, onDelete, locale }: { alert: Alert; onDelete: (id: st
         </div>
         {alert.triggeredPrice && (
           <div className="text-muted" style={{ fontSize: '0.72rem', marginTop: '2px' }}>
-            {t.firedAt} ${alert.triggeredPrice.toFixed(2)} · {new Date(alert.triggeredAt!).toLocaleString(locale)}
+            {t.firedAt} ${((alert.triggeredPrice) ?? 0).toFixed(2)} · {new Date(alert.triggeredAt!).toLocaleString(locale)}
           </div>
         )}
         {!alert.triggered && (

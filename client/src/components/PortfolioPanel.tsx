@@ -147,8 +147,8 @@ export default function PortfolioPanel({ quotes }: Props) {
           {[
             { label: 'Risk Score', value: `${riskScore}/100`, color: riskScore >= 70 ? '#ff3b30' : riskScore >= 40 ? '#f7b500' : '#16d46b' },
             { label: 'Risk Level', value: riskLabel, color: riskScore >= 70 ? '#ff3b30' : riskScore >= 40 ? '#f7b500' : '#16d46b' },
-            { label: 'Largest Position', value: largest ? `${largest.symbol} ${concentration.toFixed(1)}%` : '-', color: '#f4f4ec' },
-            { label: 'Volatility Drag', value: `${weightedMove.toFixed(2)}%`, color: '#f7b500' },
+            { label: 'Largest Position', value: largest ? `${largest.symbol} ${((concentration) ?? 0).toFixed(1)}%` : '-', color: '#f4f4ec' },
+            { label: 'Volatility Drag', value: `${((weightedMove) ?? 0).toFixed(2)}%`, color: '#f7b500' },
           ].map(card => (
             <div key={card.label} style={{ background: '#080808', padding: 12 }}>
               <div style={{ color: '#8b8b7a', fontSize: '0.68rem', fontWeight: 900, textTransform: 'uppercase' }}>{card.label}</div>

@@ -77,13 +77,13 @@ function PivotTable({ pivots, currentPrice, todayOpen, todayHigh, todayLow, t }:
         ] as const).map(({ label, val, color }) => val != null && (
           <div key={label} style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '6px', padding: '5px 10px' }}>
             <div style={{ color: '##8b99ad', fontSize: '0.6rem', textTransform: 'uppercase', marginBottom: '1px' }}>{label}</div>
-            <div style={{ color, fontSize: '0.82rem', fontWeight: 700 }}>${val.toFixed(2)}</div>
+            <div style={{ color, fontSize: '0.82rem', fontWeight: 700 }}>${((val) ?? 0).toFixed(2)}</div>
           </div>
         ))}
         <div style={{ background: '#0f1629', border: '1px solid #1e2d47', borderRadius: '6px', padding: '5px 10px' }}>
           <div style={{ color: '##8b99ad', fontSize: '0.6rem', textTransform: 'uppercase', marginBottom: '1px' }}>{t.prevDay} ({pivots.prevDate})</div>
           <div style={{ color: '#6e7d92', fontSize: '0.75rem' }}>
-            H: ${pivots.prevHigh.toFixed(2)} · L: ${pivots.prevLow.toFixed(2)} · C: ${pivots.prevClose.toFixed(2)}
+            H: ${((pivots.prevHigh) ?? 0).toFixed(2)} · L: ${((pivots.prevLow) ?? 0).toFixed(2)} · C: ${((pivots.prevClose) ?? 0).toFixed(2)}
           </div>
         </div>
       </div>
@@ -121,11 +121,11 @@ function PivotTable({ pivots, currentPrice, todayOpen, todayHigh, todayLow, t }:
             </div>
             {/* Price */}
             <div style={{ color: '#e2e8f0', fontSize: '0.82rem', fontWeight: 600, textAlign: 'right', fontFamily: 'monospace' }}>
-              ${lv.price.toFixed(2)}
+              ${((lv.price) ?? 0).toFixed(2)}
             </div>
             {/* Distance */}
             <div style={{ color: lv.dist >= 0 ? '#22c55e' : '#ef4444', fontSize: '0.78rem', fontWeight: 600, textAlign: 'right' }}>
-              {lv.dist >= 0 ? '+' : ''}{lv.dist.toFixed(2)}%
+              {lv.dist >= 0 ? '+' : ''}{((lv.dist) ?? 0).toFixed(2)}%
             </div>
             {/* Bar */}
             <div style={{ height: '3px', background: '#1e2d47', borderRadius: '2px', overflow: 'hidden' }}>
@@ -199,7 +199,7 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
         {d.vwap != null && (
           <div style={{ marginTop: '5px', paddingTop: '4px', borderTop: '1px solid #1e2d47' }}>
             <span style={{ color: '#f59e0b', fontSize: '0.65rem' }}>{t.vwap} </span>
-            <span style={{ color: '#f59e0b', fontWeight: 700, fontSize: '0.8rem' }}>${d.vwap.toFixed(2)}</span>
+            <span style={{ color: '#f59e0b', fontWeight: 700, fontSize: '0.8rem' }}>${((d.vwap) ?? 0).toFixed(2)}</span>
           </div>
         )}
         <div style={{ color: '##8b99ad', fontSize: '0.65rem', marginTop: '3px' }}>
@@ -268,7 +268,7 @@ function IntradayChart({ data, isUp, currentPrice, t }: IntradayChartProps) {
             domain={[minP, maxP]}
             tick={{ fill: '#6e7d92', fontSize: 10 }}
             axisLine={false} tickLine={false}
-            tickFormatter={v => `$${v.toFixed(1)}`}
+            tickFormatter={v => `$${((v) ?? 0).toFixed(1)}`}
             width={52}
           />
 
@@ -372,7 +372,7 @@ function HistoricalChart({ data, color, gradientId, period, t }: HistChartProps)
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="#1e2d47" vertical={false} />
         <XAxis dataKey="date" tickFormatter={d => formatDate(d, period)} tick={{ fill: '#6e7d92', fontSize: 11 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-        <YAxis domain={[minC - pad, maxC + pad]} tick={{ fill: '#6e7d92', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `$${v.toFixed(0)}`} width={55} />
+        <YAxis domain={[minC - pad, maxC + pad]} tick={{ fill: '#6e7d92', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `$${((v) ?? 0).toFixed(0)}`} width={55} />
         <Tooltip content={<CustomTooltip />} />
         <Area type="monotone" dataKey="close" stroke={color} strokeWidth={2} fill={`url(#${gradientId})`} dot={false} activeDot={{ r: 4, fill: color, stroke: '#0a0e1a', strokeWidth: 2 }} />
       </AreaChart>

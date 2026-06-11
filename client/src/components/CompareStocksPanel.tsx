@@ -54,11 +54,11 @@ export default function CompareStocksPanel({ baseSymbol, watchlist }: Props) {
             return (
               <div key={sym} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr', padding: '10px 12px', borderTop: '1px solid #2d2b20', color: '#b4b49f', fontSize: '0.82rem' }}>
                 <div style={{ color: '#f7b500', fontWeight: 900 }}>{sym}</div>
-                <div>{q ? `$${q.regularMarketPrice.toFixed(2)}` : '-'}</div>
+                <div>{q ? `$${((q.regularMarketPrice) ?? 0).toFixed(2)}` : '-'}</div>
                 <div style={{ color: q && q.regularMarketChangePercent >= 0 ? '#16d46b' : '#ff3b30' }}>{q ? `${q.regularMarketChangePercent >= 0 ? '+' : ''}${(q.regularMarketChangePercent ?? 0).toFixed(2)}%` : '-'}</div>
                 <div>{displayConsensus(f?.consensus)}</div>
-                <div>{f?.targetMeanPrice ? `$${f.targetMeanPrice.toFixed(2)}` : '-'}</div>
-                <div style={{ color: liveUpside != null && liveUpside >= 0 ? '#16d46b' : '#ff3b30' }}>{liveUpside != null ? `${liveUpside >= 0 ? '+' : ''}${liveUpside.toFixed(1)}%` : '-'}</div>
+                <div>{f?.targetMeanPrice ? `$${((f.targetMeanPrice) ?? 0).toFixed(2)}` : '-'}</div>
+                <div style={{ color: liveUpside != null && liveUpside >= 0 ? '#16d46b' : '#ff3b30' }}>{liveUpside != null ? `${liveUpside >= 0 ? '+' : ''}${((liveUpside) ?? 0).toFixed(1)}%` : '-'}</div>
               </div>
             );
           })}

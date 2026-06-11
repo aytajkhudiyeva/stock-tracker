@@ -14,7 +14,7 @@ function fmt(n: number | null | undefined, digits = 2, prefix = '') {
 
 function fmtPct(n: number | null | undefined) {
   if (n == null) return '-';
-  return `${n >= 0 ? '+' : ''}${n.toFixed(1)}%`;
+  return `${n >= 0 ? '+' : ''}${((n) ?? 0).toFixed(1)}%`;
 }
 
 function consensusColor(consensus: AnalystForecast['consensus']) {
@@ -127,7 +127,7 @@ export default function AnalystForecastPanel({ symbol }: Props) {
           </div>
           {forecast.recommendationMean != null && (
             <div style={{ marginTop: 10, display: 'inline-flex', border: '1px solid #2d2b20', background: '#050505', color: '#b4b49f', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 800 }}>
-              Score {forecast.recommendationMean.toFixed(2)}
+              Score {((forecast.recommendationMean) ?? 0).toFixed(2)}
             </div>
           )}
         </div>

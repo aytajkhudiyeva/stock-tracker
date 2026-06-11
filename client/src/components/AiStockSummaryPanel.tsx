@@ -75,7 +75,7 @@ export default function AiStockSummaryPanel({ quote }: Props) {
     ? [
         `${quote.symbol} $${fmt(quote.regularMarketPrice)} qiymətindədir və günlük hərəkət ${isUp ? 'müsbət' : 'mənfi'}: ${fmt(quote.regularMarketChangePercent)}%.`,
         forecast?.targetMeanPrice
-          ? `Analitik hədəfi $${fmt(forecast.targetMeanPrice)}; ${safeUpside != null ? `${safeUpside >= 0 ? '+' : ''}${safeUpside.toFixed(1)}% gözlənilən hərəkət` : 'hərəkət datası məhduddur'}. Üçüncü tərəf sentimenti: ${displayConsensus(forecast.consensus, lang)}.`
+          ? `Analitik hədəfi $${fmt(forecast.targetMeanPrice)}; ${safeUpside != null ? `${safeUpside >= 0 ? '+' : ''}${((safeUpside) ?? 0).toFixed(1)}% gözlənilən hərəkət` : 'hərəkət datası məhduddur'}. Üçüncü tərəf sentimenti: ${displayConsensus(forecast.consensus, lang)}.`
           : 'Analitik hədəf datası məhduddur.',
         analysis ? `Texniki model: ${analysis.summary.signal}; trend: ${analysis.trend.replace(/_/g, ' ')}.` : 'Texniki model hələ yüklənir və ya əlçatan deyil.',
         news?.items?.length ? `Son ${Math.min(news.items.length, 5)} başlıq üzrə xəbər tonu ${newsTone === 'positive' ? 'müsbət' : newsTone === 'negative' ? 'mənfi' : 'neytral'} görünür.` : 'Son xəbər axını hazırda əlçatan deyil.',
@@ -83,7 +83,7 @@ export default function AiStockSummaryPanel({ quote }: Props) {
     : [
         `${quote.symbol} is trading at $${fmt(quote.regularMarketPrice)} with a ${isUp ? 'positive' : 'negative'} daily move of ${fmt(quote.regularMarketChangePercent)}%.`,
         forecast?.targetMeanPrice
-          ? `Analyst target is $${fmt(forecast.targetMeanPrice)} with ${safeUpside != null ? `${safeUpside >= 0 ? '+' : ''}${safeUpside.toFixed(1)}% implied move` : 'limited move data'}. Third-party sentiment: ${displayConsensus(forecast.consensus, lang)}.`
+          ? `Analyst target is $${fmt(forecast.targetMeanPrice)} with ${safeUpside != null ? `${safeUpside >= 0 ? '+' : ''}${((safeUpside) ?? 0).toFixed(1)}% implied move` : 'limited move data'}. Third-party sentiment: ${displayConsensus(forecast.consensus, lang)}.`
           : 'Analyst target data is limited for this symbol.',
         analysis ? `Technical model is ${analysis.summary.signal}; trend is ${analysis.trend.replace(/_/g, ' ')}.` : 'Technical model is still loading or unavailable.',
         news?.items?.length ? `Latest news tone looks ${newsTone} across ${Math.min(news.items.length, 5)} recent headlines.` : 'Recent headline feed is unavailable right now.',

@@ -56,8 +56,8 @@ export default function StockScreener({ quotes }: Props) {
           return (
             <div key={symbol} style={{ display: 'grid', gridTemplateColumns: '90px 1fr 1fr 1fr', border: '1px solid #2d2b20', background: '#080808', padding: '9px 12px' }}>
               <div style={{ color: '#f7b500', fontWeight: 900 }}>{symbol}</div>
-              <div>{ui.move}: {liveUpside != null ? `${liveUpside.toFixed(1)}%` : '-'}</div>
-              <div>RSI: {a?.rsi?.value != null ? a.rsi.value.toFixed(1) : '-'}</div>
+              <div>{ui.move}: {liveUpside != null ? `${((liveUpside) ?? 0).toFixed(1)}%` : '-'}</div>
+              <div>RSI: {a?.rsi?.value != null ? ((a.rsi.value) ?? 0).toFixed(1) : '-'}</div>
               <div>{ui.cap}: {q.marketCap ? `$${(q.marketCap / 1e9).toFixed(1)}B` : '-'}</div>
             </div>
           );

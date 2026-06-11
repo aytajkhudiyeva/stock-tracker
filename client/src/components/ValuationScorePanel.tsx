@@ -37,7 +37,7 @@ export default function ValuationScorePanel({ quote }: Props) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, border: '1px solid #2d2b20', background: '#2d2b20' }}>
         {[
           [ui.forwardPe, quote.forwardPE?.toFixed(2) || '-'],
-          [ui.analystImpliedMove, forecast?.upsidePercent != null ? `${forecast.upsidePercent.toFixed(1)}%` : '-'],
+          [ui.analystImpliedMove, forecast?.upsidePercent != null ? `${((forecast.upsidePercent) ?? 0).toFixed(1)}%` : '-'],
           [ui.marketCap, quote.marketCap ? `$${(quote.marketCap / 1e9).toFixed(1)}B` : '-'],
         ].map(([label, value]) => (
           <div key={label} style={{ background: '#080808', padding: 12 }}>

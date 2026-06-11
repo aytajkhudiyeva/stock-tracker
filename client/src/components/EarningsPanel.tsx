@@ -17,7 +17,7 @@ function fmtRev(n: number) {
   if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
   if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
-  return `$${n.toFixed(0)}`;
+  return `$${((n) ?? 0).toFixed(0)}`;
 }
 
 function formatQuarter(q: string) {
@@ -103,7 +103,7 @@ export default function EarningsPanel({ symbol }: Props) {
               {data.epsEstimate != null && (
                 <div style={{ background: '#0a0e1a', borderRadius: '8px', padding: '10px 12px', border: '1px solid #1e2d47' }}>
                   <div style={{ color: '#6e7d92', fontSize: '0.68rem', marginBottom: '4px' }}>{t.epsEstimate}</div>
-                  <div style={{ color: '#1a2433', fontWeight: 700, fontSize: '1rem' }}>${data.epsEstimate.toFixed(2)}</div>
+                  <div style={{ color: '#1a2433', fontWeight: 700, fontSize: '1rem' }}>${((data.epsEstimate) ?? 0).toFixed(2)}</div>
                 </div>
               )}
               {data.revenueEstimate != null && (
@@ -119,7 +119,7 @@ export default function EarningsPanel({ symbol }: Props) {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 1, border: '1px solid #2d2b20', background: '#2d2b20', marginBottom: 16 }}>
         {[
-          { label: 'EPS / Revenue Setup', value: `${data.epsEstimate != null ? `$${data.epsEstimate.toFixed(2)} EPS` : 'EPS -'} · ${data.revenueEstimate != null ? fmtRev(data.revenueEstimate) : 'Revenue -'}` },
+          { label: 'EPS / Revenue Setup', value: `${data.epsEstimate != null ? `$${((data.epsEstimate) ?? 0).toFixed(2)} EPS` : 'EPS -'} · ${data.revenueEstimate != null ? fmtRev(data.revenueEstimate) : 'Revenue -'}` },
           { label: 'Last 4 Result Mix', value: `${beatCount} beat · ${missCount} miss` },
           { label: 'Beat Scenario', value: 'Watch target/estimate revisions after report' },
           { label: 'Miss Scenario', value: 'Watch support zones and estimate cuts' },
@@ -173,11 +173,11 @@ export default function EarningsPanel({ symbol }: Props) {
                   </div>
 
                   <div style={{ color: beat === true ? '#22c55e' : beat === false ? '#ef4444' : '#e2e8f0', fontWeight: 600, fontSize: '0.82rem' }}>
-                    {row.actual != null ? `$${row.actual.toFixed(2)}` : '—'}
+                    {row.actual != null ? `$${((row.actual) ?? 0).toFixed(2)}` : '—'}
                   </div>
 
                   <div style={{ color: '#5b6b80', fontSize: '0.82rem' }}>
-                    {row.estimate != null ? `$${row.estimate.toFixed(2)}` : '—'}
+                    {row.estimate != null ? `$${((row.estimate) ?? 0).toFixed(2)}` : '—'}
                   </div>
 
                   <div style={{ color: '#e2e8f0', fontSize: '0.82rem' }}>
@@ -201,7 +201,7 @@ export default function EarningsPanel({ symbol }: Props) {
                     )}
                     {surprise != null && (
                       <span style={{ color: surprise > 0 ? '#22c55e' : '#ef4444', fontSize: '0.7rem', fontWeight: 600 }}>
-                        {surprise > 0 ? '+' : ''}{surprise.toFixed(1)}%
+                        {surprise > 0 ? '+' : ''}{((surprise) ?? 0).toFixed(1)}%
                       </span>
                     )}
                   </div>
