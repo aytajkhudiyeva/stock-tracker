@@ -41,7 +41,7 @@ export default function DailyBrief({ quotes }: Props) {
       <div className="section-kicker">{ui.dailyBrief}</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10 }}>
         <Panel title={ui.portfolioState}>{value ? `${ui.estimatedValue}: $${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : ui.noPortfolioPositions}</Panel>
-        <Panel title={ui.topMovers}>{[...gainers, ...losers].map(q => `${q.symbol} ${q.regularMarketChangePercent >= 0 ? '+' : ''}${q.regularMarketChangePercent.toFixed(1)}%`).join(' · ')}</Panel>
+        <Panel title={ui.topMovers}>{[...gainers, ...losers].map(q => `${q.symbol} ${q.regularMarketChangePercent >= 0 ? '+' : ''}${(q.regularMarketChangePercent ?? 0).toFixed(1)}%`).join(' · ')}</Panel>
         <Panel title={ui.economicEvents}>{events.length ? events.map(e => `${e.name} ${e.time} ET`).join(' · ') : ui.noBriefEvents}</Panel>
         <Panel title={ui.earningsNearby}>{earnings.filter(e => e.days != null && e.days >= 0 && e.days <= 14).map(e => `${e.symbol} ${e.days}d`).join(' · ') || ui.noNearbyEarnings}</Panel>
         <Panel title={ui.newsRiskFlags}>{newsRisk.length ? newsRisk.join(' · ') : ui.noNewsRisk}</Panel>

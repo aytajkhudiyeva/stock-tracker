@@ -17,7 +17,7 @@ export default function MobileTodayView({ quotes, onSelect }: Props) {
         {rows.slice(0, 8).map(q => (
           <button key={q.symbol} onClick={() => onSelect(q.symbol)} style={{ display: 'flex', justifyContent: 'space-between', border: '1px solid #2d2b20', background: '#080808', padding: 10 }}>
             <span style={{ color: '#f7b500', fontWeight: 900 }}>{q.symbol}</span>
-            <span style={{ color: q.regularMarketChangePercent >= 0 ? '#16d46b' : '#ff3b30', fontWeight: 900 }}>{q.regularMarketChangePercent >= 0 ? '+' : ''}{q.regularMarketChangePercent.toFixed(2)}%</span>
+            <span style={{ color: q.regularMarketChangePercent >= 0 ? '#16d46b' : '#ff3b30', fontWeight: 900 }}>{q.regularMarketChangePercent >= 0 ? '+' : ''}{(q.regularMarketChangePercent ?? 0).toFixed(2)}%</span>
           </button>
         ))}
       </div>
