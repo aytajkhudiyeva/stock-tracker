@@ -1,0 +1,16 @@
+{
+  "status": "draft-noindex",
+  "activation": "Set PUBLIC_INDEXING=true only after legal, social, pricing and customer data are verified.",
+  "clusters": [
+    {
+      "topic": "Koreyadan avtomobil sifarişi",
+      "pillar": "/koreyadan-avtomobil-sifarisi/",
+      "supporting": ["/gomruk-kalkulyatoru/", "/vin-yoxlama/", "/tehvil-verilen-avtomobiller/"]
+    },
+    {
+      "topic": "Model üzrə sifariş",
+      "pillar": "/modeller/",
+      "supporting": ["/modeller/kia-sorento/", "/modeller/hyundai-santa-fe/", "/modeller/kia-k5/"]
+    }
+  ]
+}

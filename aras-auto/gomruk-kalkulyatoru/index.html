@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Avtomobil Gömrük və Bakı Qiyməti Kalkulyatoru | Aras Auto</title>
+  <meta name="description" content="Avtomobilin xaricdəki qiyməti, logistika, xidmət və gömrük ehtiyatı ilə təxmini Bakı qiymətini maddə-maddə hesablayın.">
+  <link rel="canonical" href="https://arasauto.az/gomruk-kalkulyatoru/"><link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body class="subpage-body">
+  <header class="site-header"><a class="brand" href="../"><svg class="brand-symbol" viewBox="0 0 50 50"><path d="M25 3 47 15v20L25 47 3 35V15z"/><path class="brand-cut" d="m25 13 13 25h-8l-2-5h-8l3-7h2l-2-5-8 17H8z"/></svg><span>ARAS<small>AUTO</small></span></a><nav class="desktop-nav"><a href="../avtomobiller/">Avtomobillər</a><a href="../vin-yoxlama/">VIN yoxlama</a><a href="../#teklif">Təklif al</a></nav></header>
+  <div class="demo-banner">Nümunə xidmət və logistika tarifləri istifadə olunur. Rəsmi yekun VIN, sənədlər, cari dövlət ödənişləri və şirkətin faktiki tarifləri ilə təsdiqlənməlidir.</div>
+  <main>
+    <section class="subpage-hero"><div class="subpage-hero-inner"><div class="micro"><i></i> TAM XƏRC XƏRİTƏSİ</div><h1>Avtomobilin təxmini Bakı qiymətini görün.</h1><p>Avtomobilin qiymətini və texniki məlumatlarını daxil edin. Bütün əsas xərc qrupları ayrıca göstərilsin.</p></div></section>
+    <section class="page-content">
+      <div class="cost-card">
+        <div class="cost-intro"><h2>Hesaba nələr daxildir?</h2><p>Avtomobil, Koreya daxili logistika, ekspert yoxlaması, ixrac sənədləri, dəniz/tranzit, sığorta, terminal, Aras Auto xidməti və gömrük ehtiyatı.</p><div class="cost-tags"><span>Avtomobil</span><span>Ekspert</span><span>Logistika</span><span>Sığorta</span><span>Xidmət haqqı</span><span>Gömrük ehtiyatı</span></div><div class="legal-warning">Kalkulyatorun nəticəsi sifariş və ödəniş üçün hüquqi əsas deyil. Təsdiqlənmiş təklif ayrıca xərc cədvəli ilə verilir.</div></div>
+        <form class="smart-calculator" id="calculator">
+          <div class="calc-head"><span>Təxmini Bakı qiyməti</span><span class="demo-pill dark-pill">NÜMUNƏ TARİFLƏR</span></div>
+          <div class="field-row"><label>Avtomobil qiyməti (USD)<input id="vehiclePrice" type="number" value="19000"></label><label>USD/AZN məzənnəsi<input id="exchangeRate" type="number" step=".01" value="1.70"></label></div>
+          <div class="field-row"><label>İstehsal ili<input id="vehicleYear" type="number" value="2022"></label><label>Mühərrik (sm³)<input id="engineSize" type="number" value="2000"></label></div>
+          <div class="field-row"><label>Yanacaq<select id="fuel"><option value="hybrid">Hibrid</option><option value="petrol">Benzin</option><option value="diesel">Dizel</option><option value="electric">Elektrik</option></select></label><label>Vəziyyət<select id="condition"><option value="used">İşlənmiş</option><option value="new">Yeni</option></select></label></div>
+          <details class="calc-options" open><summary>Logistika və xidmət tarifləri</summary><div class="field-row"><label>Koreya daxili logistika (USD)<input id="localLogistics" type="number" value="350"></label><label>Dəniz/tranzit (USD)<input id="shipping" type="number" value="1900"></label></div><div class="field-row"><label>Ekspert və sənədlər (USD)<input id="inspectionFee" type="number" value="300"></label><label>Aras Auto xidməti (USD)<input id="serviceFee" type="number" value="800"></label></div><div class="field-row"><label>Sığorta/terminal (USD)<input id="insuranceFee" type="number" value="250"></label><label>Gömrük ehtiyatı (AZN)<input id="customsReserve" type="number" value="6500"></label></div></details>
+          <div class="breakdown"><p><span>Avtomobil</span><b id="carBudget">32 300 AZN</b></p><p><span>Logistika, yoxlama və xidmət</span><b id="serviceBudget">6 120 AZN</b></p><p><span>Gömrük və dövlət ödənişləri ehtiyatı</span><b id="reserveBudget">6 500 AZN</b></p><p class="calc-total"><span>Təxmini Bakı büdcəsi</span><b id="totalBudget">44 920 AZN</b></p></div>
+          <a class="btn btn-red full" href="https://wa.me/994505124510?text=Salam%2C%20kalkulyator%20hesab%C4%B1n%C4%B1%20d%C9%99qiql%C9%99%C5%9Fdirm%C9%99k%20ist%C9%99yir%C9%99m." target="_blank" rel="noopener">Hesabı menecerlə dəqiqləşdir →</a>
+        </form>
+      </div>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div><script src="../assets/app.js"></script>
+</body>
+</html>

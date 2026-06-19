@@ -1,0 +1,14 @@
+{
+  "name": "aras-auto",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Aras Auto corporate website",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "python3 -m http.server 4173",
+    "check": "node --check assets/app.js"
+  }
+}
