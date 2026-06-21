@@ -1,5 +1,6 @@
 const http = require("node:http");
 const crypto = require("node:crypto");
+const webpush = require("web-push");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -10,6 +11,12 @@ const dataDir = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path
 const dataFile = path.join(dataDir, "admin-data.json");
 const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 const adminSecret = process.env.ADMIN_SECRET || "aras-auto-demo-secret-change-me";
+const vapidPublicKey = process.env.VAPID_PUBLIC_KEY || "";
+const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || "";
+const vapidContact = process.env.VAPID_CONTACT_EMAIL || "mailto:info@arasauto.az";
+if (vapidPublicKey && vapidPrivateKey) {
+  webpush.setVapidDetails(vapidContact, vapidPublicKey, vapidPrivateKey);
+}
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -228,6 +235,7 @@ async function handleApi(request, response, pathname) {
     };
     data.leads.unshift(lead);
     writeData(data);
+    sendPushToRole("admin", "Yeni sorğu", `${lead.name || "Müştəri"} · ${lead.interest}`).catch(() => {});
     sendJson(response, 201, { lead });
     return true;
   }
@@ -511,5 +519,85 @@ async function handleExtraApi(request, response, pathname) {
     return true;
   }
 
+  // PUSH: VAPID public key-i frontend-ə ver
+  if (request.method === "GET" && pathname === "/api/push/vapid-public-key") {
+    sendJson(response, 200, { publicKey: vapidPublicKey });
+    return true;
+  }
+
+  // PUSH: abunəlik qeydiyyatı (müştəri və ya admin)
+  if (request.method === "POST" && pathname === "/api/push/subscribe") {
+    const body = await readBody(request);
+    const subscription = body.subscription;
+    const role = String(body.role || "customer").trim();
+    const orderCode = String(body.orderCode || "").trim().toUpperCase();
+    if (!subscription || !subscription.endpoint) { sendJson(response, 400, { error: "Subscription tələb olunur." }); return true; }
+    const data = readData();
+    if (!data.pushSubscriptions) data.pushSubscriptions = [];
+    const exists = data.pushSubscriptions.find(s => s.subscription.endpoint === subscription.endpoint);
+    if (exists) {
+      exists.role = role;
+      exists.orderCode = orderCode;
+      exists.updatedAt = new Date().toISOString();
+    } else {
+      data.pushSubscriptions.push({ id: normalizeId("push"), subscription, role, orderCode, createdAt: new Date().toISOString() });
+    }
+    writeData(data);
+    sendJson(response, 201, { ok: true });
+    return true;
+  }
+
+  // PUSH: abunəlikdən çıx
+  if (request.method === "POST" && pathname === "/api/push/unsubscribe") {
+    const body = await readBody(request);
+    const endpoint = String(body.endpoint || "").trim();
+    const data = readData();
+    if (!data.pushSubscriptions) data.pushSubscriptions = [];
+    data.pushSubscriptions = data.pushSubscriptions.filter(s => s.subscription.endpoint !== endpoint);
+    writeData(data);
+    sendJson(response, 200, { ok: true });
+    return true;
+  }
+
+  // PUSH: admin-dən sınaq bildirişi
+  if (request.method === "POST" && pathname === "/api/push/test") {
+    if (!requireAdmin(request, response)) return true;
+    const body = await readBody(request);
+    const title = String(body.title || "Aras Auto");
+    const text = String(body.message || "Sınaq bildirişi");
+    const result = await sendPushToRole(String(body.role || "admin"), title, text, body.orderCode);
+    sendJson(response, 200, { ok: true, result });
+    return true;
+  }
+
   return false;
+}
+
+// ── PUSH NOTIFICATION SİSTEMİ ─────────────────────────────────
+async function sendPushToSubscription(sub, title, body, url) {
+  try {
+    await webpush.sendNotification(sub.subscription, JSON.stringify({ title, body, url: url || "/" }));
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err.message, statusCode: err.statusCode };
+  }
+}
+
+async function sendPushToRole(role, title, body, orderCode) {
+  const data = readData();
+  if (!data.pushSubscriptions) data.pushSubscriptions = [];
+  let targets = data.pushSubscriptions.filter(s => s.role === role);
+  if (orderCode) targets = targets.filter(s => !s.orderCode || s.orderCode === String(orderCode).toUpperCase());
+  const results = [];
+  const stale = [];
+  for (const sub of targets) {
+    const result = await sendPushToSubscription(sub, title, body, orderCode ? `/izleme/?code=${orderCode}` : "/");
+    results.push({ id: sub.id, ...result });
+    if (!result.ok && (result.statusCode === 404 || result.statusCode === 410)) stale.push(sub.subscription.endpoint);
+  }
+  if (stale.length) {
+    data.pushSubscriptions = data.pushSubscriptions.filter(s => !stale.includes(s.subscription.endpoint));
+    writeData(data);
+  }
+  return results;
 }

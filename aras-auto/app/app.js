@@ -73,7 +73,62 @@ document.querySelector("#appTrack")?.addEventListener("submit",event=>{
   document.querySelector("#appTimeline").hidden=code!=="AA-NUMUNE-2406";
   showToast(code==="AA-NUMUNE-2406"?"Nümunə sifariş tapıldı.":"Bu demo kodu tapılmadı.");
 });
-document.querySelector("#notifyButton")?.addEventListener("click",()=>showToast("Yeni bildiriş yoxdur."));
+// ── PUSH NOTIFICATION ABUNƏLİYİ ──────────────────────────────
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+}
+
+async function subscribeToPush() {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+    showToast("Bu cihaz bildirişləri dəstəkləmir.");
+    return false;
+  }
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      showToast("Bildirişlərə icazə verilmədi.");
+      return false;
+    }
+    const registration = await navigator.serviceWorker.ready;
+    const keyResponse = await fetch("/api/push/vapid-public-key");
+    const { publicKey } = await keyResponse.json();
+    if (!publicKey) {
+      showToast("Bildiriş sistemi hazırlanır, bir az sonra cəhd edin.");
+      return false;
+    }
+    let subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey)
+      });
+    }
+    await fetch("/api/push/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subscription, role: "customer" })
+    });
+    localStorage.setItem("arasAppPushEnabled", "1");
+    showToast("Bildirişlər aktiv edildi.");
+    return true;
+  } catch (err) {
+    showToast("Bildiriş aktivləşdirilmədi.");
+    return false;
+  }
+}
+
+document.querySelector("#notifyButton")?.addEventListener("click", async event => {
+  event.preventDefault();
+  const alreadyEnabled = localStorage.getItem("arasAppPushEnabled") === "1";
+  if (alreadyEnabled) {
+    showToast("Bildirişlər artıq aktivdir.");
+    return;
+  }
+  await subscribeToPush();
+});
 
 let installPrompt;
 const installButton=document.querySelector("#installButton");
