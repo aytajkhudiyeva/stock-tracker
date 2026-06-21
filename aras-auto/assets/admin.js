@@ -263,9 +263,53 @@ document.addEventListener("click", event => {
   toast("Sətir silindi. Yadda saxlamağı unutmayın.");
 });
 
+// ── PUSH BİLDİRİŞ İDARƏETMƏSİ ────────────────────────────────
+async function loadPushStatus() {
+  const statusEl = document.querySelector("#pushSubStatus");
+  if (!statusEl) return;
+  try {
+    const data = await api("/api/admin/data");
+    const subs = data.pushSubscriptions || [];
+    const adminCount = subs.filter(s => s.role === "admin").length;
+    const customerCount = subs.filter(s => s.role === "customer").length;
+    statusEl.textContent = `Admin abunəlikləri: ${adminCount} · Müştəri abunəlikləri: ${customerCount}`;
+  } catch {
+    statusEl.textContent = "Abunəlik məlumatı yüklənmədi.";
+  }
+}
+
+document.querySelector("#pushTestForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
+  const form = event.target;
+  const role = form.role.value;
+  const title = form.title.value.trim() || "Aras Auto";
+  const message = form.message.value.trim();
+  const resultList = document.querySelector("#pushResultList");
+  if (!message) return;
+  try {
+    const response = await api("/api/push/test", {
+      method: "POST",
+      body: JSON.stringify({ role, title, message })
+    });
+    const results = response.result || [];
+    if (!results.length) {
+      resultList.innerHTML = `<p class="admin-hint">Bu rol üçün heç bir abunəlik tapılmadı.</p>`;
+    } else {
+      resultList.innerHTML = results.map(r =>
+        `<div class="admin-row"><span>${escapeHtml(r.id)}</span><span>${r.ok ? "✓ Göndərildi" : "✗ " + escapeHtml(r.error || "Xəta")}</span></div>`
+      ).join("");
+    }
+    toast("Bildiriş göndərmə tamamlandı.");
+    form.message.value = "";
+  } catch (err) {
+    toast(err.message || "Bildiriş göndərilmədi.");
+  }
+});
+
 api("/api/admin/me").then(() => {
   document.querySelector("#adminLogin").hidden = true;
   document.querySelector("#adminWorkspace").hidden = false;
+  loadPushStatus();
   return loadAdmin();
 }).catch(() => {
   document.querySelector("#adminLogin").hidden = false;

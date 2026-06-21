@@ -127,6 +127,26 @@
         </article>
       </section>
 
+      <section class="admin-grid">
+        <article class="admin-panel" id="pushAdmin">
+          <header><div><small>BİLDİRİŞ</small><h2>Push bildirişləri</h2></div></header>
+          <p class="admin-hint" id="pushSubStatus">Abunəlik sayı yüklənir...</p>
+          <form class="admin-form" id="pushTestForm">
+            <select name="role">
+              <option value="admin">Admin-lərə</option>
+              <option value="customer">Müştərilərə</option>
+            </select>
+            <input name="title" placeholder="Başlıq" value="Aras Auto">
+            <textarea name="message" placeholder="Mesaj mətni" required></textarea>
+            <button type="submit">Sınaq bildirişi göndər</button>
+          </form>
+        </article>
+        <article class="admin-panel">
+          <header><div><small>VƏZİYYƏT</small><h2>Göndəriş nəticələri</h2></div></header>
+          <div class="admin-table" id="pushResultList"><p class="admin-hint">Hələ göndəriş edilməyib.</p></div>
+        </article>
+      </section>
+
       <section class="admin-panel" id="settings">
         <header><div><small>KALKULYATOR</small><h2>Qiymət və xərc tarifləri</h2></div></header>
         <form class="admin-settings" id="settingsForm">
