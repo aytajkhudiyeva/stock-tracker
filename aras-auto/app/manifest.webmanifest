@@ -1,0 +1,33 @@
+{
+  "name": "Aras Auto",
+  "short_name": "Aras Auto",
+  "description": "Koreyadan avtomobil seçimi, xərc hesabı və sifariş izləmə tətbiqi.",
+  "lang": "az",
+  "start_url": "/app/",
+  "scope": "/app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07090d",
+  "theme_color": "#07090d",
+  "categories": ["automotive", "business", "shopping"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Avtomobillər",
+      "short_name": "Kataloq",
+      "url": "/app/?tab=cars"
+    },
+    {
+      "name": "Sifarişi izlə",
+      "short_name": "İzləmə",
+      "url": "/app/?tab=track"
+    }
+  ]
+}

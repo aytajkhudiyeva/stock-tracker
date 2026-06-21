@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="120" fill="#6f263d"/>
+  <path d="M256 86c63 58 99 110 99 171 0 61-44 111-99 111s-99-50-99-111c0-61 36-113 99-171Z" fill="#f8dfe0"/>
+  <path d="M256 180c-35 34-50 66-50 96 0 30 22 56 50 56s50-26 50-56c0-30-15-62-50-96Z" fill="#fffaf7"/>
+  <text x="256" y="444" text-anchor="middle" font-family="Georgia,serif" font-size="68" font-weight="700" fill="#fffaf7">KB</text>
+</svg>

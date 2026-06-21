@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="az">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Geniş tarix aralığında ən ucuz uçuş tarixlərini avtomatik tapan alət." />
+    <title>Uçuş Tarix Tapıcı</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="/">
+          <span class="brand-mark">AT</span>
+          <span><strong>Uçuş Tarix Tapıcı</strong><small>Aviasales üçün ağıllı axtarış</small></span>
+        </a>
+        <span class="live-badge"><i></i> Saxta qiymət göstərilmir</span>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">Tarixləri özü yoxlayan uçuş köməkçisi</span>
+          <h1>Tarix aralığındakı ən ucuz uçuşu tap.</h1>
+          <p>
+            Məsələn, iyun–avqust aralığını seç. Sistem günləri və qalma
+            müddətlərini müqayisə edib ən sərfəli tarixləri hazır verəcək.
+          </p>
+          <div class="hero-points">
+            <span>✓ Tək istiqamət və gediş-dönüş</span>
+            <span>✓ 0, 1 və 2 transfer filtri</span>
+            <span>✓ 6 aya qədər interval</span>
+          </div>
+        </div>
+
+        <form id="searchForm" class="search-card">
+          <div class="form-title">
+            <div><span class="step">01</span><h2>Axtarış detalları</h2></div>
+            <span id="apiState" class="api-state">Yoxlanılır</span>
+          </div>
+
+          <div class="segmented" role="group" aria-label="Səfər tipi">
+            <button type="button" class="segment active" data-trip-type="roundtrip">Gediş-dönüş</button>
+            <button type="button" class="segment" data-trip-type="oneway">Yalnız gediş</button>
+          </div>
+          <input id="tripType" type="hidden" value="roundtrip" />
+
+          <div class="route-row">
+            <label class="place-field">
+              <span>Haradan</span>
+              <div class="airport-input">
+                <input id="origin" value="Bakı" autocomplete="off" role="combobox" aria-expanded="false" required />
+                <strong id="originCode">BAK</strong>
+              </div>
+              <input id="originValue" type="hidden" value="BAK" />
+              <div id="originSuggestions" class="suggestions" hidden></div>
+            </label>
+            <button id="swapRoute" class="swap-button" type="button" aria-label="Marşrutu dəyiş">⇄</button>
+            <label class="place-field">
+              <span>Haraya</span>
+              <div class="airport-input">
+                <input id="destination" value="Pekin" autocomplete="off" role="combobox" aria-expanded="false" required />
+                <strong id="destinationCode">BJS</strong>
+              </div>
+              <input id="destinationValue" type="hidden" value="BJS" />
+              <div id="destinationSuggestions" class="suggestions" hidden></div>
+            </label>
+          </div>
+
+          <div class="form-grid dates-grid">
+            <label>
+              <span>Aralığın başlanğıcı</span>
+              <input id="startDate" type="date" required />
+            </label>
+            <label>
+              <span>Aralığın sonu</span>
+              <input id="endDate" type="date" required />
+            </label>
+          </div>
+
+          <div id="stayBlock" class="stay-block">
+            <div class="field-heading">
+              <span>Qalma müddəti</span>
+              <strong><b id="minNightsValue">5</b>–<b id="maxNightsValue">10</b> gecə</strong>
+            </div>
+            <div class="range-row">
+              <label>Minimum <input id="minNights" type="range" min="1" max="60" value="5" /></label>
+              <label>Maksimum <input id="maxNights" type="range" min="1" max="60" value="10" /></label>
+            </div>
+          </div>
+
+          <div class="filter-grid">
+            <label>
+              <span>Transfer sayı</span>
+              <select id="stops">
+                <option value="any">Hamısı</option>
+                <option value="0">Birbaşa uçuş</option>
+                <option value="1">1 transfer</option>
+                <option value="2">2 transfer</option>
+              </select>
+            </label>
+            <label>
+              <span>Baqaj seçimi</span>
+              <select id="baggage">
+                <option value="any">Fərqi yoxdur</option>
+                <option value="carryon">Yalnız əl yükü</option>
+                <option value="checked">Qeydiyyat baqajı</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="passenger-box">
+            <span class="group-label">Sərnişinlər</span>
+            <div class="passenger-grid">
+              <div class="counter" data-counter="adults">
+                <span><strong>Böyük</strong><small>12+ yaş</small></span>
+                <button type="button" data-action="minus">−</button>
+                <b id="adultsValue">1</b>
+                <button type="button" data-action="plus">+</button>
+                <input id="adults" type="hidden" value="1" />
+              </div>
+              <div class="counter" data-counter="children">
+                <span><strong>Uşaq</strong><small>2–11 yaş</small></span>
+                <button type="button" data-action="minus">−</button>
+                <b id="childrenValue">0</b>
+                <button type="button" data-action="plus">+</button>
+                <input id="children" type="hidden" value="0" />
+              </div>
+              <div class="counter" data-counter="infants">
+                <span><strong>Körpə</strong><small>0–1 yaş</small></span>
+                <button type="button" data-action="minus">−</button>
+                <b id="infantsValue">0</b>
+                <button type="button" data-action="plus">+</button>
+                <input id="infants" type="hidden" value="0" />
+              </div>
+            </div>
+          </div>
+
+          <button id="searchButton" class="primary-button" type="submit">
+            <span>Bütün tarixləri yoxla</span><b>→</b>
+          </button>
+          <p class="form-note">
+            İlkin qiymətlər Travelpayouts keşindən alınır. Uşaq və baqajın son qiyməti Aviasales-də hesablanır.
+          </p>
+        </form>
+      </section>
+
+      <section class="results-section">
+        <div class="section-heading">
+          <div>
+            <span class="step">02</span><h2>Ən sərfəli tarixlər</h2>
+            <p id="resultSubtitle">Axtarışdan sonra ən ucuz seçimlər burada görünəcək.</p>
+          </div>
+          <div id="resultCount" class="result-count">0 variant</div>
+        </div>
+        <div id="searchSummary" class="search-summary" hidden></div>
+        <div id="statusPanel" class="status-panel">
+          <div class="status-icon">↗</div>
+          <div><strong>Axtarışa hazırdır</strong><p>Marşrutu, tarix intervalını və filtrləri seç.</p></div>
+        </div>
+        <div id="results" class="results-grid" hidden></div>
+      </section>
+
+      <section id="bookingSection" class="booking-section">
+        <div class="section-heading">
+          <div>
+            <span class="step">03</span><h2>Booking.com hotel axtarışı</h2>
+            <p>Seçdiyin uçuşun tarixləri hotel axtarışına avtomatik köçürülür.</p>
+          </div>
+          <div id="bookingApiState" class="result-count">Yoxlanılır</div>
+        </div>
+
+        <div class="booking-layout">
+          <form id="hotelForm" class="hotel-search-card">
+            <div class="hotel-form-grid">
+              <label>
+                <span>Şəhər və ya hotel</span>
+                <input id="hotelDestination" value="Pekin" required />
+              </label>
+              <label>
+                <span>Otaq sayı</span>
+                <input id="hotelRooms" type="number" min="1" max="10" value="1" />
+              </label>
+              <label>
+                <span>Giriş tarixi</span>
+                <input id="hotelCheckin" type="date" required />
+              </label>
+              <label>
+                <span>Çıxış tarixi</span>
+                <input id="hotelCheckout" type="date" required />
+              </label>
+            </div>
+            <div class="booking-actions">
+              <button id="bookingSearchButton" class="booking-button" type="submit">
+                Booking.com-da axtar <b>↗</b>
+              </button>
+              <p id="bookingModeNote">
+                Booking API açarları olmadıqda axtarış Booking.com-da açılır; tapdığın hoteli aşağıda paketə əlavə edə bilərsən.
+              </p>
+            </div>
+          </form>
+
+          <div class="selected-hotel-card">
+            <div class="selected-card-heading">
+              <div>
+                <span class="eyebrow dark">Seçilmiş hotel</span>
+                <h3>Booking nəticəsini paketə əlavə et</h3>
+              </div>
+              <span class="manual-badge">Real qiyməti daxil et</span>
+            </div>
+            <div class="hotel-form-grid">
+              <label>
+                <span>Hotelin adı</span>
+                <input id="selectedHotelName" placeholder="Məsələn, Park Plaza Beijing" />
+              </label>
+              <label>
+                <span>Ulduz</span>
+                <select id="selectedHotelStars">
+                  <option value="">Göstərilməyib</option>
+                  <option value="3">3 ulduz</option>
+                  <option value="4">4 ulduz</option>
+                  <option value="5">5 ulduz</option>
+                </select>
+              </label>
+              <label>
+                <span>Qidalanma</span>
+                <select id="selectedHotelBoard">
+                  <option value="Daxil deyil">Daxil deyil</option>
+                  <option value="Səhər yeməyi daxildir">Səhər yeməyi</option>
+                  <option value="Yarım pansiyon">Yarım pansiyon</option>
+                  <option value="Tam pansiyon">Tam pansiyon</option>
+                </select>
+              </label>
+              <label>
+                <span>Booking-də yekun hotel qiyməti (AZN)</span>
+                <input id="selectedHotelPrice" type="number" min="0" step="1" placeholder="0" />
+              </label>
+            </div>
+            <label>
+              <span>Booking hotel linki</span>
+              <input id="selectedHotelUrl" type="url" placeholder="https://www.booking.com/hotel/..." />
+            </label>
+            <button id="addHotelButton" class="secondary-action" type="button">Hoteli paketə əlavə et</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="packageSection" class="package-section">
+        <div class="section-heading">
+          <div>
+            <span class="step">04</span><h2>Tur paketinin yekunu</h2>
+            <p>Uçuş və hotel seçildikdə toplam və hazır müştəri mesajı yaranır.</p>
+          </div>
+          <div id="packageState" class="result-count">Hazır deyil</div>
+        </div>
+
+        <div class="package-grid">
+          <div id="packageSummary" class="package-summary">
+            <div class="package-empty">
+              <strong>Əvvəl uçuş və hotel seç</strong>
+              <p>Nəticə kartındakı “Paketə əlavə et” düyməsi ilə uçuşu seç.</p>
+            </div>
+          </div>
+          <div class="message-card">
+            <div class="message-heading">
+              <div><span class="eyebrow dark">Müştəriyə göndər</span><h3>Tur paket mesajı</h3></div>
+              <button id="copyPackageMessage" type="button">Kopyala</button>
+            </div>
+            <label>
+              <span>Müştərinin adı</span>
+              <input id="customerName" placeholder="Müştərinin adı" />
+            </label>
+            <textarea id="packageMessage" rows="15" readonly>Paket yaratmaq üçün uçuş və hotel seç.</textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="how-it-works">
+        <div><span class="eyebrow dark">Necə işləyir?</span><h2>Tarixləri sənin əvəzinə müqayisə edir.</h2></div>
+        <ol>
+          <li><b>1</b><span><strong>Intervalı bölür</strong><small>Seçilən ayları və günləri yoxlayır.</small></span></li>
+          <li><b>2</b><span><strong>Hotel ilə birləşdirir</strong><small>Booking hotelini seçilmiş uçuşa əlavə edir.</small></span></li>
+          <li><b>3</b><span><strong>Satış mesajı yaradır</strong><small>Toplam qiymət və hazır paket mətni verir.</small></span></li>
+        </ol>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

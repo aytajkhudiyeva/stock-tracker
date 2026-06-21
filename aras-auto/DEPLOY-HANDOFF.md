@@ -54,4 +54,14 @@ Railway dəyişəni əlavə edilir və servis yenidən deploy olunur. Sonra:
 - `/admin/`: CRM, satış axını, kataloq statusu və SEO aktivləşdirmə vəziyyəti
 - `/modeller/`: indekslənməsi bağlı olan model kontent klasteri
 
-Hazırkı demo məlumatı brauzerin `localStorage` yaddaşında saxlayır. Canlı sistemdə bunlar API, autentifikasiya və verilənlər bazası ilə əvəz edilməlidir.
+Hazırkı admin panel server API-si və `admin-data.json` ilə işləyir. Railway-də admin dəyişikliklərinin deploy/restart sonrası itməməsi üçün volume yaradılıb `/data` yoluna mount edilməli, sonra `DATA_DIR=/data` dəyişəni verilməlidir. Müştəri üçün qısa istifadə təlimatı `ADMIN-GUIDE.md` faylındadır.
+
+## Minimum aylıq xərc üçün admin quruluşu
+
+Ən ucuz canlı quruluş ayrıca database tələb etmir:
+
+1. Eyni Railway service həm saytı, həm admin API-ni işlədir.
+2. Railway volume `/data` yoluna mount edilir.
+3. Variables bölməsində `DATA_DIR=/data`, `ADMIN_PASSWORD` və `ADMIN_SECRET` yazılır.
+4. Şəkil upload əlavə edilmir; admin `image` sahəsinə mövcud `/assets/...` yolu və ya hazır URL yazır.
+5. Müştəri bütün status və tarif dəyişikliklərini `/admin/` panelindən edir.

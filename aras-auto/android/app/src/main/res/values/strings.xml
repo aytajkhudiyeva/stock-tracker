@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Aras Auto</string>
+    <string name="title_activity_main">Aras Auto</string>
+    <string name="package_name">az.arasauto.app</string>
+    <string name="custom_url_scheme">az.arasauto.app</string>
+</resources>

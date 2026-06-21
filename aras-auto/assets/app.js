@@ -26,9 +26,29 @@ function updateBudget(){
 }
 document.querySelector("#calculator")?.addEventListener("input",updateBudget);updateBudget();
 
+async function loadPublicSettings(){
+  try{
+    const {settings}=await apiJson("/api/public/settings");
+    const map={exchangeRate:"exchangeRate",localLogisticsUsd:"localLogistics",shippingUsd:"shipping",inspectionFeeUsd:"inspectionFee",serviceFeeUsd:"serviceFee",insuranceFeeUsd:"insuranceFee",customsReserveAzn:"customsReserve"};
+    Object.entries(map).forEach(([key,id])=>{
+      const input=document.querySelector(`#${id}`);
+      if(input&&settings[key]!==undefined)input.value=settings[key];
+    });
+    updateBudget();
+  }catch{}
+}
+loadPublicSettings();
+
 const toast=document.querySelector("#toast");
 let toastTimer;
 function showToast(message){if(!toast)return;toast.textContent=message;toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove("show"),3200)}
+async function apiJson(path,options={}){
+  const response=await fetch(path,{headers:{"Content-Type":"application/json",...(options.headers||{})},...options});
+  const payload=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(payload.error||"Sorğu tamamlanmadı.");
+  return payload;
+}
+const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
 
 const quickPrice=document.querySelector("#quickVehiclePrice");
 const quickTotal=document.querySelector("#quickTotal");
@@ -56,10 +76,10 @@ document.querySelector("#leadForm")?.addEventListener("submit",event=>{
   const data=Object.fromEntries(new FormData(event.currentTarget));
   localStorage.setItem("arasAutoDemoLead",JSON.stringify(data));
   const note=document.querySelector("#formNote");
-  if(note){note.textContent="Sorğu hazırlandı. WhatsApp pəncərəsi açılır.";note.style.color="#53d492"}
+  if(note){note.textContent="Sorğu göndərilir. WhatsApp pəncərəsi də açılır.";note.style.color="#53d492"}
+  apiJson("/api/leads",{method:"POST",body:JSON.stringify(data)}).then(()=>showToast("Sorğu admin panelə düşdü.")).catch(error=>showToast(error.message));
   const message=`Salam, Aras Auto seçim sorğusu:%0AAd: ${encodeURIComponent(data.name||"")}%0ATelefon: ${encodeURIComponent(data.phone||"")}%0ABüdcə: ${encodeURIComponent(data.budget||"")}%0ATip: ${encodeURIComponent(data.type||"")}%0Aİstək: ${encodeURIComponent(data.message||"")}`;
   window.open(`https://wa.me/994505124510?text=${message}`,"_blank","noopener");
-  showToast("Sorğu WhatsApp üçün hazırlandı.");
 });
 
 document.querySelector("#quickLinkForm")?.addEventListener("submit",event=>{
@@ -85,15 +105,34 @@ document.querySelector("#listingAnalyzer")?.addEventListener("submit",event=>{
 document.querySelector("#trackForm")?.addEventListener("submit",event=>{
   event.preventDefault();
   const code=document.querySelector("#trackCode")?.value.trim();
-  const result=document.querySelector("#trackResult");
   if(!code)return showToast("Nümunə kodu daxil edin: AA-NUMUNE-2406");
-  if(result)result.hidden=false;
-  showToast("Nümunə sifariş tapıldı.");
+  loadTrackOrder(code);
 });
 const incomingTrackCode=new URLSearchParams(window.location.search).get("code");
 if(incomingTrackCode&&document.querySelector("#trackCode")){
   document.querySelector("#trackCode").value=incomingTrackCode;
-  document.querySelector("#trackResult").hidden=false;
+  loadTrackOrder(incomingTrackCode);
+}
+
+function renderTrackOrder(order){
+  const result=document.querySelector("#trackResult");
+  if(!result)return;
+  result.hidden=false;
+  const stages=Array.isArray(order.stages)?order.stages:[];
+  result.innerHTML=`<div class="calc-head"><div><small>Sifariş izləmə</small><h2>${escapeHtml(order.vehicle||"Avtomobil sifarişi")}</h2></div><span class="demo-pill dark-pill">${escapeHtml(order.status||"AKTİV")}</span></div>
+    <div class="dashboard-kpis"><div><span>Sifariş kodu</span><b>${escapeHtml(order.code)}</b></div><div><span>Hazırkı mərhələ</span><b>${escapeHtml(order.currentStage||"-")}</b></div><div><span>Növbəti yeniləmə</span><b>${escapeHtml(order.nextUpdate||"-")}</b></div></div>
+    <div class="track-list">${stages.map(stage=>`<article class="${stage.state==="done"?"done":stage.state==="current"?"current":""}"><i></i><div><strong>${escapeHtml(stage.title)}</strong><p>${escapeHtml(stage.description||"")}</p></div></article>`).join("")}</div>`;
+}
+async function loadTrackOrder(code){
+  try{
+    const {order}=await apiJson(`/api/track/${encodeURIComponent(code)}`);
+    renderTrackOrder(order);
+    showToast("Sifariş tapıldı.");
+  }catch(error){
+    const result=document.querySelector("#trackResult");
+    if(result)result.hidden=true;
+    showToast(error.message);
+  }
 }
 
 const catalogControls=["catalogSearch","yearFilter","fuelFilter","bodyFilter"].map(id=>document.querySelector(`#${id}`)).filter(Boolean);
@@ -116,6 +155,58 @@ document.querySelector("#resetFilters")?.addEventListener("click",()=>{
   catalogControls.forEach(control=>control.value="");
   filterCatalog();
 });
+
+function renderPublicVehicle(vehicle){
+  const title=vehicle.title||"Avtomobil";
+  const year=String(vehicle.year||"");
+  const fuel=vehicle.fuel||"";
+  const body=vehicle.body||"";
+  const score=Number(vehicle.riskScore||75);
+  const fuelKey=fuel.toLowerCase().includes("hibrid")?"hybrid":fuel.toLowerCase().includes("dizel")?"diesel":fuel.toLowerCase().includes("elektr")?"electric":fuel.toLowerCase().includes("lpg")?"lpg":"petrol";
+  const bodyKey=body.toLowerCase().includes("sedan")?"sedan":body.toLowerCase().includes("minivan")?"minivan":body.toLowerCase().includes("het")?"hatchback":"suv";
+  const dataVehicle=escapeHtml([title,fuel,body,year].join(" ").toLowerCase());
+  return `<article class="vehicle-card" data-vehicle="${dataVehicle}" data-year="${escapeHtml(year)}" data-fuel="${fuelKey}" data-body="${bodyKey}" data-model="${escapeHtml(title)}" data-price="≈ ${Number(vehicle.bakuPriceAzn||0).toLocaleString("az-AZ")} ₼" data-risk="${score}">
+    <div class="vehicle-photo"><img src="${escapeHtml(vehicle.image||"../assets/hero-v2.jpg")}" alt="${escapeHtml(title)}"><span class="demo-pill">${escapeHtml(vehicle.status||"AKTİV")}</span><button aria-label="Seçilmişlərə əlavə et">♡</button></div>
+    <div class="vehicle-body"><small>${escapeHtml(year)} · ${escapeHtml(fuel)} · ${escapeHtml(vehicle.mileage||"-")}</small><h3>${escapeHtml(title)}</h3>
+      <div class="vehicle-intelligence"><span class="risk-badge ${score>=85?"safe":score>=75?"medium":"watch"}"><b>${score}</b>/100 · Risk balı</span><span>${score>=85?"Aşağı risk":score>=75?"Əlavə yoxlama":"Diqqətli seçim"}</span></div>
+      <div class="price-stack"><span>Xaricdə <b>${Number(vehicle.priceUsd||0).toLocaleString("az-AZ")} USD</b></span><span>Təxmini Bakı büdcəsi <strong>≈ ${Number(vehicle.bakuPriceAzn||0).toLocaleString("az-AZ")} ₼</strong></span><small>${escapeHtml(vehicle.note||"Yekun məbləğ VIN və sənədlər təsdiqləndikdən sonra dəqiqləşir.")}</small></div>
+      <div class="spec-row"><span>${escapeHtml(fuel)}</span><span>${escapeHtml(body)}</span><span>${escapeHtml(year)}</span></div>
+      <div class="vehicle-tools"><button type="button" data-compare>＋ Müqayisə et</button><button type="button" data-alert>♧ Qiyməti izlə</button></div>
+      <a class="vehicle-cta" href="https://wa.me/994505124510?text=${encodeURIComponent(`Salam, ${title} üzrə təklif istəyirəm.`)}">Bu avtomobil üzrə təklif al ↗</a>
+    </div></article>`;
+}
+async function loadPublicVehicles(){
+  const grid=document.querySelector(".catalog-grid");
+  if(!grid)return;
+  try{
+    const {vehicles}=await apiJson("/api/public/vehicles");
+    if(Array.isArray(vehicles)&&vehicles.length){
+      grid.innerHTML=vehicles.map(renderPublicVehicle).join("");
+      const intro=document.querySelector(".filter-intro b");
+      if(intro)intro.textContent=`${vehicles.length} aktiv seçim`;
+      filterCatalog();
+    }
+  }catch{}
+}
+loadPublicVehicles();
+
+function renderPublicDelivery(delivery){
+  const title=delivery.title||"Təhvil verilmiş avtomobil";
+  const date=delivery.date?new Intl.DateTimeFormat("az-AZ",{day:"2-digit",month:"long",year:"numeric"}).format(new Date(delivery.date)):"Tarix dəqiqləşir";
+  const summary=String(delivery.summary||"Yoxlama, sənədləşmə və təhvil mərhələləri tamamlandı.");
+  const points=summary.split(/\n|;/).map(item=>item.trim()).filter(Boolean).slice(0,3);
+  const list=points.length?points:["Ekspert yoxlaması tamamlandı","Logistika mərhələləri izlənildi","Bakı təhvili rəsmiləşdirildi"];
+  return `<article class="delivery-card"><div class="delivery-image"><img src="${escapeHtml(delivery.image||"../assets/hero-v2.jpg")}" alt="${escapeHtml(title)}"><span>TƏHVİL</span></div><div><small>${escapeHtml(date)}</small><h2>${escapeHtml(title)}</h2><p><b>${escapeHtml(delivery.customer||"Aras Auto müştərisi")}</b> üçün tamamlanmış sifariş</p><ul>${list.map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ul><a href="../izleme/">Status tarixçəsinə bax ↗</a></div></article>`;
+}
+async function loadPublicDeliveries(){
+  const grid=document.querySelector("[data-delivery-grid]");
+  if(!grid)return;
+  try{
+    const {deliveries}=await apiJson("/api/public/deliveries");
+    if(Array.isArray(deliveries)&&deliveries.length)grid.innerHTML=deliveries.map(renderPublicDelivery).join("");
+  }catch{}
+}
+loadPublicDeliveries();
 
 const vehicleRiskScores=[86,74,91,88,77,69,93,81,72];
 document.querySelectorAll("[data-vehicle]").forEach((card,index)=>{

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="az">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel təklifi</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell compact-shell">
+      <section class="offer-page">
+        <a class="back-link" href="./index.html">← Optimizatora qayıt</a>
+        <div class="offer-header hotel-hero">
+          <div>
+            <p class="eyebrow">Seçilmiş hotel</p>
+            <h1 id="hotelName">Hotel təklifi</h1>
+            <p id="hotelDates"></p>
+          </div>
+          <div class="offer-price">
+            <small>Hotel qiyməti</small>
+            <strong id="hotelPrice">0 AZN</strong>
+          </div>
+        </div>
+
+        <div class="offer-grid">
+          <section class="planner offer-card">
+            <h2>Hotel detalları</h2>
+            <div class="offer-facts">
+              <span id="hotelStars"></span>
+              <span id="hotelBoard"></span>
+              <span id="hotelArea"></span>
+              <span id="hotelScore"></span>
+            </div>
+            <div class="leg-list">
+              <div class="leg-row"><strong>1</strong><span id="hotelRoom"></span></div>
+              <div class="leg-row"><strong>2</strong><span id="hotelCancel"></span></div>
+            </div>
+          </section>
+
+          <aside class="results offer-card">
+            <h2>Rezerv mərhələsi</h2>
+            <p class="muted-copy">
+              Bu hotel konkret seçilmiş variant kimi saxlanır. Real sistemdə buradakı düymə istifadə etdiyin
+              hotel provayderinin booking linkinə bağlanacaq.
+            </p>
+            <button class="primary-button" type="button" id="hotelReserveButton">Bu hoteli rezervə hazırla</button>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="./hotel-offer.js"></script>
+  </body>
+</html>

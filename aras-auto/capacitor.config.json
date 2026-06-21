@@ -1,0 +1,20 @@
+{
+  "appId": "az.arasauto.app",
+  "appName": "Aras Auto",
+  "webDir": "app",
+  "server": {
+    "url": "https://aras-auto-demo-production.up.railway.app/app/",
+    "allowNavigation": [
+      "aras-auto-demo-production.up.railway.app"
+    ],
+    "cleartext": false,
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#07090d",
+      "showSpinner": false
+    }
+  }
+}

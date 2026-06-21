@@ -1,0 +1,17 @@
+{
+  "name": "Kosmetik Baku",
+  "short_name": "Kosmetik",
+  "description": "Kosmetika və dəriyə qulluq məhsulları",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffaf7",
+  "theme_color": "#6f263d",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

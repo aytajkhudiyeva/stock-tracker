@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Aras Auto Mobil Tətbiq — Demo</title>
+  <meta name="description" content="Aras Auto mobil tətbiq demosu: avtomobil seçimi, Bakı büdcəsi, VIN yoxlama və sifariş izləmə.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="https://arasauto.az/">
+  <meta name="theme-color" content="#07090d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aras Auto">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <a class="app-brand" href="../" aria-label="Aras Auto veb saytına keç">
+        <img src="icon.svg" alt="">
+        <span>ARAS<small>AUTO</small></span>
+      </a>
+      <div class="header-tools">
+        <span class="demo-chip">DEMO</span>
+        <button class="icon-button" id="notifyButton" aria-label="Bildirişlər">♧<i></i></button>
+      </div>
+    </header>
+
+    <main>
+      <section class="app-view active" data-view="home">
+        <div class="welcome">
+          <div><small>XOŞ GƏLDİNİZ</small><h1>Avtomobilinizə gedən yol burada başlayır.</h1></div>
+          <span class="avatar">AA</span>
+        </div>
+
+        <article class="status-card">
+          <div class="status-image"><img src="../assets/hero-v2.jpg" alt="Sifariş edilən ağ SUV avtomobili"><span>YOLDA</span></div>
+          <div class="status-copy">
+            <div><small>AKTİV SİFARİŞ</small><strong>Premium Family SUV</strong><span>AA-NUMUNE-2406</span></div>
+            <b>62%</b>
+          </div>
+          <div class="route-line"><i></i><span class="route-car">◆</span></div>
+          <div class="route-meta"><span><small>ÇIXIŞ</small><b>Busan</b></span><span><small>CARİ STATUS</small><b>Dəniz tranziti</b></span><span><small>TƏXMİNİ</small><b>18 gün</b></span></div>
+          <button data-go="track">Sifarişin detallarını aç <span>→</span></button>
+        </article>
+
+        <div class="section-title"><div><small>SÜRƏTLİ XİDMƏTLƏR</small><h2>Nə etmək istəyirsiniz?</h2></div></div>
+        <div class="quick-grid">
+          <button data-go="cars"><i>⌕</i><b>Avtomobil tap</b><span>Seçimlərə bax</span></button>
+          <button data-go="budget"><i>₼</i><b>Büdcə hesabla</b><span>Bakı qiyməti</span></button>
+          <a href="../vin-yoxlama/"><i>◇</i><b>VIN yoxla</b><span>Tarixçə və risk</span></a>
+          <a href="https://wa.me/994505124510" target="_blank" rel="noopener"><i>◔</i><b>Menecerə yaz</b><span>WhatsApp əlaqə</span></a>
+        </div>
+
+        <div class="section-title row"><div><small>SİZİN ÜÇÜN SEÇİMLƏR</small><h2>Yoxlanmağa hazır</h2></div><button data-go="cars">Hamısı →</button></div>
+        <div class="car-scroll">
+          <article class="mini-car">
+            <div><img src="../assets/sedan.jpg" alt="Executive Hybrid Sedan"><button class="favorite" aria-label="Seçilmişlərə əlavə et">♡</button><span>88/100</span></div>
+            <small>2023 · Hibrid · 18 000 km</small><h3>Executive Hybrid Sedan</h3><p><span>Bakı büdcəsi</span><b>≈ 48 000 ₼</b></p>
+          </article>
+          <article class="mini-car">
+            <div><img src="../assets/aras-auto-hero.jpg" alt="Executive SUV"><button class="favorite" aria-label="Seçilmişlərə əlavə et">♡</button><span>81/100</span></div>
+            <small>2021 · Dizel · 61 000 km</small><h3>Executive SUV</h3><p><span>Bakı büdcəsi</span><b>≈ 52 200 ₼</b></p>
+          </article>
+        </div>
+
+        <button class="install-card" id="installButton" hidden>
+          <span><img src="icon.svg" alt=""><i><b>Tətbiqi telefona əlavə et</b><small>App kimi sürətli giriş əldə edin</small></i></span><strong>Yüklə</strong>
+        </button>
+      </section>
+
+      <section class="app-view" data-view="cars">
+        <div class="page-heading"><button data-go="home">←</button><div><small>ARAS SEÇİM MƏRKƏZİ</small><h1>Avtomobillər</h1></div></div>
+        <label class="search-box">⌕ <input id="carSearch" placeholder="Model və ya yanacaq axtarın"></label>
+        <div class="filter-pills"><button class="active" data-filter="all">Hamısı</button><button data-filter="hybrid">Hibrid</button><button data-filter="diesel">Dizel</button><button data-filter="electric">Elektrik</button></div>
+        <div class="mobile-car-list">
+          <article data-car data-name="premium family suv hybrid">
+            <img src="../assets/hero-v2.jpg" alt="Premium Family SUV">
+            <div><small>2022 · Hibrid · 42 000 km</small><h2>Premium Family SUV</h2><span>Risk balı <b>86/100</b></span><strong>≈ 45 300 ₼</strong></div>
+            <button class="favorite" aria-label="Seçilmişlərə əlavə et">♡</button>
+          </article>
+          <article data-car data-name="executive hybrid sedan">
+            <img src="../assets/sedan.jpg" alt="Executive Hybrid Sedan">
+            <div><small>2023 · Hibrid · 18 000 km</small><h2>Executive Hybrid Sedan</h2><span>Risk balı <b>88/100</b></span><strong>≈ 48 000 ₼</strong></div>
+            <button class="favorite" aria-label="Seçilmişlərə əlavə et">♡</button>
+          </article>
+          <article data-car data-name="executive suv diesel">
+            <img src="../assets/aras-auto-hero.jpg" alt="Executive SUV">
+            <div><small>2021 · Dizel · 61 000 km</small><h2>Executive SUV</h2><span>Risk balı <b>81/100</b></span><strong>≈ 52 200 ₼</strong></div>
+            <button class="favorite" aria-label="Seçilmişlərə əlavə et">♡</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="app-view" data-view="budget">
+        <div class="page-heading"><button data-go="home">←</button><div><small>ŞƏFFAFLIQ KALKULYATORU</small><h1>Bakı büdcəsi</h1></div></div>
+        <form class="budget-form" id="mobileBudget">
+          <label>Avtomobilin xaricdə qiyməti<span><input id="appPrice" type="number" min="1000" value="19000"><b>USD</b></span></label>
+          <div class="input-row"><label>Mühərrik<input type="number" value="2000"><small>sm³</small></label><label>İstehsal ili<input type="number" value="2022"></label></div>
+          <label>Yanacaq növü<select><option>Hibrid</option><option>Benzin</option><option>Dizel</option><option>Elektrik</option></select></label>
+          <div class="budget-result">
+            <small>TƏXMİNİ BAKI BÜDCƏSİ</small><strong id="appTotal">44 920 ₼</strong>
+            <p><span>Avtomobil</span><b id="appCar">32 300 ₼</b></p>
+            <p><span>Logistika və xidmət</span><b id="appService">6 120 ₼</b></p>
+            <p><span>Gömrük ehtiyatı</span><b id="appCustoms">6 500 ₼</b></p>
+          </div>
+          <p class="legal">Demo hesabıdır, rəsmi kommersiya təklifi deyil.</p>
+          <a class="primary-action" href="https://wa.me/994505124510" target="_blank" rel="noopener">Dəqiq təklif al →</a>
+        </form>
+      </section>
+
+      <section class="app-view" data-view="track">
+        <div class="page-heading"><button data-go="home">←</button><div><small>24/7 STATUS</small><h1>Sifarişi izlə</h1></div></div>
+        <form class="track-search" id="appTrack"><input id="appTrackCode" value="AA-NUMUNE-2406" aria-label="Sifariş kodu"><button>Axtar</button></form>
+        <article class="timeline-card" id="appTimeline">
+          <header><img src="../assets/hero-v2.jpg" alt=""><div><small>SİFARİŞ TAPILDI</small><h2>Premium Family SUV</h2><span>AA-NUMUNE-2406</span></div></header>
+          <ol>
+            <li class="done"><i>✓</i><div><b>Avtomobil seçildi</b><span>12 iyun · Seul</span></div></li>
+            <li class="done"><i>✓</i><div><b>Ekspert yoxlaması tamamlandı</b><span>13 iyun · Videohesabat hazırdır</span></div></li>
+            <li class="done"><i>✓</i><div><b>Busan limanından çıxış</b><span>18 iyun · Sənədlər təsdiqləndi</span></div></li>
+            <li class="current"><i>◆</i><div><b>Dəniz tranziti</b><span>Hazırda · Təhvilə təxminən 18 gün</span></div></li>
+            <li><i>5</i><div><b>Gömrük və Bakı təhvili</b><span>Növbəti mərhələ</span></div></li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="app-view" data-view="profile">
+        <div class="profile-hero"><span class="avatar large">AA</span><h1>Şəxsi kabinet</h1><p>Demo istifadəçi · +994 50 ••• •• 10</p></div>
+        <div class="profile-menu">
+          <a href="../kabinet/"><i>◎</i><span><b>Aktiv sifarişlər</b><small>Status və sənədlər</small></span><strong>→</strong></a>
+          <button data-go="cars"><i>♡</i><span><b>Seçilmiş avtomobillər</b><small id="favoriteCount">0 avtomobil</small></span><strong>→</strong></button>
+          <a href="../muqavile/"><i>▤</i><span><b>Sənədlər</b><small>Müqavilə və hesabatlar</small></span><strong>→</strong></a>
+          <a href="../mexfilik/"><i>◇</i><span><b>Məxfilik və təhlükəsizlik</b><small>Məlumatların qorunması</small></span><strong>→</strong></a>
+        </div>
+        <a class="website-link" href="../">Tam veb sayta keç ↗</a>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Tətbiq naviqasiyası">
+      <button class="active" data-go="home"><i>⌂</i><span>Ana səhifə</span></button>
+      <button data-go="cars"><i>⌕</i><span>Avtomobillər</span></button>
+      <button data-go="track"><i>◎</i><span>İzləmə</span></button>
+      <button data-go="profile"><i>◇</i><span>Kabinet</span></button>
+    </nav>
+    <div class="app-toast" id="appToast" role="status"></div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

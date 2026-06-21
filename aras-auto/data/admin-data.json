@@ -1,0 +1,120 @@
+{
+  "vehicles": [
+    {
+      "id": "veh-001",
+      "title": "Premium Family SUV",
+      "year": 2022,
+      "fuel": "Hibrid",
+      "body": "SUV",
+      "mileage": "42 000 km",
+      "priceUsd": 19400,
+      "bakuPriceAzn": 45300,
+      "status": "Aktiv",
+      "riskScore": 86,
+      "image": "/assets/hero-v2.jpg",
+      "note": "Ailə istifadəsi üçün uyğun, əlavə ekspert baxışı tövsiyə olunur."
+    },
+    {
+      "id": "veh-002",
+      "title": "Executive Hybrid Sedan",
+      "year": 2023,
+      "fuel": "Hibrid",
+      "body": "Sedan",
+      "mileage": "18 000 km",
+      "priceUsd": 20700,
+      "bakuPriceAzn": 48000,
+      "status": "Yoxlanır",
+      "riskScore": 91,
+      "image": "/assets/sedan.jpg",
+      "note": "Az yürüşlü nümunə, tarixçə təsdiqi gözləyir."
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord-001",
+      "code": "AA-NUMUNE-2406",
+      "customer": "Nümunə Müştəri",
+      "phone": "+994 50 000 00 00",
+      "vehicle": "Premium SUV · 2022",
+      "currentStage": "Dəniz daşınması",
+      "nextUpdate": "22 iyun",
+      "status": "Aktiv",
+      "stages": [
+        {
+          "title": "Avtomobil yoxlanıldı",
+          "description": "Ekspert hesabatı və materiallar əlavə edildi.",
+          "state": "done"
+        },
+        {
+          "title": "Müqavilə və alış tamamlandı",
+          "description": "Ödəniş və ixrac sənədləri təsdiqləndi.",
+          "state": "done"
+        },
+        {
+          "title": "Incheon limanına qəbul edildi",
+          "description": "Konteyner planına daxil edildi.",
+          "state": "done"
+        },
+        {
+          "title": "Dəniz daşınması",
+          "description": "Gəmi tranzit marşrutundadır.",
+          "state": "current"
+        },
+        {
+          "title": "Gömrük rəsmiləşdirilməsi",
+          "description": "Gəlişdən sonra sənədlər təqdim ediləcək.",
+          "state": "pending"
+        },
+        {
+          "title": "Bakı təhvili",
+          "description": "Son yoxlama və təhvil aktı.",
+          "state": "pending"
+        }
+      ]
+    }
+  ],
+  "leads": [
+    {
+      "id": "lead-001",
+      "name": "Nigar Məmmədova",
+      "phone": "+994 50 000 00 00",
+      "interest": "Hibrid SUV",
+      "budget": "45 000 AZN",
+      "status": "Yeni",
+      "createdAt": "2026-06-19T10:00:00.000Z"
+    }
+  ],
+  "deliveries": [
+    {
+      "id": "del-001",
+      "title": "Premium SUV təhvili",
+      "customer": "Nümunə müştəri",
+      "date": "2026-06-19",
+      "summary": "Yoxlama, alış və təhvil mərhələləri tamamlandı.",
+      "image": "/assets/hero-v2.jpg",
+      "published": true
+    }
+  ],
+  "settings": {
+    "exchangeRate": 1.7,
+    "localLogisticsUsd": 350,
+    "shippingUsd": 1900,
+    "inspectionFeeUsd": 300,
+    "serviceFeeUsd": 800,
+    "insuranceFeeUsd": 250,
+    "customsReserveAzn": 6500
+  },
+  "referrals": [
+    {
+      "id": "ref-fd1af9f7",
+      "phone": "+994501234567",
+      "name": "Test",
+      "code": "T-4567",
+      "url": "https://arasauto.az/ref/T-4567",
+      "discount": 300,
+      "friends": [],
+      "earned": 0,
+      "createdAt": "2026-06-21T21:45:41.819Z"
+    }
+  ]
+}

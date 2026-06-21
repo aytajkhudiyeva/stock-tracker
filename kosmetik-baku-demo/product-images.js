@@ -1,0 +1,386 @@
+window.PRODUCT_IMAGES = {
+  "rhode-pocket-blush": {
+    "image": "assets/products/01-rhode-pocket-blush.jpg",
+    "matchedName": "Pocket Blush Buildable Hydrating Cream Blush",
+    "brand": "rhode",
+    "rating": 4.2104,
+    "reviews": 1863,
+    "source": "https://www.sephora.com/product/pocket-blush-P517483?skuId=2998102"
+  },
+  "rhode-glazing-milk": {
+    "image": "assets/products/02-rhode-glazing-milk.jpg",
+    "matchedName": "Glazing Milk Hydrating Ceramide Facial Essence",
+    "brand": "rhode",
+    "rating": 3.8658,
+    "reviews": 2339,
+    "source": "https://www.sephora.com/product/glazing-milk-P519160?skuId=2898419"
+  },
+  "rhode-peptide-lip-tint": {
+    "image": "assets/products/03-rhode-peptide-lip-tint.jpg",
+    "matchedName": "Peptide Lip Tint Nourishing Glaze",
+    "brand": "rhode",
+    "rating": 3.8733,
+    "reviews": 2684,
+    "source": "https://www.sephora.com/product/peptide-lip-tint-P517552?skuId=2895993"
+  },
+  "rare-beauty-soft-pinch": {
+    "image": "assets/products/04-rare-beauty-soft-pinch.jpg",
+    "matchedName": "Soft Pinch Liquid Blush",
+    "brand": "Rare Beauty by Selena Gomez",
+    "rating": 4.5429,
+    "reviews": 12531,
+    "source": "https://www.sephora.com/product/rare-beauty-by-selena-gomez-soft-pinch-liquid-blush-P97989778?skuId=2911741"
+  },
+  "elf-halo-glow": {
+    "image": "assets/products/05-elf-halo-glow.jpg",
+    "matchedName": "Hollywood Flawless Filter",
+    "brand": "Charlotte Tilbury",
+    "rating": 4.2441,
+    "reviews": 3814,
+    "source": "https://www.sephora.com/product/hollywood-flawless-filter-P434104?skuId=2419786"
+  },
+  "byoma-phyto-mucin": {
+    "image": "assets/products/06-byoma-phyto-mucin.jpg",
+    "matchedName": "Soothing & Barrier Support Serum for Sensitive Skin Hydration",
+    "brand": "The Ordinary",
+    "rating": 4.1403,
+    "reviews": 2138,
+    "source": "https://www.sephora.com/product/soothing-barrier-support-serum-P508000?skuId=2698348"
+  },
+  "byoma-face-mist": {
+    "image": "assets/products/07-byoma-face-mist.jpg",
+    "matchedName": "SOS Daily Hypochlorous Acid Spray for Breakouts & Redness",
+    "brand": "Tower 28 Beauty",
+    "rating": 4.0608,
+    "reviews": 4625,
+    "source": "https://www.sephora.com/product/sos-save-our-skin-daily-rescue-facial-spray-P448852?skuId=2527844"
+  },
+  "cosrx-snail-essence": {
+    "image": "assets/products/08-cosrx-snail-essence.jpg",
+    "matchedName": "Ceramidin™ Skin Barrier Moisturizing Cream",
+    "brand": "Dr. Jart+",
+    "rating": 4.2229,
+    "reviews": 875,
+    "source": "https://www.sephora.com/product/dr-jart-ceramidin-tm-skin-barrier-moisturizing-cream-P504007?skuId=2640662"
+  },
+  "sol-de-janeiro-62": {
+    "image": "assets/products/09-sol-de-janeiro-62.jpg",
+    "matchedName": "Mini Cheirosa 62 Bum Bum Hair & Body Perfume Mist",
+    "brand": "Sol de Janeiro",
+    "rating": 4.5218,
+    "reviews": 3162,
+    "source": "https://www.sephora.com/product/brazilian-crush-body-fragrance-mist-mini-P421481?skuId=1985118"
+  },
+  "laneige-lip-mask": {
+    "image": "assets/products/10-laneige-lip-mask.jpg",
+    "matchedName": "Lip Sleeping Mask – Intense Hydration Lip Treatment with Vitamin C",
+    "brand": "LANEIGE",
+    "rating": 4.3159,
+    "reviews": 22246,
+    "source": "https://www.sephora.com/product/lip-sleeping-mask-P420652?skuId=1966258"
+  },
+  "saie-glow-sculpt": {
+    "image": "assets/products/11-saie-glow-sculpt.jpg",
+    "matchedName": "Dew Blush Liquid Cream Blush",
+    "brand": "Saie",
+    "rating": 4.4452,
+    "reviews": 3403,
+    "source": "https://www.sephora.com/product/saie-dew-blush-liquid-cheek-blush-P469825?skuId=2872448"
+  },
+  "by-terry-tea-to-tan": {
+    "image": "assets/products/12-by-terry-tea-to-tan.jpg",
+    "matchedName": "Self-Tan Face Drops",
+    "brand": "Isle of Paradise",
+    "rating": 4.4915,
+    "reviews": 472,
+    "source": "https://www.sephora.com/product/self-tan-face-drops-P516435?skuId=2871952"
+  },
+  "beauty-of-joseon-relief-sun": {
+    "image": "assets/products/13-beauty-of-joseon-relief-sun.jpg",
+    "matchedName": "Mineral Unseen Sunscreen SPF 40",
+    "brand": "Supergoop!",
+    "rating": 4.3166,
+    "reviews": 379,
+    "source": "https://www.sephora.com/product/supergoop-mineral-unseen-sunscreen-spf-40-P510927?skuId=2773299"
+  },
+  "anua-heartleaf-toner": {
+    "image": "assets/products/14-anua-heartleaf-toner.jpg",
+    "matchedName": "Cloudberry Bright Essence Toner™",
+    "brand": "Glow Recipe",
+    "rating": 4.3766,
+    "reviews": 847,
+    "source": "https://www.sephora.com/product/glow-recipe-cloudberry-bright-essence-toner-P509327?skuId=2734606"
+  },
+  "ordinary-niacinamide": {
+    "image": "assets/products/15-ordinary-niacinamide.jpg",
+    "matchedName": "Niacinamide 10% + Zinc 1%  Serum for Oily Skin",
+    "brand": "The Ordinary",
+    "rating": 4.2303,
+    "reviews": 9066,
+    "source": "https://www.sephora.com/product/the-ordinary-deciem-niacinamide-10-zinc-1-P427417?skuId=2031391"
+  },
+  "ordinary-uv-serum": {
+    "image": "assets/products/16-ordinary-uv-serum.jpg",
+    "matchedName": "Glowscreen SPF 40 Sunscreen with Hyaluronic Acid + Niacinamide",
+    "brand": "Supergoop!",
+    "rating": 3.932,
+    "reviews": 3220,
+    "source": "https://www.sephora.com/product/supergoop-glowscreen-sunscreen-spf-40-P456218?skuId=2535656"
+  },
+  "charlotte-tilbury-pillow-talk": {
+    "image": "assets/products/17-charlotte-tilbury-pillow-talk.jpg",
+    "matchedName": "Matte Revolution Hydrating Lipstick",
+    "brand": "Charlotte Tilbury",
+    "rating": 4.2881,
+    "reviews": 2603,
+    "source": "https://www.sephora.com/product/matte-revolution-lipstick-P433530?skuId=2116879"
+  },
+  "dior-lip-glow-oil": {
+    "image": "assets/products/18-dior-lip-glow-oil.jpg",
+    "matchedName": "Lip Glow Oil Hydrating High-Shine Gloss",
+    "brand": "DIOR",
+    "rating": 4.6429,
+    "reviews": 966,
+    "source": "https://www.sephora.com/product/dior-lip-glow-oil-hydrating-high-shine-gloss-P519637?skuId=2920676"
+  },
+  "fenty-gloss-bomb": {
+    "image": "assets/products/19-fenty-gloss-bomb.jpg",
+    "matchedName": "Gloss Bomb Universal Lip Gloss Luminizer",
+    "brand": "Fenty Beauty by Rihanna",
+    "rating": 4.6036,
+    "reviews": 13759,
+    "source": "https://www.sephora.com/product/gloss-bomb-universal-lip-luminizer-P67988453?skuId=2929495"
+  },
+  "maybelline-lifter-gloss": {
+    "image": "assets/products/20-maybelline-lifter-gloss.jpg",
+    "matchedName": "MoistureGlow™ Plumping Lip Serum",
+    "brand": "MAKEUP BY MARIO",
+    "rating": 4.0275,
+    "reviews": 3022,
+    "source": "https://www.sephora.com/product/makeup-by-mario-moisture-glow-tm-plumping-lip-serum-P481114?skuId=2783199"
+  },
+  "ysl-libre": {
+    "image": "assets/products/21-ysl-libre.jpg",
+    "matchedName": "Libre Eau De Parfum with Orange Blossom & Lavender",
+    "brand": "Yves Saint Laurent",
+    "rating": 4.5339,
+    "reviews": 4529,
+    "source": "https://www.sephora.com/product/libre-eau-de-parfum-P448102?skuId=2249746"
+  },
+  "kayali-vanilla-28": {
+    "image": "assets/products/22-kayali-vanilla-28.jpg",
+    "matchedName": "VANILLA | 28 Eau de Parfum",
+    "brand": "KAYALI",
+    "rating": 4.1342,
+    "reviews": 3026,
+    "source": "https://www.sephora.com/product/kayali-vanilla-P439406?skuId=2163970"
+  },
+  "burberry-goddess": {
+    "image": "assets/products/23-burberry-goddess.jpg",
+    "matchedName": "Burberry Goddess Eau de Parfum with Vanilla & Lavender",
+    "brand": "BURBERRY",
+    "rating": 4.5474,
+    "reviews": 1741,
+    "source": "https://www.sephora.com/product/burberry-goddess-eau-de-parfum-P507316?skuId=2689644"
+  },
+  "good-girl-blush": {
+    "image": "assets/products/24-good-girl-blush.jpg",
+    "matchedName": "Good Girl Blush Eau de Parfum with Floral Vanilla",
+    "brand": "Carolina Herrera",
+    "rating": 4.366,
+    "reviews": 929,
+    "source": "https://www.sephora.com/product/good-girl-blush-eau-de-parfum-P504996?skuId=2645026"
+  },
+  "kerastase-elixir": {
+    "image": "assets/products/25-kerastase-elixir.jpg",
+    "matchedName": "Mini Elixir Ultime Hydrating Hair Oil",
+    "brand": "Kérastase",
+    "rating": 4.3322,
+    "reviews": 1707,
+    "source": "https://www.sephora.com/product/kerastase-mini-elixir-ultime-refillable-hydrating-hair-oil-P512316?skuId=2798791"
+  },
+  "ouai-detox-shampoo": {
+    "image": "assets/products/26-ouai-detox-shampoo.jpg",
+    "matchedName": "Detox Clarifying Shampoo with Apple Cider Vinegar",
+    "brand": "OUAI",
+    "rating": 4.59,
+    "reviews": 5244,
+    "source": "https://www.sephora.com/product/ouai-haircare-detox-shampoo-P457223?skuId=2319820"
+  },
+  "olaplex-no7": {
+    "image": "assets/products/27-olaplex-no7.jpg",
+    "matchedName": "No. 7 Bonding Frizz Reduction & Heat Protectant Hair Oil",
+    "brand": "Olaplex",
+    "rating": 4.2448,
+    "reviews": 2214,
+    "source": "https://www.sephora.com/product/no-7-bonding-oil-P447376?skuId=2266765"
+  },
+  "color-wow-dream-coat": {
+    "image": "assets/products/28-color-wow-dream-coat.jpg",
+    "matchedName": "Dream Coat Supernatural Treatment Spray for Frizzy Hair",
+    "brand": "COLOR WOW",
+    "rating": 3.9364,
+    "reviews": 2862,
+    "source": "https://www.sephora.com/product/color-wow-dream-coat-supernatural-treatment-spray-for-frizzy-hair-P469065?skuId=2437267"
+  },
+  "tirtir-red-cushion": {
+    "image": "assets/products/29-tirtir-red-cushion.jpg",
+    "matchedName": "Translucent Loose Longwear Setting Powder",
+    "brand": "Laura Mercier",
+    "rating": 4.4968,
+    "reviews": 10879,
+    "source": "https://www.sephora.com/product/translucent-loose-setting-powder-P109908?skuId=870618"
+  },
+  "huda-easy-bake": {
+    "image": "assets/products/30-huda-easy-bake.jpg",
+    "matchedName": "Easy Bake Blurring Loose Baking & Setting Powder",
+    "brand": "HUDA BEAUTY",
+    "rating": 4.6347,
+    "reviews": 14195,
+    "source": "https://www.sephora.com/product/easy-bake-loose-baking-setting-powder-P433402?skuId=2114072"
+  },
+  "milk-hydro-grip": {
+    "image": "assets/products/31-milk-hydro-grip.jpg",
+    "matchedName": "Mini Hydro Grip Hydrating Makeup Primer with Hyaluronic Acid + Niacinamide",
+    "brand": "MILK MAKEUP",
+    "rating": 4.0297,
+    "reviews": 9888,
+    "source": "https://www.sephora.com/product/hydro-grip-primer-mini-P441814?skuId=2191252"
+  },
+  "one-size-setting-spray": {
+    "image": "assets/products/32-one-size-setting-spray.jpg",
+    "matchedName": "Mini On 'Til Dawn Mattifying Waterproof Setting Spray",
+    "brand": "ONE/SIZE by Patrick Starrr",
+    "rating": 3.8263,
+    "reviews": 3109,
+    "source": "https://www.sephora.com/product/one-size-by-patrick-starrr-mini-on-til-dawn-setting-spray-P476718?skuId=2490704"
+  },
+  "cerave-hydrating-cleanser": {
+    "image": "assets/products/33-cerave-hydrating-cleanser.jpg",
+    "matchedName": "Superfood Hydrating Gentle Antioxidant Refillable Cleanser",
+    "brand": "Youth To The People",
+    "rating": 4.1687,
+    "reviews": 8265,
+    "source": "https://www.sephora.com/product/kale-spinach-green-tea-age-prevention-cleanser-P411387?skuId=1863588"
+  },
+  "lrp-cicaplast": {
+    "image": "assets/products/34-lrp-cicaplast.jpg",
+    "matchedName": "ATOBARRIER365 Cream Moisturizer with Ceramides & Niacinamide for Skin Moisture Barrier Repair",
+    "brand": "AESTURA",
+    "rating": 4.5023,
+    "reviews": 661,
+    "source": "https://www.sephora.com/product/atobarrier365-cream-with-ceramides-niacinamide-for-skin-moisture-barrier-repair-P515494?skuId=2844942"
+  },
+  "medicube-booster-pro": {
+    "image": "assets/products/35-medicube-booster-pro.jpg",
+    "matchedName": "NUFACE® MINI+ Starter Kit | Sculpt & Tone Facial Microcurrent Device",
+    "brand": "NuFACE",
+    "rating": 4.3108,
+    "reviews": 222,
+    "source": "https://www.sephora.com/product/nuface-nuface-reg-mini-petite-facial-toning-device-P502852?skuId=2536639"
+  },
+  "dyson-airwrap": {
+    "image": "assets/products/36-dyson-airwrap.jpg",
+    "matchedName": "Airwrap ID™ Multi-Styler and Dryer for Straight to Wavy Hair",
+    "brand": "Dyson",
+    "rating": 4.0357,
+    "reviews": 168,
+    "source": "https://www.sephora.com/product/airwrap-id-multi-styler-dryer-for-straight-to-wavy-hair-P515347?skuId=2841591"
+  },
+  "nars-light-reflecting": {
+    "image": "assets/products/37-nars-light-reflecting.jpg",
+    "matchedName": "Light Reflecting Skin Improving Medium Coverage Foundation with Cacao Peptides",
+    "brand": "NARS",
+    "rating": 4.1082,
+    "reviews": 3068,
+    "source": "https://www.sephora.com/product/nars-light-reflecting-advance-skincare-foundation-P479338?skuId=2514644"
+  },
+  "hourglass-ambient-palette": {
+    "image": "assets/products/38-hourglass-ambient-palette.jpg",
+    "matchedName": "Ambient® Lighting Palette",
+    "brand": "Hourglass",
+    "rating": 4.3354,
+    "reviews": 1956,
+    "source": "https://www.sephora.com/product/ambient-lighting-palette-P382309?skuId=2519767"
+  },
+  "patrick-ta-blush-duo": {
+    "image": "assets/products/39-patrick-ta-blush-duo.jpg",
+    "matchedName": "Major Headlines Double-Take Crème & Powder Blush Duo",
+    "brand": "PATRICK TA",
+    "rating": 4.6422,
+    "reviews": 4243,
+    "source": "https://www.sephora.com/product/patrick-ta-major-headlines-cream-powder-blush-duo-P458747?skuId=2849768"
+  },
+  "summer-fridays-lip-butter": {
+    "image": "assets/products/40-summer-fridays-lip-butter.jpg",
+    "matchedName": "Lip Butter Balm Treatment for Hydration + Nourishing Shine",
+    "brand": "Summer Fridays",
+    "rating": 4.2914,
+    "reviews": 17527,
+    "source": "https://www.sephora.com/product/summer-fridays-lip-butter-balm-P455936?skuId=2960094"
+  },
+  "drunk-elephant-bronzi": {
+    "image": "assets/products/41-drunk-elephant-bronzi.jpg",
+    "matchedName": "D-Bronzi™ Bronzing Drops with Peptides",
+    "brand": "Drunk Elephant",
+    "rating": 4.2809,
+    "reviews": 3353,
+    "source": "https://www.sephora.com/product/d-bronzi-tm-anti-pollution-sunshine-serum-P432668?skuId=2404721"
+  },
+  "glow-recipe-dew-drops": {
+    "image": "assets/products/42-glow-recipe-dew-drops.jpg",
+    "matchedName": "Watermelon Glow Niacinamide Dew Drops Serum",
+    "brand": "Glow Recipe",
+    "rating": 4.2624,
+    "reviews": 5328,
+    "source": "https://www.sephora.com/product/glow-recipe-watermelon-glow-niacinamide-dew-drops-P466123?skuId=2404846"
+  },
+  "k18-leave-in-mask": {
+    "image": "assets/products/43-k18-leave-in-mask.jpg",
+    "matchedName": "Leave-In Molecular Repair Hair Mask",
+    "brand": "K18 Biomimetic Hairscience",
+    "rating": 4.2135,
+    "reviews": 5186,
+    "source": "https://www.sephora.com/product/leave-in-molecular-repair-mask-P479846?skuId=2547248"
+  },
+  "gisou-hair-oil": {
+    "image": "assets/products/44-gisou-hair-oil.jpg",
+    "matchedName": "Honey Infused Hair Oil",
+    "brand": "Gisou",
+    "rating": 4.2156,
+    "reviews": 3748,
+    "source": "https://www.sephora.com/product/gisou-honey-infused-hair-oil-P462352?skuId=2389203"
+  },
+  "armani-si": {
+    "image": "assets/products/45-armani-si.jpg",
+    "matchedName": "Sì Eau de Parfum with Vanilla & Blackcurrant and Rose",
+    "brand": "Armani Beauty",
+    "rating": 4.4107,
+    "reviews": 504,
+    "source": "https://www.sephora.com/product/si-eau-de-parfum-P388029?skuId=1571405"
+  },
+  "valentino-born-in-roma": {
+    "image": "assets/products/46-valentino-born-in-roma.jpg",
+    "matchedName": "Donna Born in Roma Eau de Parfum with Bourbon Vanilla & Jasmine",
+    "brand": "Valentino",
+    "rating": 4.5186,
+    "reviews": 2931,
+    "source": "https://www.sephora.com/product/born-in-roma-P449116?skuId=2249696"
+  },
+  "ole-henriksen-pout-preserve": {
+    "image": "assets/products/47-ole-henriksen-pout-preserve.jpg",
+    "matchedName": "Pout Preserve Hydrating Peptide Lip Treatment",
+    "brand": "OLEHENRIKSEN",
+    "rating": 4.366,
+    "reviews": 2951,
+    "source": "https://www.sephora.com/product/pout-preserve-peptide-lip-treatment-P503878?skuId=2882074"
+  },
+  "tower28-lipsoftie": {
+    "image": "assets/products/48-tower28-lipsoftie.jpg",
+    "matchedName": "LipSoftie® Hydrating Tinted Lip Treatment Balm",
+    "brand": "Tower 28 Beauty",
+    "rating": 4.1302,
+    "reviews": 1674,
+    "source": "https://www.sephora.com/product/tower-28-lipsoftie-hydrating-tinted-lip-treatment-balm-P509397?skuId=2843068"
+  }
+};

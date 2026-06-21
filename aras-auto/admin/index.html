@@ -1,1 +1,147 @@
-<!doctype html><html lang="az"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aras Auto İdarəetmə Paneli</title><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="../assets/styles.css"></head><body class="admin-page"><aside class="admin-sidebar"><a class="brand" href="../"><svg class="brand-symbol" viewBox="0 0 50 50"><path d="M25 3 47 15v20L25 47 3 35V15z"/><path class="brand-cut" d="m25 13 13 25h-8l-2-5h-8l3-7h2l-2-5-8 17H8z"/></svg><span>ARAS<small>ADMIN</small></span></a><nav><a class="active" href="#overview">Ümumi baxış</a><a href="#leads">Müraciətlər</a><a href="#cars">Avtomobillər</a><a href="#orders">Sifarişlər</a><a href="#content">SEO və kontent</a><a href="#settings">Tənzimləmələr</a></nav><a class="admin-exit" href="../">← Sayta qayıt</a></aside><main class="admin-main"><header><div><small>19 İYUN 2026 · DEMO PANEL</small><h1>İdarəetmə mərkəzi</h1></div><button class="btn btn-red" type="button" id="newVehicleButton">＋ Yeni avtomobil</button></header><section class="admin-kpis" id="overview"><article><span>Yeni müraciətlər</span><b id="adminLeadCount">12</b><small>Bu həftə +28%</small></article><article><span>Aktiv sifarişlər</span><b>7</b><small>3 avtomobil yoldadır</small></article><article><span>Qiymət bildirişləri</span><b id="adminAlertCount">0</b><small>Aktiv izləmələr</small></article><article><span>Orta cavab müddəti</span><b>18 dəq</b><small>Hədəf: 15 dəq</small></article></section><section class="admin-grid"><article class="admin-panel" id="leads"><header><div><small>CRM NÖVBƏSİ</small><h2>Son müraciətlər</h2></div><button type="button">Hamısına bax</button></header><div class="admin-table" id="adminLeads"><div class="admin-row head"><span>Müştəri</span><span>Maraq</span><span>Büdcə</span><span>Status</span></div><div class="admin-row"><b>Nigar Məmmədova</b><span>Hibrid SUV</span><span>45 000 ₼</span><em class="lead-hot">Yeni</em></div><div class="admin-row"><b>Rəşad Həsənov</b><span>Kia K5</span><span>35 000 ₼</span><em>Əlaqə saxlanılıb</em></div><div class="admin-row"><b>Elvin Əliyev</b><span>Elan analizi</span><span>52 000 ₼</span><em>Ekspertdə</em></div></div></article><article class="admin-panel admin-funnel"><header><div><small>SATIŞ AXINI</small><h2>Lead → müqavilə</h2></div></header><div class="funnel-step"><span>Müraciət</span><b>48</b><i style="--width:100%"></i></div><div class="funnel-step"><span>İlkin danışıq</span><b>31</b><i style="--width:65%"></i></div><div class="funnel-step"><span>Avtomobil seçimi</span><b>18</b><i style="--width:38%"></i></div><div class="funnel-step"><span>Müqavilə</span><b>7</b><i style="--width:15%"></i></div></article><article class="admin-panel" id="cars"><header><div><small>KATALOQ İDARƏETMƏSİ</small><h2>Avtomobil statusları</h2></div><a href="../avtomobiller/">Kataloqu aç ↗</a></header><div class="admin-status-grid"><div><b>9</b><span>Aktiv nümunə</span></div><div><b>3</b><span>Yoxlama gözləyir</span></div><div><b>2</b><span>Qiyməti yenilənməlidir</span></div></div></article><article class="admin-panel" id="content"><header><div><small>SEO HAZIRLIĞI</small><h2>İndeksləmə bağlıdır</h2></div><span class="status-chip">NOINDEX</span></header><p>Model səhifələri, sitemap layihəsi və strukturlaşdırılmış məlumat hazırdır. Real şirkət və qiymət məlumatları təsdiqlənəndə indeksləmə açılacaq.</p><div class="seo-checks"><span>✓ Canonical URL-lər</span><span>✓ Article schema</span><span>✓ Daxili link klasteri</span><span>○ Search Console bağlantısı</span></div></article></section></main><div class="toast" id="toast"></div><script src="../assets/app.js"></script></body></html>
+<!doctype html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Aras Auto Admin Panel</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body class="admin-page">
+  <aside class="admin-sidebar">
+    <a class="brand" href="../">
+      <svg class="brand-symbol" viewBox="0 0 50 50" aria-hidden="true"><path d="M25 3 47 15v20L25 47 3 35V15z"/><path class="brand-cut" d="m25 13 13 25h-8l-2-5h-8l3-7h2l-2-5-8 17H8z"/></svg>
+      <span>ARAS<small>ADMIN</small></span>
+    </a>
+    <nav>
+      <a class="active" href="#overview">Ümumi baxış</a>
+      <a href="#leads">Müraciətlər</a>
+      <a href="#cars">Avtomobillər</a>
+      <a href="#orders">Sifarişlər</a>
+      <a href="#deliveries">Təhvil</a>
+      <a href="#settings">Tariflər</a>
+    </nav>
+    <button class="admin-exit" type="button" id="adminLogout">Çıxış</button>
+    <a class="admin-exit" href="../">← Sayta qayıt</a>
+  </aside>
+
+  <main class="admin-main">
+    <section class="admin-login" id="adminLogin">
+      <form class="admin-login-card" id="adminLoginForm">
+        <small>GİZLİ İDARƏETMƏ PANELİ</small>
+        <h1>Admin girişi</h1>
+        <p>Saytdakı avtomobilləri, sifariş statuslarını və müraciətləri buradan yeniləyin.</p>
+        <label>Parol<input type="password" name="password" autocomplete="current-password" required placeholder="Admin parolu"></label>
+        <button class="btn btn-red full" type="submit">Panelə daxil ol</button>
+        <span class="admin-hint">Canlı yayımdan əvvəl `ADMIN_PASSWORD` və `ADMIN_SECRET` mütləq dəyişdirilməlidir.</span>
+      </form>
+    </section>
+
+    <section class="admin-workspace" id="adminWorkspace" hidden>
+      <header>
+        <div><small id="adminToday">ARAS AUTO · CANLI PANEL</small><h1>İdarəetmə mərkəzi</h1></div>
+        <div class="admin-actions">
+          <button class="btn btn-outline-dark" type="button" id="exportData">JSON çıxar</button>
+          <button class="btn btn-red" type="button" id="saveAdminData">Yadda saxla</button>
+        </div>
+      </header>
+
+      <section class="admin-kpis" id="overview">
+        <article><span>Yeni müraciətlər</span><b id="kpiLeads">0</b><small>CRM növbəsi</small></article>
+        <article><span>Aktiv avtomobillər</span><b id="kpiVehicles">0</b><small>Kataloq</small></article>
+        <article><span>Aktiv sifarişlər</span><b id="kpiOrders">0</b><small>İzləmə sistemi</small></article>
+        <article><span>Təhvil qeydləri</span><b id="kpiDeliveries">0</b><small>Arxiv</small></article>
+      </section>
+
+      <section class="admin-grid">
+        <article class="admin-panel admin-wide" id="leads">
+          <header><div><small>CRM</small><h2>Müştəri müraciətləri</h2></div></header>
+          <div class="admin-table" id="leadList"></div>
+        </article>
+        <article class="admin-panel">
+          <header><div><small>YENİ MÜRACİƏT</small><h2>Əl ilə əlavə et</h2></div></header>
+          <form class="admin-form" data-form="lead">
+            <input name="name" placeholder="Ad soyad" required>
+            <input name="phone" placeholder="Telefon">
+            <input name="interest" placeholder="Maraq / model">
+            <input name="budget" placeholder="Büdcə">
+            <button type="submit">Müraciət əlavə et</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="admin-grid">
+        <article class="admin-panel admin-wide" id="cars">
+          <header><div><small>KATALOQ</small><h2>Avtomobillər</h2></div></header>
+          <div class="admin-table" id="vehicleList"></div>
+        </article>
+        <article class="admin-panel">
+          <header><div><small>YENİ AVTOMOBİL</small><h2>Kataloqa əlavə et</h2></div></header>
+          <form class="admin-form" data-form="vehicle">
+            <input name="title" placeholder="Model adı" required>
+            <div class="field-row"><input name="year" type="number" placeholder="İl"><input name="mileage" placeholder="Yürüş"></div>
+            <div class="field-row"><input name="fuel" placeholder="Yanacaq"><input name="body" placeholder="Ban"></div>
+            <div class="field-row"><input name="priceUsd" type="number" placeholder="USD"><input name="bakuPriceAzn" type="number" placeholder="Bakı AZN"></div>
+            <div class="field-row"><input name="riskScore" type="number" min="0" max="100" placeholder="Risk balı"><select name="status"><option>Aktiv</option><option>Yoxlanır</option><option>Satıldı</option><option>Gizli</option></select></div>
+            <input name="image" placeholder="/assets/hero-v2.jpg">
+            <textarea name="note" placeholder="Qısa qeyd"></textarea>
+            <button type="submit">Avtomobil əlavə et</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="admin-grid">
+        <article class="admin-panel admin-wide" id="orders">
+          <header><div><small>SİFARİŞ İZLƏMƏ</small><h2>Statuslar</h2></div></header>
+          <div class="admin-table" id="orderList"></div>
+        </article>
+        <article class="admin-panel">
+          <header><div><small>YENİ SİFARİŞ</small><h2>Kod yarat</h2></div></header>
+          <form class="admin-form" data-form="order">
+            <input name="code" placeholder="AA-240621" required>
+            <input name="customer" placeholder="Müştəri">
+            <input name="phone" placeholder="Telefon">
+            <input name="vehicle" placeholder="Avtomobil">
+            <input name="currentStage" placeholder="Hazırkı mərhələ">
+            <input name="nextUpdate" placeholder="Növbəti yeniləmə">
+            <button type="submit">Sifariş əlavə et</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="admin-grid">
+        <article class="admin-panel admin-wide" id="deliveries">
+          <header><div><small>TƏHVİL ARXİVİ</small><h2>Təhvil verilənlər</h2></div></header>
+          <div class="admin-table" id="deliveryList"></div>
+        </article>
+        <article class="admin-panel">
+          <header><div><small>YENİ TƏHVİL</small><h2>Arxivə əlavə et</h2></div></header>
+          <form class="admin-form" data-form="delivery">
+            <input name="title" placeholder="Başlıq" required>
+            <input name="customer" placeholder="Müştəri">
+            <input name="date" type="date">
+            <input name="image" placeholder="/assets/hero-v2.jpg">
+            <textarea name="summary" placeholder="Qısa proses xülasəsi"></textarea>
+            <button type="submit">Təhvil əlavə et</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="admin-panel" id="settings">
+        <header><div><small>KALKULYATOR</small><h2>Qiymət və xərc tarifləri</h2></div></header>
+        <form class="admin-settings" id="settingsForm">
+          <label>USD/AZN<input name="exchangeRate" type="number" step=".01"></label>
+          <label>Koreya daxili logistika USD<input name="localLogisticsUsd" type="number"></label>
+          <label>Dəniz/tranzit USD<input name="shippingUsd" type="number"></label>
+          <label>Ekspert/sənəd USD<input name="inspectionFeeUsd" type="number"></label>
+          <label>Xidmət haqqı USD<input name="serviceFeeUsd" type="number"></label>
+          <label>Sığorta/terminal USD<input name="insuranceFeeUsd" type="number"></label>
+          <label>Gömrük ehtiyatı AZN<input name="customsReserveAzn" type="number"></label>
+        </form>
+      </section>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script src="../assets/admin.js" defer></script>
+</body>
+</html>
