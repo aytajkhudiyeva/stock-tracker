@@ -1,4 +1,4 @@
-# Aras Auto admin paneli
+# Auto Import Platform admin paneli
 
 Bu panel şirkət sahibinin sayta kodsuz dəyişiklik etməsi üçündür.
 

@@ -1,6 +1,6 @@
 {
   "appId": "az.arasauto.app",
-  "appName": "Aras Auto",
+  "appName": "Auto Import Platform",
   "webDir": "app",
   "server": {
     "url": "https://aras-auto-demo-production.up.railway.app/app/",

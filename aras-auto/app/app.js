@@ -144,7 +144,7 @@ installButton?.addEventListener("click",async()=>{
   installPrompt=null;
   installButton.hidden=true;
 });
-addEventListener("appinstalled",()=>showToast("Aras Auto telefona əlavə edildi."));
+addEventListener("appinstalled",()=>showToast("Auto Import Platform telefona əlavə edildi."));
 
 if("serviceWorker" in navigator){
   addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));

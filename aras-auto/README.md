@@ -1,6 +1,6 @@
-# Aras Auto
+# Auto Import Platform
 
-SEO-ready automotive import platform demo for `arasauto.az`.
+SEO-ready automotive import platform demo for `portfolio-demo.example`.
 
 ## Demo modules
 
@@ -14,7 +14,7 @@ SEO-ready automotive import platform demo for `arasauto.az`.
 - Privacy and contact pages
 - Organization, Service, and FAQ structured data
 - Sitemap, robots, canonical URLs, and social metadata
-- Aras Risk Score and three-car comparison
+- Platform Risk Score and three-car comparison
 - Price alerts and listing-link analysis
 - AutoBot budget qualification flow
 - Connected customer cabinet
@@ -53,4 +53,4 @@ Set `PUBLIC_INDEXING=true` only after final legal and commercial verification.
 - Add the legal company name, tax ID, contract sample, and privacy page.
 - Add only real delivered-car cases and customer-approved media.
 - Confirm current customs rules before publishing exact calculator results.
-- Verify `arasauto.az` availability and register it in the customer's name.
+- Verify `portfolio-demo.example` availability and register it in the customer's name.

@@ -243,7 +243,7 @@ function bundleWhatsappMessage(key) {
   const bundle = BUNDLES[key];
   const products = bundleProducts(bundle);
   const total = bundleTotal(bundle);
-  return `Salam, Kosmetik Baku! "${bundle.title}" seti ilə maraqlanıram.\n\nTərkib:\n${products.map((product, index) => `${index + 1}. ${product.brand} — ${product.name}`).join("\n")}\n\nAylıq ödəniş: ${(total / 18).toFixed(2)} ₼ × 18 ay\nÜmumi məbləğ: ${formatPrice(total)}\n\nMövcudluğu və uyğunluğunu təsdiqləyə bilərsiniz?`;
+  return `Salam, Beauty Shop Platform! "${bundle.title}" seti ilə maraqlanıram.\n\nTərkib:\n${products.map((product, index) => `${index + 1}. ${product.brand} — ${product.name}`).join("\n")}\n\nAylıq ödəniş: ${(total / 18).toFixed(2)} ₼ × 18 ay\nÜmumi məbləğ: ${formatPrice(total)}\n\nMövcudluğu və uyğunluğunu təsdiqləyə bilərsiniz?`;
 }
 
 function renderProducts() {
@@ -363,8 +363,7 @@ function closeCart() {
 }
 
 function whatsappUrl(message) {
-  // Demo nömrəsi qəsdən əlavə edilməyib. Müştərinin real nömrəsi təhvil zamanı yazılır.
-  return `https://wa.me/?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/994702250125?text=${encodeURIComponent(message)}`;
 }
 
 document.querySelectorAll(".chip").forEach(chip => {
@@ -435,11 +434,11 @@ document.querySelector(".checkout-button").addEventListener("click", () => {
     const product = PRODUCTS.find(item => item.id === Number(id));
     return sum + (product ? product.price * qty : 0);
   }, 0);
-  const message = `Salam, Kosmetik Baku! Bu məhsulları sifariş etmək istəyirəm:\n\n${lines.join("\n")}\n\nCəmi: ${formatPrice(total)}\n\nÇatdırılma ünvanımı göndərəcəyəm.`;
+  const message = `Salam, Beauty Shop Platform! Bu məhsulları sifariş etmək istəyirəm:\n\n${lines.join("\n")}\n\nCəmi: ${formatPrice(total)}\n\nÇatdırılma ünvanımı göndərəcəyəm.`;
   window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
 });
 
-document.querySelector(".whatsapp-link").href = whatsappUrl("Salam, Kosmetik Baku! Məhsul seçimi üçün məsləhət almaq istəyirəm.");
+document.querySelector(".whatsapp-link").href = whatsappUrl("Salam, Beauty Shop Platform! Məhsul seçimi üçün məsləhət almaq istəyirəm.");
 
 document.addEventListener("click", event => {
   const addBundle = event.target.closest("[data-bundle-add]");
@@ -503,7 +502,7 @@ if (quiz) {
       openCart();
     });
     quizResult.querySelector(".quiz-whatsapp").addEventListener("click", () => {
-      const message = `Salam, Kosmetik Baku! Dəri testindən sonra mənə "${routine.title}" rutini təklif edildi.\n\nDəri tipim: ${skinType}\nMəqsədim: ${goal}\nBüdcəm: ${budget}\nTövsiyə olunan məhsullar:\n${products.map((product, index) => `${index + 1}. ${product.brand} — ${product.name}`).join("\n")}\n\nAylıq ödəniş: ${(total / 18).toFixed(2)} ₼ × 18 ay\nÜmumi məbləğ: ${formatPrice(total)}\n\nBu rutini mənim üçün təsdiqləyə bilərsiniz?`;
+      const message = `Salam, Beauty Shop Platform! Dəri testindən sonra mənə "${routine.title}" rutini təklif edildi.\n\nDəri tipim: ${skinType}\nMəqsədim: ${goal}\nBüdcəm: ${budget}\nTövsiyə olunan məhsullar:\n${products.map((product, index) => `${index + 1}. ${product.brand} — ${product.name}`).join("\n")}\n\nAylıq ödəniş: ${(total / 18).toFixed(2)} ₼ × 18 ay\nÜmumi məbləğ: ${formatPrice(total)}\n\nBu rutini mənim üçün təsdiqləyə bilərsiniz?`;
       window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
     });
     quizResult.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -563,7 +562,7 @@ document.querySelector(".modal-add").addEventListener("click", () => {
 });
 document.querySelector(".modal-buy-now").addEventListener("click", () => {
   if (!activeProduct) return;
-  const message = `Salam, Kosmetik Baku! ${activeProduct.brand} — ${activeProduct.name} (${formatPrice(activeProduct.price)}) məhsulunu sifariş etmək istəyirəm. Mövcudluğu təsdiqləyə bilərsiniz?`;
+  const message = `Salam, Beauty Shop Platform! ${activeProduct.brand} — ${activeProduct.name} (${formatPrice(activeProduct.price)}) məhsulunu sifariş etmək istəyirəm. Mövcudluğu təsdiqləyə bilərsiniz?`;
   window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
 });
 
@@ -625,7 +624,7 @@ document.querySelectorAll("[data-month]").forEach(button => {
 });
 document.querySelector(".credit-apply").addEventListener("click", () => {
   const amount = clampCredit(creditAmount.value);
-  const message = `Salam, Kosmetik Baku! ${formatPrice(amount)} məbləğində alış üçün ${selectedMonths} aylıq 0% faizli kredit imkanı ilə maraqlanıram. Aylıq ödəniş təxminən ${(amount / selectedMonths).toFixed(2)} ₼-dir. Müraciət qaydalarını göndərə bilərsiniz?`;
+  const message = `Salam, Beauty Shop Platform! ${formatPrice(amount)} məbləğində alış üçün ${selectedMonths} aylıq 0% faizli kredit imkanı ilə maraqlanıram. Aylıq ödəniş təxminən ${(amount / selectedMonths).toFixed(2)} ₼-dir. Müraciət qaydalarını göndərə bilərsiniz?`;
   window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
 });
 

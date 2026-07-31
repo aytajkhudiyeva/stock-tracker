@@ -78,15 +78,15 @@ document.querySelector("#leadForm")?.addEventListener("submit",event=>{
   const note=document.querySelector("#formNote");
   if(note){note.textContent="Sorğu göndərilir. WhatsApp pəncərəsi də açılır.";note.style.color="#53d492"}
   apiJson("/api/leads",{method:"POST",body:JSON.stringify(data)}).then(()=>showToast("Sorğu admin panelə düşdü.")).catch(error=>showToast(error.message));
-  const message=`Salam, Aras Auto seçim sorğusu:%0AAd: ${encodeURIComponent(data.name||"")}%0ATelefon: ${encodeURIComponent(data.phone||"")}%0ABüdcə: ${encodeURIComponent(data.budget||"")}%0ATip: ${encodeURIComponent(data.type||"")}%0Aİstək: ${encodeURIComponent(data.message||"")}`;
-  window.open(`https://wa.me/994505124510?text=${message}`,"_blank","noopener");
+  const message=`Salam, Auto Import Platform seçim sorğusu:%0AAd: ${encodeURIComponent(data.name||"")}%0ATelefon: ${encodeURIComponent(data.phone||"")}%0ABüdcə: ${encodeURIComponent(data.budget||"")}%0ATip: ${encodeURIComponent(data.type||"")}%0Aİstək: ${encodeURIComponent(data.message||"")}`;
+  window.open(`https://wa.me/994702250125?text=${message}`,"_blank","noopener");
 });
 
 document.querySelector("#quickLinkForm")?.addEventListener("submit",event=>{
   event.preventDefault();
   const url=new FormData(event.currentTarget).get("listingUrl");
   localStorage.setItem("arasAutoListingUrl",String(url||""));
-  window.open(`https://wa.me/994505124510?text=Salam%2C%20bu%20elan%C4%B1%20yoxlama%C4%9F%C4%B1n%C4%B1z%C4%B1%20ist%C9%99yir%C9%99m%3A%20${encodeURIComponent(url||"")}`,"_blank","noopener");
+  window.open(`https://wa.me/994702250125?text=Salam%2C%20bu%20elan%C4%B1%20yoxlama%C4%9F%C4%B1n%C4%B1z%C4%B1%20ist%C9%99yir%C9%99m%3A%20${encodeURIComponent(url||"")}`,"_blank","noopener");
   showToast("Elan linki WhatsApp üçün hazırlandı.");
 });
 
@@ -172,7 +172,7 @@ function renderPublicVehicle(vehicle){
       <div class="price-stack"><span>Xaricdə <b>${Number(vehicle.priceUsd||0).toLocaleString("az-AZ")} USD</b></span><span>Təxmini Bakı büdcəsi <strong>≈ ${Number(vehicle.bakuPriceAzn||0).toLocaleString("az-AZ")} ₼</strong></span><small>${escapeHtml(vehicle.note||"Yekun məbləğ VIN və sənədlər təsdiqləndikdən sonra dəqiqləşir.")}</small></div>
       <div class="spec-row"><span>${escapeHtml(fuel)}</span><span>${escapeHtml(body)}</span><span>${escapeHtml(year)}</span></div>
       <div class="vehicle-tools"><button type="button" data-compare>＋ Müqayisə et</button><button type="button" data-alert>♧ Qiyməti izlə</button></div>
-      <a class="vehicle-cta" href="https://wa.me/994505124510?text=${encodeURIComponent(`Salam, ${title} üzrə təklif istəyirəm.`)}">Bu avtomobil üzrə təklif al ↗</a>
+      <a class="vehicle-cta" href="https://wa.me/994702250125?text=${encodeURIComponent(`Salam, ${title} üzrə təklif istəyirəm.`)}">Bu avtomobil üzrə təklif al ↗</a>
     </div></article>`;
 }
 async function loadPublicVehicles(){
@@ -196,7 +196,7 @@ function renderPublicDelivery(delivery){
   const summary=String(delivery.summary||"Yoxlama, sənədləşmə və təhvil mərhələləri tamamlandı.");
   const points=summary.split(/\n|;/).map(item=>item.trim()).filter(Boolean).slice(0,3);
   const list=points.length?points:["Ekspert yoxlaması tamamlandı","Logistika mərhələləri izlənildi","Bakı təhvili rəsmiləşdirildi"];
-  return `<article class="delivery-card"><div class="delivery-image"><img src="${escapeHtml(delivery.image||"../assets/hero-v2.jpg")}" alt="${escapeHtml(title)}"><span>TƏHVİL</span></div><div><small>${escapeHtml(date)}</small><h2>${escapeHtml(title)}</h2><p><b>${escapeHtml(delivery.customer||"Aras Auto müştərisi")}</b> üçün tamamlanmış sifariş</p><ul>${list.map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ul><a href="../izleme/">Status tarixçəsinə bax ↗</a></div></article>`;
+  return `<article class="delivery-card"><div class="delivery-image"><img src="${escapeHtml(delivery.image||"../assets/hero-v2.jpg")}" alt="${escapeHtml(title)}"><span>TƏHVİL</span></div><div><small>${escapeHtml(date)}</small><h2>${escapeHtml(title)}</h2><p><b>${escapeHtml(delivery.customer||"Auto Import Platform müştərisi")}</b> üçün tamamlanmış sifariş</p><ul>${list.map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ul><a href="../izleme/">Status tarixçəsinə bax ↗</a></div></article>`;
 }
 async function loadPublicDeliveries(){
   const grid=document.querySelector("[data-delivery-grid]");
@@ -281,12 +281,12 @@ function openCompareModal(){
   document.querySelector(".platform-modal")?.remove();
   const rows=[
     ["Təxmini Bakı büdcəsi","price"],
-    ["Aras Risk Balı","risk"],
+    ["Platforma Risk Balı","risk"],
     ["İstehsal ili","year"],
     ["Yanacaq","fuel"],
     ["Ban növü","body"]
   ];
-  document.body.insertAdjacentHTML("beforeend",`<div class="platform-modal"><div class="modal-backdrop" data-close-modal></div><section class="compare-modal"><header><div><small>ARAS SMART COMPARE</small><h2>Avtomobil müqayisəsi</h2></div><button type="button" data-close-modal>×</button></header><div class="compare-table"><div class="compare-row compare-head"><b>Meyar</b>${list.map(item=>`<strong>${item.model}</strong>`).join("")}</div>${rows.map(([label,key])=>`<div class="compare-row"><b>${label}</b>${list.map(item=>`<span>${key==="risk"?`${item[key]}/100`:item[key]}</span>`).join("")}</div>`).join("")}</div><footer><button class="btn btn-outline-dark" type="button" id="clearCompare">Siyahını təmizlə</button><a class="btn btn-red" href="https://wa.me/994505124510?text=Salam%2C%20m%C3%BCqayis%C9%99%20etdiyim%20avtomobill%C9%99r%20%C3%BCzr%C9%99%20ekspert%20r%C9%99yi%20ist%C9%99yir%C9%99m.">Ekspert rəyi al ↗</a></footer></section></div>`);
+  document.body.insertAdjacentHTML("beforeend",`<div class="platform-modal"><div class="modal-backdrop" data-close-modal></div><section class="compare-modal"><header><div><small>SMART COMPARE</small><h2>Avtomobil müqayisəsi</h2></div><button type="button" data-close-modal>×</button></header><div class="compare-table"><div class="compare-row compare-head"><b>Meyar</b>${list.map(item=>`<strong>${item.model}</strong>`).join("")}</div>${rows.map(([label,key])=>`<div class="compare-row"><b>${label}</b>${list.map(item=>`<span>${key==="risk"?`${item[key]}/100`:item[key]}</span>`).join("")}</div>`).join("")}</div><footer><button class="btn btn-outline-dark" type="button" id="clearCompare">Siyahını təmizlə</button><a class="btn btn-red" href="https://wa.me/994702250125?text=Salam%2C%20m%C3%BCqayis%C9%99%20etdiyim%20avtomobill%C9%99r%20%C3%BCzr%C9%99%20ekspert%20r%C9%99yi%20ist%C9%99yir%C9%99m.">Ekspert rəyi al ↗</a></footer></section></div>`);
 }
 function openPriceAlert(model){
   document.querySelector(".platform-modal")?.remove();
@@ -324,12 +324,12 @@ document.querySelector("#vinForm")?.addEventListener("submit",event=>{
   event.preventDefault();
   const vin=document.querySelector("#vinCode")?.value.trim().toUpperCase();
   if(!vin||vin.length!==17)return showToast("VIN 17 simvoldan ibarət olmalıdır.");
-  window.open(`https://wa.me/994505124510?text=Salam%2C%20VIN%20yoxlama%20%C3%BC%C3%A7%C3%BCn%3A%20${encodeURIComponent(vin)}`,"_blank","noopener");
+  window.open(`https://wa.me/994702250125?text=Salam%2C%20VIN%20yoxlama%20%C3%BC%C3%A7%C3%BCn%3A%20${encodeURIComponent(vin)}`,"_blank","noopener");
   showToast("VIN yoxlama sorğusu hazırlandı.");
 });
 
 if(!document.querySelector(".contact-dock")){
-  document.body.insertAdjacentHTML("beforeend",'<div class="contact-dock" aria-label="Sürətli əlaqə"><a class="dock-phone" href="tel:+994505124510"><span>Telefon</span><b>+994 50 512 45 10</b></a><a class="dock-whatsapp" href="https://wa.me/994505124510?text=Salam%2C%20Aras%20Auto%20xidm%C9%99ti%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m." target="_blank" rel="noopener"><i>◔</i><span>WhatsApp-da yaz</span></a></div>');
+  document.body.insertAdjacentHTML("beforeend",'<div class="contact-dock" aria-label="Sürətli əlaqə"><a class="dock-phone" href="tel:+994702250125"><span>Telefon</span><b>+994 70 225 01 25</b></a><a class="dock-whatsapp" href="https://wa.me/994702250125?text=Salam%2C%20Auto%20Import%20Platform%20xidm%C9%99ti%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m." target="_blank" rel="noopener"><i>◔</i><span>WhatsApp-da yaz</span></a></div>');
 }
 
 if(!document.querySelector(".autobot")){
@@ -354,7 +354,7 @@ if(!document.querySelector(".autobot")){
           <label>Telefon<input name="phone" required placeholder="+994 50 000 00 00"></label>
           <button type="submit">3 uyğun seçim hazırla ↗</button>
         </form>
-        <a class="autobot-human" href="https://wa.me/994505124510?text=Salam%2C%20AutoBot-dan%20menecer%C9%99%20ke%C3%A7ir%C9%99m." target="_blank" rel="noopener">Canlı menecerə keç · WhatsApp ↗</a>
+        <a class="autobot-human" href="https://wa.me/994702250125?text=Salam%2C%20AutoBot-dan%20menecer%C9%99%20ke%C3%A7ir%C9%99m." target="_blank" rel="noopener">Canlı menecerə keç · WhatsApp ↗</a>
         <small class="autobot-note">AutoBot hazır məlumat bazasından cavab verir; yekun qiymət və hüquqi şərtləri menecer təsdiqləyir.</small>
       </div>
     </section>`);
@@ -366,7 +366,7 @@ const botAnswers={
   price:"Təxmini Bakı büdcəsinə avtomobilin alış qiyməti, Koreya daxili logistika, ekspert yoxlaması, ixrac sənədləri, daşınma, xidmət haqqı və gömrük ehtiyatı daxil edilir.",
   listing:"Bəli. Encar, K Car və ya başqa saytdan tapdığınız elanın linkini göndərin. Komanda tarixçə, risk və yekun büdcə üzrə yoxlayacaq.",
   vin:"17 simvolluq VIN-i VIN yoxlama bölməsinə daxil edin. Tarixçə məlumatı fiziki ekspert baxışı ilə birlikdə qiymətləndirilməlidir.",
-  office:"Bakı ofisi: Xətai r-nu, Fəzail Bayramov küçəsi 28F. Telefon: +994 50 512 45 10. Əlaqə səhifəsində xəritə də var.",
+  office:"Əhatə dairəsi: Bakı, Azərbaycan. Telefon: +994 70 225 01 25. Əlaqə səhifəsində xəritə də var.",
   contract:"Bəli. Xidmət, ödəniş mərhələləri, dəyişən xərclər və tərəflərin öhdəlikləri yazılı müqavilədə göstərilir. Saytda müqavilə nümunəsi mövcuddur."
 };
 const bot=document.querySelector(".autobot");

@@ -1,4 +1,4 @@
-# Aras Auto — deploy və müştəriyə təhvil
+# Auto Import Platform — deploy və müştəriyə təhvil
 
 ## Hazırkı demo deploy
 

@@ -110,7 +110,7 @@
       "phone": "+994501234567",
       "name": "Test",
       "code": "T-4567",
-      "url": "https://arasauto.az/ref/T-4567",
+      "url": "https://aras-auto-production.up.railway.app/ref/T-4567",
       "discount": 300,
       "friends": [],
       "earned": 0,

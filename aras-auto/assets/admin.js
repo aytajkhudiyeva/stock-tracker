@@ -282,7 +282,7 @@ document.querySelector("#pushTestForm")?.addEventListener("submit", async event 
   event.preventDefault();
   const form = event.target;
   const role = form.role.value;
-  const title = form.title.value.trim() || "Aras Auto";
+  const title = form.title.value.trim() || "Auto Import Platform";
   const message = form.message.value.trim();
   const resultList = document.querySelector("#pushResultList");
   if (!message) return;

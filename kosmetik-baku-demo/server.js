@@ -39,5 +39,5 @@ http.createServer((req, res) => {
     res.end(data);
   });
 }).listen(port, () => {
-  console.log(`Kosmetik Baku demo: http://localhost:${port}`);
+  console.log(`Beauty Shop Platform demo: http://localhost:${port}`);
 });

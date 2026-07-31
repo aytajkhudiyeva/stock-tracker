@@ -28,7 +28,7 @@ self.addEventListener("fetch",event=>{
 });
 
 self.addEventListener("push", event => {
-  let payload = { title: "Aras Auto", body: "Yeni bildiriş", url: "/" };
+  let payload = { title: "Auto Import Platform", body: "Yeni bildiriş", url: "/" };
   try { payload = { ...payload, ...event.data.json() }; } catch {}
   event.waitUntil(
     self.registration.showNotification(payload.title, {

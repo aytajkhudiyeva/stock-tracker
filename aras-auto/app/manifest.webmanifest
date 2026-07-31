@@ -1,6 +1,6 @@
 {
-  "name": "Aras Auto",
-  "short_name": "Aras Auto",
+  "name": "Auto Import Platform",
+  "short_name": "Auto Import Platform",
   "description": "Koreyadan avtomobil seçimi, xərc hesabı və sifariş izləmə tətbiqi.",
   "lang": "az",
   "start_url": "/app/",

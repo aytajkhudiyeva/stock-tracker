@@ -13,7 +13,7 @@ const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 const adminSecret = process.env.ADMIN_SECRET || "aras-auto-demo-secret-change-me";
 const vapidPublicKey = process.env.VAPID_PUBLIC_KEY || "";
 const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || "";
-const vapidContact = process.env.VAPID_CONTACT_EMAIL || "mailto:info@arasauto.az";
+const vapidContact = process.env.VAPID_CONTACT_EMAIL || "mailto:info@portfolio-demo.example";
 if (vapidPublicKey && vapidPrivateKey) {
   webpush.setVapidDetails(vapidContact, vapidPublicKey, vapidPrivateKey);
 }
@@ -332,7 +332,7 @@ const server = http.createServer(async (request, response) => {
 });
 
 server.listen(port, "0.0.0.0", () => {
-  console.log(`Aras Auto is running on port ${port}`);
+  console.log(`Auto Import Platform is running on port ${port}`);
   console.log(`Search indexing: ${publicIndexing ? "enabled" : "disabled"}`);
 });
 
@@ -374,7 +374,7 @@ async function handleExtraApi(request, response, pathname) {
     const initials = name.split(" ").map(w => w[0] || "").join("").toUpperCase().slice(0, 2) || "AA";
     const suffix   = phone.replace(/\D/g, "").slice(-4);
     const code     = `${initials}-${suffix}`;
-    const referral = { id: normalizeId("ref"), phone, name, code, url: `https://arasauto.az/ref/${code}`, discount: 300, friends: [], earned: 0, createdAt: new Date().toISOString() };
+    const referral = { id: normalizeId("ref"), phone, name, code, url: `https://aras-auto-production.up.railway.app/ref/${code}`, discount: 300, friends: [], earned: 0, createdAt: new Date().toISOString() };
     data.referrals.push(referral);
     writeData(data);
     sendJson(response, 201, { referral });
@@ -507,7 +507,7 @@ async function handleExtraApi(request, response, pathname) {
     if (!order) { sendJson(response, 404, { error: "Sifariş tapılmadı." }); return true; }
     const settings  = order.notificationSettings || { channels: ["whatsapp"], events: ["port","ship","document","manager"] };
     if (!settings.events.includes(eventType)) { sendJson(response, 200, { ok: true, sent: false, reason: "Müştəri bu hadisə üçün bildiriş istəmir." }); return true; }
-    const fullMsg   = `Aras Auto · ${orderCode}\n${message}\nKabinet: https://arasauto.az/kabinet`;
+    const fullMsg   = `Auto Import Platform · ${orderCode}\n${message}\nKabinet: https://aras-auto-production.up.railway.app/kabinet`;
     const results   = [];
     for (const ch of settings.channels) {
       if (ch === "whatsapp") results.push({ channel: "whatsapp", ...(await sendWhatsApp(order.phone, fullMsg)) });
@@ -563,7 +563,7 @@ async function handleExtraApi(request, response, pathname) {
   if (request.method === "POST" && pathname === "/api/push/test") {
     if (!requireAdmin(request, response)) return true;
     const body = await readBody(request);
-    const title = String(body.title || "Aras Auto");
+    const title = String(body.title || "Auto Import Platform");
     const text = String(body.message || "Sınaq bildirişi");
     const result = await sendPushToRole(String(body.role || "admin"), title, text, body.orderCode);
     sendJson(response, 200, { ok: true, result });
